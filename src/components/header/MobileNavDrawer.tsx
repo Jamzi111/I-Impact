@@ -9,9 +9,6 @@ import {
   ChevronDownIcon,
   SearchIcon,
   ArrowRightIcon,
-  SunIcon,
-  MoonIcon,
-  SparklesIcon,
   VideoIcon,
 } from "../icons"
 import { NAV_ITEMS, NavItem } from "./NavDropdown"
@@ -20,15 +17,11 @@ interface MobileNavDrawerProps {
   isOpen: boolean
   onClose: () => void
   onOpenSearch?: () => void
-  isDarkMode?: boolean
-  onToggleTheme?: () => void
 }
 
 export function MobileNavDrawer({
   isOpen,
   onClose,
-  isDarkMode,
-  onToggleTheme,
 }: MobileNavDrawerProps) {
   const [openAccordion, setOpenAccordion] = useState<string | null>(null)
   const [searchQuery, setSearchQuery] = useState("")
@@ -57,7 +50,7 @@ export function MobileNavDrawer({
       inset="0"
       zIndex={1100}
       display="flex"
-      justifyContent="flex-end"
+      justifyContent="flex-start"
     >
       {/* Backdrop */}
       <Box
@@ -75,11 +68,11 @@ export function MobileNavDrawer({
         maxW="360px"
         h="100%"
         bg="white"
-        boxShadow="-10px 0 30px rgba(0, 0, 0, 0.15)"
+        boxShadow="10px 0 30px rgba(0, 0, 0, 0.15)"
         display="flex"
         flexDirection="column"
         zIndex={10}
-        animation="slideLeft 0.25s cubic-bezier(0.16, 1, 0.3, 1)"
+        animation="slideRight 0.25s cubic-bezier(0.16, 1, 0.3, 1)"
       >
         {/* Drawer Header */}
         <Flex
@@ -91,33 +84,21 @@ export function MobileNavDrawer({
           borderColor="gray.100"
         >
           <Link href="/" onClick={onClose} style={{ display: "flex", alignItems: "center" }}>
-            <HStack
-              gap="2"
-              align="center"
-              bg="linear-gradient(135deg, #051B64 0%, #030F3B 100%)"
-              px="2.5"
-              py="1.5"
-              borderRadius="xl"
-              boxShadow="0 2px 8px rgba(5, 27, 100, 0.15)"
-              border="1px solid rgba(20, 145, 145, 0.3)"
+            <Box
+              position="relative"
+              w="130px"
+              h="32px"
+              cursor="pointer"
             >
-              <Box position="relative" w="24px" h="24px" flexShrink={0}>
-                <Image
-                  src="/iimpact-logo.png"
-                  alt="I-Impact Icon"
-                  fill
-                  style={{ objectFit: "contain" }}
-                />
-              </Box>
-              <Box position="relative" w="100px" h="24px" flexShrink={0}>
-                <Image
-                  src="/iimpact-logo2.png"
-                  alt="I-Impact - Raising Champions Everyday"
-                  fill
-                  style={{ objectFit: "contain", objectPosition: "left" }}
-                />
-              </Box>
-            </HStack>
+              <Image
+                src="/iimpact-logo2.png"
+                alt="I-Impact - Raising Champions Everyday"
+                fill
+                sizes="130px"
+                style={{ objectFit: "contain", objectPosition: "left" }}
+                priority
+              />
+            </Box>
           </Link>
 
           <Box
@@ -177,7 +158,7 @@ export function MobileNavDrawer({
           </Flex>
         </Box>
 
-        {/* Nav Items List with Accordions */}
+        {/* Nav Items List with Accordions & Action Buttons */}
         <Box flex="1" overflowY="auto" px="4" py="2">
           <VStack align="stretch" gap="1">
             {filteredNavItems.map((item: NavItem, idx) => {
@@ -288,125 +269,53 @@ export function MobileNavDrawer({
             })}
           </VStack>
 
-          {/* Highlight Card */}
-          <Box
-            mt="4"
-            p="3.5"
-            borderRadius="xl"
-            bg="linear-gradient(135deg, #051B64 0%, #149191 100%)"
-            color="white"
-          >
-            <HStack gap="1.5" mb="1">
-              <SparklesIcon size={14} color="#FACC15" />
-              <Text fontSize="xs" fontWeight="bold">
-                Join Champion Mentorship
-              </Text>
-            </HStack>
-            <Text fontSize="11px" color="whiteAlpha.900" mb="3">
-              Applications for the 2026 youth cohort are currently open.
-            </Text>
-            <Link href="/programs/mentorship" onClick={onClose}>
-              <Box
-                as="button"
-                w="100%"
-                py="1.5"
-                bg="white"
-                color="#051B64"
-                borderRadius="lg"
-                fontSize="xs"
-                fontWeight="bold"
-                cursor="pointer"
-                _hover={{ bg: "gray.100" }}
-              >
-                Apply for Mentorship
-              </Box>
-            </Link>
+          {/* Action CTAs (positioned immediately below Contact with tight spacing) */}
+          <Box mt="3" pt="3" borderTop="1px solid" borderColor="gray.100">
+            <VStack gap="2" w="100%">
+              <Link href="/meet" style={{ width: "100%" }} onClick={onClose}>
+                <Button
+                  w="100%"
+                  size="sm"
+                  bg="linear-gradient(135deg, #051B64 0%, #149191 100%)"
+                  color="white"
+                  _hover={{ bg: "#04154d" }}
+                  fontWeight="bold"
+                  borderRadius="lg"
+                >
+                  <HStack gap="1.5">
+                    <VideoIcon size={14} color="#FACC15" />
+                    <Text>I-IMPACT MEET</Text>
+                    <Box
+                      bg="#EF4444"
+                      color="white"
+                      fontSize="9px"
+                      px="1.5"
+                      py="0.2"
+                      borderRadius="full"
+                      fontWeight="900"
+                      letterSpacing="wider"
+                    >
+                      LIVE
+                    </Box>
+                  </HStack>
+                </Button>
+              </Link>
+
+              <Link href="/donate" style={{ width: "100%" }} onClick={onClose}>
+                <Button
+                  w="100%"
+                  size="sm"
+                  bg="#149191"
+                  color="white"
+                  _hover={{ bg: "#107979" }}
+                  fontWeight="bold"
+                  borderRadius="lg"
+                >
+                  Donate & Support
+                </Button>
+              </Link>
+            </VStack>
           </Box>
-        </Box>
-
-        {/* Drawer Bottom Actions */}
-        <Box p="4" borderTop="1px solid" borderColor="gray.100" bg="gray.50">
-          <VStack gap="2" w="100%">
-            <Link href="/meet" style={{ width: "100%" }} onClick={onClose}>
-              <Button
-                w="100%"
-                size="sm"
-                bg="linear-gradient(135deg, #051B64 0%, #149191 100%)"
-                color="white"
-                _hover={{ bg: "#04154d" }}
-                fontWeight="bold"
-                borderRadius="lg"
-              >
-                <HStack gap="1.5">
-                  <VideoIcon size={14} color="#FACC15" />
-                  <Text>I-IMPACT MEET</Text>
-                  <Box
-                    bg="#EF4444"
-                    color="white"
-                    fontSize="9px"
-                    px="1.5"
-                    py="0.2"
-                    borderRadius="full"
-                    fontWeight="900"
-                    letterSpacing="wider"
-                  >
-                    LIVE
-                  </Box>
-                </HStack>
-              </Button>
-            </Link>
-
-            <Link href="/donate" style={{ width: "100%" }} onClick={onClose}>
-              <Button
-                w="100%"
-                size="sm"
-                bg="#149191"
-                color="white"
-                _hover={{ bg: "#107979" }}
-                fontWeight="bold"
-                borderRadius="lg"
-              >
-                Donate & Support
-              </Button>
-            </Link>
-
-            <Link href="/get-involved" style={{ width: "100%" }} onClick={onClose}>
-              <Button
-                w="100%"
-                size="sm"
-                variant="outline"
-                borderColor="#051B64"
-                color="#051B64"
-                _hover={{ bg: "rgba(5, 27, 100, 0.05)" }}
-                fontWeight="bold"
-                borderRadius="lg"
-              >
-                Get Involved
-              </Button>
-            </Link>
-          </VStack>
-
-          {/* Theme Toggle & Info */}
-          {onToggleTheme && (
-            <Flex justify="space-between" align="center" mt="3" pt="2">
-              <Text fontSize="xs" color="gray.500">
-                Mode: {isDarkMode ? "Dark" : "Light"}
-              </Text>
-              <Box
-                as="button"
-                onClick={onToggleTheme}
-                p="1.5"
-                borderRadius="md"
-                bg="white"
-                border="1px solid"
-                borderColor="gray.200"
-                cursor="pointer"
-                color="gray.700"
-              >
-                {isDarkMode ? <SunIcon size={16} /> : <MoonIcon size={16} />}
-              </Box>
-            </Flex>
-          )}
         </Box>
       </Box>
     </Box>

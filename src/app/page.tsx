@@ -15,6 +15,8 @@ import {
 import Link from "next/link"
 import Image from "next/image"
 import { Header } from "@/components/header"
+import { Hero } from "@/components/hero"
+import { ConferenceBanner } from "@/components/conference"
 import {
   TrophyIcon,
   UsersIcon,
@@ -27,198 +29,39 @@ import {
 
 export default function Home() {
   return (
-    <Box minH="100vh" bg="gray.50" display="flex" flexDirection="column">
+    <Box minH="100vh" bg="#FFFFFF" display="flex" flexDirection="column">
       {/* Header Component */}
       <Header />
 
       {/* Hero Section */}
+      <Hero />
+
+      {/* Upcoming Event Section */}
       <Box
+        as="section"
         position="relative"
         overflow="hidden"
-        bg="linear-gradient(180deg, #FFFFFF 0%, #F0FDF4 50%, #F3F4F6 100%)"
-        py={{ base: "16", md: "24", lg: "28" }}
+        bg="linear-gradient(180deg, #FBFDFF 0%, #F5F9FE 100%)"
+        py={{ base: "6", sm: "8", md: "10" }}
+        borderTop="1px solid"
         borderBottom="1px solid"
-        borderColor="gray.200"
+        borderColor="rgba(14, 165, 233, 0.05)"
       >
-        {/* Background glow effects */}
+        {/* Subtle decorative ambient glow */}
         <Box
           position="absolute"
-          top="-10%"
+          top="-20%"
           left="50%"
           transform="translateX(-50%)"
           w="800px"
           h="400px"
-          bg="radial-gradient(ellipse at center, rgba(20, 145, 145, 0.15) 0%, rgba(5, 27, 100, 0.05) 50%, transparent 70%)"
+          bg="radial-gradient(ellipse, rgba(14, 165, 233, 0.08) 0%, transparent 70%)"
           filter="blur(50px)"
           pointerEvents="none"
         />
 
-        <Container maxW="1200px" px={{ base: "4", md: "8" }} position="relative" zIndex={2}>
-          <VStack gap="6" textAlign="center" maxW="850px" mx="auto">
-            {/* Tag / Badge */}
-            <HStack
-              bg="white"
-              px="3.5"
-              py="1.5"
-              borderRadius="full"
-              boxShadow="0 4px 14px rgba(5, 27, 100, 0.06)"
-              border="1px solid"
-              borderColor="rgba(20, 145, 145, 0.2)"
-              gap="2"
-            >
-              <SparklesIcon size={16} color="#149191" />
-              <Text fontSize="xs" fontWeight="bold" color="#051B64">
-                Empowering Youth Excellence & Ethical Leadership
-              </Text>
-              <Badge
-                bg="#149191"
-                color="white"
-                fontSize="10px"
-                px="2"
-                py="0.5"
-                borderRadius="full"
-              >
-                2026
-              </Badge>
-            </HStack>
-
-            {/* Main Headline */}
-            <Heading
-              as="h1"
-              fontSize={{ base: "3xl", sm: "4xl", md: "5xl", lg: "6xl" }}
-              fontWeight="900"
-              color="#051B64"
-              lineHeight="1.15"
-              letterSpacing="-0.03em"
-            >
-              Raising Champions{" "}
-              <Box
-                as="span"
-                bg="linear-gradient(135deg, #149191 0%, #0d9488 100%)"
-                backgroundClip="text"
-                color="transparent"
-              >
-                Everyday.
-              </Box>
-            </Heading>
-
-            {/* Subtitle */}
-            <Text
-              fontSize={{ base: "md", md: "xl" }}
-              color="gray.600"
-              lineHeight="1.6"
-              maxW="720px"
-            >
-              I-Impact equips the next generation with world-class executive mentorship,
-              transformational community projects, and future-ready innovation skills to lead with purpose.
-            </Text>
-
-            {/* Call to Actions */}
-            <Flex
-              gap="4"
-              wrap="wrap"
-              justify="center"
-              pt="3"
-              w="100%"
-            >
-              <Link href="/programs/mentorship">
-                <Button
-                  size="lg"
-                  bg="linear-gradient(135deg, #149191 0%, #0d6d6d 100%)"
-                  color="white"
-                  fontWeight="bold"
-                  px="7"
-                  py="6"
-                  borderRadius="full"
-                  boxShadow="0 10px 25px -5px rgba(20, 145, 145, 0.4)"
-                  _hover={{
-                    bg: "linear-gradient(135deg, #107979 0%, #095252 100%)",
-                    transform: "translateY(-2px)",
-                    boxShadow: "0 14px 28px -5px rgba(20, 145, 145, 0.5)",
-                  }}
-                  transition="all 0.2s"
-                >
-                  <HStack gap="2">
-                    <Text>Explore Mentorship Program</Text>
-                    <ArrowRightIcon size={16} />
-                  </HStack>
-                </Button>
-              </Link>
-
-              <Link href="/donate">
-                <Button
-                  size="lg"
-                  variant="outline"
-                  borderColor="#051B64"
-                  color="#051B64"
-                  fontWeight="bold"
-                  px="7"
-                  py="6"
-                  borderRadius="full"
-                  bg="white"
-                  boxShadow="0 4px 12px rgba(0, 0, 0, 0.04)"
-                  _hover={{
-                    bg: "rgba(5, 27, 100, 0.04)",
-                    borderColor: "#149191",
-                    color: "#149191",
-                  }}
-                  transition="all 0.2s"
-                >
-                  <HStack gap="2">
-                    <HeartHandshakeIcon size={18} color="#051B64" />
-                    <Text>Sponsor a Champion</Text>
-                  </HStack>
-                </Button>
-              </Link>
-            </Flex>
-
-            {/* Quick Metrics */}
-            <HStack
-              gap={{ base: "6", md: "12" }}
-              pt="8"
-              borderTop="1px solid"
-              borderColor="gray.200"
-              w="100%"
-              justify="center"
-              wrap="wrap"
-            >
-              <VStack gap="0.5">
-                <Text fontSize={{ base: "xl", md: "2xl" }} fontWeight="900" color="#051B64">
-                  10,000+
-                </Text>
-                <Text fontSize="xs" color="gray.500" fontWeight="semibold">
-                  Youth Empowered
-                </Text>
-              </VStack>
-
-              <VStack gap="0.5">
-                <Text fontSize={{ base: "xl", md: "2xl" }} fontWeight="900" color="#149191">
-                  250+
-                </Text>
-                <Text fontSize="xs" color="gray.500" fontWeight="semibold">
-                  Active Mentors
-                </Text>
-              </VStack>
-
-              <VStack gap="0.5">
-                <Text fontSize={{ base: "xl", md: "2xl" }} fontWeight="900" color="#051B64">
-                  $1.2M+
-                </Text>
-                <Text fontSize="xs" color="gray.500" fontWeight="semibold">
-                  Scholarships Awarded
-                </Text>
-              </VStack>
-
-              <VStack gap="0.5">
-                <Text fontSize={{ base: "xl", md: "2xl" }} fontWeight="900" color="#10B981">
-                  100%
-                </Text>
-                <Text fontSize="xs" color="gray.500" fontWeight="semibold">
-                  Graduate Success
-                </Text>
-              </VStack>
-            </HStack>
-          </VStack>
+        <Container maxW={{ base: "100%", sm: "640px", md: "768px", lg: "1160px", xl: "1200px" }} px={{ base: "4", sm: "6", md: "8", lg: "8" }} position="relative" zIndex={1}>
+          <ConferenceBanner />
         </Container>
       </Box>
 

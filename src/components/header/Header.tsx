@@ -6,8 +6,6 @@ import Link from "next/link"
 import Image from "next/image"
 import {
   MenuIcon,
-  SunIcon,
-  MoonIcon,
   SparklesIcon,
   VideoIcon,
 } from "../icons"
@@ -19,7 +17,6 @@ import { NotificationsPopover } from "./NotificationsPopover"
 export function Header() {
   const [isScrolled, setIsScrolled] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
-  const [isDarkMode, setIsDarkMode] = useState(false)
 
   useEffect(() => {
     const handleScroll = () => {
@@ -34,18 +31,13 @@ export function Header() {
     return () => window.removeEventListener("scroll", handleScroll)
   }, [])
 
-  const toggleTheme = () => {
-    setIsDarkMode((prev) => !prev)
-    if (typeof document !== "undefined") {
-      document.documentElement.classList.toggle("dark")
-    }
-  }
-
   return (
     <Box
       as="header"
-      position="sticky"
+      position="fixed"
       top="0"
+      left="0"
+      right="0"
       zIndex={900}
       w="100%"
       transition="all 0.3s ease"
@@ -54,75 +46,44 @@ export function Header() {
       <Box
         bg={
           isScrolled
-            ? "rgba(255, 255, 255, 0.92)"
-            : "rgba(255, 255, 255, 0.98)"
+            ? "rgba(255, 255, 255, 0.94)"
+            : "transparent"
         }
         backdropFilter={isScrolled ? "blur(16px)" : "none"}
         borderBottom="1px solid"
-        borderColor={isScrolled ? "rgba(5, 27, 100, 0.08)" : "gray.100"}
+        borderColor={isScrolled ? "rgba(5, 27, 100, 0.08)" : "transparent"}
         boxShadow={
           isScrolled
             ? "0 10px 30px -10px rgba(5, 27, 100, 0.08)"
-            : "0 1px 2px rgba(0, 0, 0, 0.02)"
+            : "none"
         }
         transition="all 0.3s cubic-bezier(0.16, 1, 0.3, 1)"
       >
         <Container maxW="1440px" px={{ base: "3", md: "4" }} py={{ base: "2", md: "2" }}>
           <Flex align="center" justify="space-between" gap={{ base: "2", md: "2.5" }}>
-            {/* Brand Logos inside a sleek navy/teal capsule */}
-            <Link href="/" style={{ flexShrink: 0 }}>
-              <HStack
-                gap="2"
-                align="center"
+            {/* Brand Logo - Sitting directly on the header without background container */}
+            <Link href="/" style={{ flexShrink: 0, display: "flex", alignItems: "center" }}>
+              <Box
+                position="relative"
+                h={{ base: "32px", sm: "36px", md: "42px" }}
+                w={{ base: "130px", sm: "155px", md: "180px" }}
                 cursor="pointer"
                 userSelect="none"
-                bg="linear-gradient(135deg, #051B64 0%, #030F3B 100%)"
-                px={{ base: "2", md: "3" }}
-                py={{ base: "1", md: "1.5" }}
-                borderRadius="xl"
-                boxShadow="0 2px 8px rgba(5, 27, 100, 0.15)"
-                border="1px solid rgba(20, 145, 145, 0.3)"
-                transition="all 0.2s ease"
+                transition="transform 0.2s ease, opacity 0.2s ease"
                 _hover={{
                   transform: "scale(1.02)",
-                  borderColor: "rgba(20, 145, 145, 0.6)",
-                  boxShadow: "0 4px 12px rgba(5, 27, 100, 0.25)",
+                  opacity: 0.9,
                 }}
               >
-                {/* Left Logo Icon */}
-                <Box
-                  position="relative"
-                  w={{ base: "28px", md: "34px" }}
-                  h={{ base: "28px", md: "34px" }}
-                  flexShrink={0}
-                >
-                  <Image
-                    src="/iimpact-logo.png"
-                    alt="I-Impact Icon"
-                    fill
-                    sizes="34px"
-                    style={{ objectFit: "contain" }}
-                    priority
-                  />
-                </Box>
-
-                {/* Main Logo / Tagline Beside It */}
-                <Box
-                  position="relative"
-                  h={{ base: "24px", md: "28px" }}
-                  w={{ base: "110px", md: "130px" }}
-                  flexShrink={0}
-                >
-                  <Image
-                    src="/iimpact-logo2.png"
-                    alt="I-Impact - Raising Champions Everyday"
-                    fill
-                    sizes="(max-width: 768px) 110px, 130px"
-                    style={{ objectFit: "contain", objectPosition: "left" }}
-                    priority
-                  />
-                </Box>
-              </HStack>
+                <Image
+                  src="/iimpact-logo2.png"
+                  alt="I-Impact - Raising Champions Everyday"
+                  fill
+                  sizes="(max-width: 768px) 155px, 180px"
+                  style={{ objectFit: "contain", objectPosition: "left" }}
+                  priority
+                />
+              </Box>
             </Link>
 
             {/* Desktop Navigation Links with Dropdowns */}
@@ -145,24 +106,6 @@ export function Header() {
 
               {/* Notifications Popover */}
               <NotificationsPopover />
-
-              {/* Dark / Light Mode Switch (Desktop only, mobile has it in drawer) */}
-              <Box
-                as="button"
-                aria-label="Toggle Color Theme"
-                onClick={toggleTheme}
-                p="1"
-                borderRadius="md"
-                color="gray.600"
-                _hover={{ bg: "gray.100", color: "#149191" }}
-                cursor="pointer"
-                display={{ base: "none", lg: "flex" }}
-                alignItems="center"
-                justifyContent="center"
-                transition="all 0.2s"
-              >
-                {isDarkMode ? <SunIcon size={15} /> : <MoonIcon size={15} />}
-              </Box>
 
               {/* Desktop CTA Button: I-IMPACT MEET (Positioned right before Donate) */}
               <Box display={{ base: "none", lg: "block" }} flexShrink={0}>
@@ -260,8 +203,6 @@ export function Header() {
       <MobileNavDrawer
         isOpen={isMobileMenuOpen}
         onClose={() => setIsMobileMenuOpen(false)}
-        isDarkMode={isDarkMode}
-        onToggleTheme={toggleTheme}
       />
     </Box>
   )
