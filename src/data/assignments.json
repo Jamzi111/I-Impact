@@ -1,0 +1,32 @@
+[
+  {
+    "id": "asg-lead-01",
+    "title": "Module 1: Generational Vision Reflection & Goal Blueprint",
+    "track": "Leadership & Civic Action",
+    "description": "Craft your personal 5-year leadership impact roadmap and identify one core community challenge to address.",
+    "instructions": "Submit a 2-page reflection PDF covering: (1) Core vision statement, (2) Target demographic, (3) 3 actionable milestones for the upcoming quarter.",
+    "dueDate": "2025-11-20",
+    "deadlineTime": "11:59 PM WAT",
+    "points": 100,
+    "submissionUrl": "/assignments",
+    "resourceLink": "https://drive.google.com",
+    "status": "active",
+    "createdAt": "2025-01-02T10:00:00.000Z",
+    "updatedAt": "2025-01-02T10:00:00.000Z"
+  },
+  {
+    "id": "asg-stem-01",
+    "title": "Community STEM Innovation Lab: Problem Discovery Pitch",
+    "track": "STEM Innovation Lab",
+    "description": "Outline an engineering or software prototype solving a local environmental, educational, or health challenge.",
+    "instructions": "Prepare a 5-slide pitch deck or 3-minute video walk-through detailing the problem statement, proposed technical architecture, and expected community impact.",
+    "dueDate": "2025-11-28",
+    "deadlineTime": "6:00 PM WAT",
+    "points": 150,
+    "submissionUrl": "/assignments",
+    "resourceLink": "https://drive.google.com",
+    "status": "active",
+    "createdAt": "2025-01-03T14:30:00.000Z",
+    "updatedAt": "2025-01-03T14:30:00.000Z"
+  }
+]

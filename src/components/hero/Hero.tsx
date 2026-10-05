@@ -96,8 +96,8 @@ export function Hero() {
         base: "linear-gradient(180deg, #F4F8FE 0%, #F8FBFF 58%, #FFFFFF 88%)",
         md: "linear-gradient(180deg, #F4F8FE 0%, #F8FBFF 50%, #FFFFFF 100%)",
       }}
-      pt={{ base: "32", sm: "36", md: "40", lg: "44", xl: "48" }}
-      pb={{ base: "14", md: "18", lg: "20" }}
+      pt={{ base: "20", sm: "22", md: "24", lg: "26", xl: "28" }}
+      pb={{ base: "12", md: "16", lg: "18" }}
     >
       {/* Subtle background ambient gradients */}
       <Box

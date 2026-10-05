@@ -1,0 +1,26 @@
+[
+  {
+    "id": "evt-teen-2025",
+    "title": "AS A TEEN Conference 2025: Unleashing The Extraordinary",
+    "subtitle": "Raising Generational Champions, Visionaries & Future World Leaders",
+    "badge": "ANNUAL FLAGSHIP YOUTH CONGRESS",
+    "startDate": "2025-11-15",
+    "endDate": "2025-11-17",
+    "dateDisplay": "November 15–17, 2025",
+    "timeDisplay": "9:00 AM – 4:00 PM WAT",
+    "countdownTarget": "2025-11-15T09:00:00Z",
+    "venue": "Landmark Centre, Lagos & Virtual Worldwide",
+    "attendeeBadge": "2,500+ Registered Teens",
+    "description": "Our biggest annual conference gathering teenagers, educators, industry titans, and visionary mentors for 3 transformative days of keynote sessions, leadership labs, career discovery workshops, and networking.",
+    "registrationUrl": "/programs",
+    "registrationBtnText": "Register Free Now",
+    "agendaBtnText": "View Conference Agenda",
+    "programDocumentUrl": "",
+    "programDocumentName": "",
+    "bannerImageUrl": "",
+    "isActive": true,
+    "isArchived": false,
+    "createdAt": "2025-01-01T00:00:00.000Z",
+    "updatedAt": "2025-01-01T00:00:00.000Z"
+  }
+]

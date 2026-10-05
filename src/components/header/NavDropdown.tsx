@@ -153,6 +153,13 @@ export const NAV_ITEMS: NavItem[] = [
         icon: <SparklesIcon size={18} color="#F59E0B" />,
         badge: "Oct 2026",
       },
+      {
+        title: "Organizer Console",
+        description: "Add or manage upcoming events and upload program soft copies.",
+        href: "/admin/events",
+        icon: <TrophyIcon size={18} color="#051B64" />,
+        badge: "Admin",
+      },
     ],
   },
   {

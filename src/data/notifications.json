@@ -1,0 +1,37 @@
+[
+  {
+    "id": "notif-evt-teen-2025",
+    "title": "[ANNUAL FLAGSHIP YOUTH CONGRESS] AS A TEEN Conference 2025: Unleashing The Extraordinary",
+    "type": "event",
+    "category": "Event",
+    "description": "November 15–17, 2025 • Landmark Centre, Lagos & Virtual Worldwide. Registration is live.",
+    "href": "/programs",
+    "sourceId": "evt-teen-2025",
+    "createdAt": "2025-01-01T00:00:00.000Z",
+    "updatedAt": "2025-01-01T00:00:00.000Z"
+  },
+  {
+    "id": "notif-asg-lead-01",
+    "title": "Assignment: Module 1: Generational Vision Reflection & Goal Blueprint",
+    "type": "assignment",
+    "category": "Assignment",
+    "description": "Leadership & Civic Action • Due: 2025-11-20 (11:59 PM WAT)",
+    "href": "/assignments",
+    "dueDate": "2025-11-20",
+    "sourceId": "asg-lead-01",
+    "createdAt": "2025-01-02T10:00:00.000Z",
+    "updatedAt": "2025-01-02T10:00:00.000Z"
+  },
+  {
+    "id": "notif-asg-stem-01",
+    "title": "Assignment: Community STEM Innovation Lab: Problem Discovery Pitch",
+    "type": "assignment",
+    "category": "Assignment",
+    "description": "STEM Innovation Lab • Due: 2025-11-28 (6:00 PM WAT)",
+    "href": "/assignments",
+    "dueDate": "2025-11-28",
+    "sourceId": "asg-stem-01",
+    "createdAt": "2025-01-03T14:30:00.000Z",
+    "updatedAt": "2025-01-03T14:30:00.000Z"
+  }
+]
