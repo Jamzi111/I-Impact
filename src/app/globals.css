@@ -148,3 +148,38 @@ a {
   animation-play-state: paused;
 }
 
+@keyframes kenBurnsSlow {
+  0% {
+    transform: scale(1) translate(0, 0);
+  }
+  50% {
+    transform: scale(1.035) translate(-0.5%, -0.5%);
+  }
+  100% {
+    transform: scale(1) translate(0, 0);
+  }
+}
+
+.animate-ken-burns {
+  animation: kenBurnsSlow 16s ease-in-out infinite;
+  will-change: transform;
+}
+
+@keyframes textShimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.animate-text-shimmer {
+  background: linear-gradient(90deg, #059669 0%, #10B981 30%, #34D399 50%, #10B981 70%, #059669 100%);
+  background-size: 200% auto;
+  color: transparent;
+  -webkit-background-clip: text;
+  background-clip: text;
+  animation: textShimmer 7s linear infinite;
+}
+

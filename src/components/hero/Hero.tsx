@@ -247,7 +247,7 @@ export function Hero() {
               >
                 {/* Primary Button: Get Involved */}
                 <Box w={{ base: "100%", md: "auto" }}>
-                  <Link href="/programs" style={{ display: "block", width: "100%" }}>
+                  <Link href="/Get-Involved" style={{ display: "block", width: "100%" }}>
                     <Button
                       w={{ base: "100%", md: "auto" }}
                       size="md"
