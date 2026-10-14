@@ -20,6 +20,8 @@ import {
   ArrowRightIcon,
   SparklesIcon,
 } from "@/components/icons"
+import { useInView } from "@/hooks/useInView"
+import { LiveDot } from "@/components/LiveDot"
 
 interface ApproachStep {
   step: string
@@ -33,6 +35,14 @@ interface ApproachStep {
   linkLabel: string
 }
 
+const JOURNEY_STAGES = [
+  { name: "Discover", desc: "Identity & Potential" },
+  { name: "Develop", desc: "Mindset & Skills" },
+  { name: "Empower", desc: "Mentorship & Tools" },
+  { name: "Lead", desc: "Character & Courage" },
+  { name: "Impact", desc: "Grassroots Change" },
+]
+
 const APPROACH_STEPS: ApproachStep[] = [
   {
     step: "PILLAR 01",
@@ -43,7 +53,7 @@ const APPROACH_STEPS: ApproachStep[] = [
     icon: <BookOpenIcon size={22} color="#051B64" />,
     accentColor: "#051B64",
     accentBg: "rgba(5, 27, 100, 0.08)",
-    linkHref: "/programs/leadership",
+    linkHref: "/programs",
     linkLabel: "Explore Workshops",
   },
   {
@@ -55,7 +65,7 @@ const APPROACH_STEPS: ApproachStep[] = [
     icon: <HeartHandshakeIcon size={22} color="#149191" />,
     accentColor: "#149191",
     accentBg: "rgba(20, 145, 145, 0.1)",
-    linkHref: "/programs/mentorship",
+    linkHref: "/programs",
     linkLabel: "Mentorship Network",
   },
   {
@@ -67,8 +77,8 @@ const APPROACH_STEPS: ApproachStep[] = [
     icon: <TrophyIcon size={22} color="#059669" />,
     accentColor: "#059669",
     accentBg: "rgba(5, 150, 105, 0.1)",
-    linkHref: "/programs/skills",
-    linkLabel: "Skills & Tech Tracks",
+    linkHref: "/programs",
+    linkLabel: "Skills Tracks",
   },
   {
     step: "PILLAR 04",
@@ -79,14 +89,17 @@ const APPROACH_STEPS: ApproachStep[] = [
     icon: <UsersIcon size={22} color="#D97706" />,
     accentColor: "#D97706",
     accentBg: "rgba(245, 158, 11, 0.12)",
-    linkHref: "/programs/nny",
+    linkHref: "/programs",
     linkLabel: "View Outreaches",
   },
 ]
 
 export function OurApproach() {
+  const { ref, isInView } = useInView({ threshold: 0.12 })
+
   return (
     <Box
+      ref={ref}
       as="section"
       id="approach"
       position="relative"
@@ -95,8 +108,16 @@ export function OurApproach() {
       overflow="hidden"
     >
       <Container maxW="1240px" px={{ base: "4", sm: "6", md: "8", lg: "10" }}>
+        
         {/* Header */}
-        <VStack align="flex-start" gap="2.5" mb={{ base: "10", md: "14" }}>
+        <VStack
+          align="flex-start"
+          gap="2.5"
+          mb={{ base: "8", md: "10" }}
+          opacity={isInView ? 1 : 0}
+          transform={isInView ? "translateY(0)" : "translateY(20px)"}
+          transition="opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1), transform 0.7s cubic-bezier(0.16, 1, 0.3, 1)"
+        >
           <HStack
             bg="rgba(5, 150, 105, 0.08)"
             border="1px solid rgba(5, 150, 105, 0.2)"
@@ -105,7 +126,7 @@ export function OurApproach() {
             borderRadius="full"
             gap="2"
           >
-            <Box w="6px" h="6px" borderRadius="full" bg="#059669" />
+            <LiveDot color="#059669" size={6} />
             <Text
               fontSize="11px"
               fontWeight="800"
@@ -113,7 +134,7 @@ export function OurApproach() {
               letterSpacing="0.1em"
               textTransform="uppercase"
             >
-              OUR 4-PILLAR METHODOLOGY
+              OUR METHODOLOGY
             </Text>
           </HStack>
 
@@ -133,7 +154,106 @@ export function OurApproach() {
           </Text>
         </VStack>
 
-        {/* 4 Pillars Grid */}
+        {/* Signature Animated Journey Track (Discover → Develop → Empower → Lead → Impact) */}
+        <Box
+          mb={{ base: "10", md: "12" }}
+          p={{ base: "4", sm: "5", md: "6" }}
+          borderRadius="20px"
+          bg="linear-gradient(180deg, #F8FAFC 0%, #F1F5F9 100%)"
+          border="1px solid #E2E8F0"
+          opacity={isInView ? 1 : 0}
+          transform={isInView ? "translateY(0)" : "translateY(20px)"}
+          transition="opacity 0.75s cubic-bezier(0.16, 1, 0.3, 1) 0.15s, transform 0.75s cubic-bezier(0.16, 1, 0.3, 1) 0.15s"
+        >
+          <Text
+            fontSize="11px"
+            fontWeight="800"
+            color="#051B64"
+            letterSpacing="0.08em"
+            textTransform="uppercase"
+            mb="4"
+            textAlign={{ base: "left", sm: "center" }}
+          >
+            THE CHAMPION TRANSFORMATION JOURNEY
+          </Text>
+
+          {/* Desktop/Tablet Horizontal Stepper */}
+          <Box position="relative" display={{ base: "none", md: "block" }}>
+            {/* Animated Connecting Progress Line */}
+            <Box
+              position="absolute"
+              top="20px"
+              left="10%"
+              right="10%"
+              h="3px"
+              borderRadius="full"
+              className="animate-line-progress"
+              zIndex={0}
+            />
+
+            <SimpleGrid columns={5} gap="4" position="relative" zIndex={1}>
+              {JOURNEY_STAGES.map((stage, i) => (
+                <VStack key={stage.name} align="center" textAlign="center" gap="1.5">
+                  <Flex
+                    w="40px"
+                    h="40px"
+                    borderRadius="full"
+                    bg="#FFFFFF"
+                    border="3px solid"
+                    borderColor={i === 4 ? "#10B981" : "#0284C7"}
+                    color="#051B64"
+                    align="center"
+                    justify="center"
+                    fontWeight="800"
+                    fontSize="13px"
+                    boxShadow="0 4px 12px rgba(5, 27, 100, 0.1)"
+                  >
+                    0{i + 1}
+                  </Flex>
+                  <Text fontSize="13.5px" fontWeight="800" color="#051B64">
+                    {stage.name}
+                  </Text>
+                  <Text fontSize="11px" color="#64748B" fontWeight="500">
+                    {stage.desc}
+                  </Text>
+                </VStack>
+              ))}
+            </SimpleGrid>
+          </Box>
+
+          {/* Mobile Clean Horizontal Scrolling Stepper */}
+          <Box display={{ base: "block", md: "none" }} overflowX="auto" pb="2">
+            <HStack gap="3" minW="420px" justify="space-between">
+              {JOURNEY_STAGES.map((stage, i) => (
+                <VStack key={stage.name} align="center" textAlign="center" gap="1" flex="1">
+                  <Flex
+                    w="32px"
+                    h="32px"
+                    borderRadius="full"
+                    bg="#FFFFFF"
+                    border="2.5px solid"
+                    borderColor={i === 4 ? "#10B981" : "#0284C7"}
+                    color="#051B64"
+                    align="center"
+                    justify="center"
+                    fontWeight="800"
+                    fontSize="11px"
+                  >
+                    0{i + 1}
+                  </Flex>
+                  <Text fontSize="12px" fontWeight="800" color="#051B64">
+                    {stage.name}
+                  </Text>
+                  <Text fontSize="9.5px" color="#64748B">
+                    {stage.desc}
+                  </Text>
+                </VStack>
+              ))}
+            </HStack>
+          </Box>
+        </Box>
+
+        {/* 4 Pillars Grid (Staggered Lift Reveal) */}
         <SimpleGrid columns={{ base: 1, md: 2, lg: 4 }} gap={{ base: "5", md: "6" }}>
           {APPROACH_STEPS.map((step, idx) => (
             <Box
@@ -148,7 +268,9 @@ export function OurApproach() {
               flexDirection="column"
               justifyContent="space-between"
               position="relative"
-              transition="all 0.3s cubic-bezier(0.16, 1, 0.3, 1)"
+              opacity={isInView ? 1 : 0}
+              transform={isInView ? "translateY(0)" : "translateY(22px)"}
+              transition={`opacity 0.65s cubic-bezier(0.16, 1, 0.3, 1) ${0.25 + idx * 0.08}s, transform 0.65s cubic-bezier(0.16, 1, 0.3, 1) ${0.25 + idx * 0.08}s, border-color 0.25s ease, box-shadow 0.25s ease`}
               _hover={{
                 transform: "translateY(-4px)",
                 boxShadow: "0 16px 36px -6px rgba(5, 27, 100, 0.1)",

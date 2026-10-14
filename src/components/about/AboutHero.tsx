@@ -19,6 +19,7 @@ import {
   HeartHandshakeIcon,
   SparklesIcon,
 } from "@/components/icons"
+import { LiveDot } from "@/components/LiveDot"
 
 interface StatMetric {
   targetNumber: number
@@ -386,7 +387,7 @@ export function AboutHero() {
               className="animate-ken-burns"
             >
               <Image
-                src="/About-iimpact.png"
+                src="/About-iimpact-v2.png"
                 alt="I-Impact Champions - Young leaders and mentor in a leadership and skills workshop"
                 fill
                 priority
@@ -425,13 +426,7 @@ export function AboutHero() {
               gap="2"
               className="animate-float-slow"
             >
-              <Box
-                w="7px"
-                h="7px"
-                borderRadius="full"
-                bg="#10B981"
-                className="animate-pulse-glow"
-              />
+              <LiveDot color="#10B981" size={7} />
               <Text
                 fontSize={{ base: "10px", sm: "11.5px" }}
                 fontWeight="700"

@@ -12,6 +12,7 @@ import {
   VideoIcon,
 } from "../icons"
 import { NAV_ITEMS, NavItem } from "./NavDropdown"
+import { jumpToElement, setTargetHash } from "@/lib/scrollUtils"
 
 interface MobileNavDrawerProps {
   isOpen: boolean
@@ -218,7 +219,26 @@ export function MobileNavDrawer({
                   {isExpanded && item.children && (
                     <VStack align="stretch" gap="1" pl="3" pr="1" py="2">
                       {item.children.map((child, cIdx) => (
-                        <Link key={cIdx} href={child.href} onClick={onClose}>
+                        <Link
+                          key={cIdx}
+                          href={child.href}
+                          onClick={(e) => {
+                            onClose()
+                            if (child.href.includes("#")) {
+                              const [path, hash] = child.href.split("#")
+                              const isAboutPath = path === "/about" || path === ""
+                              const isCurrentAbout = typeof window !== "undefined" && window.location.pathname === "/about"
+
+                              if (isAboutPath && isCurrentAbout && hash) {
+                                e.preventDefault()
+                                jumpToElement(hash)
+                                window.history.pushState(null, "", child.href)
+                              } else if (isAboutPath && hash) {
+                                setTargetHash(hash)
+                              }
+                            }
+                          }}
+                        >
                           <Flex
                             p="2"
                             borderRadius="md"

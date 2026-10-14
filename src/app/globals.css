@@ -14,6 +14,7 @@ html.dark {
 html {
   height: 100%;
   scroll-behavior: smooth;
+  scroll-padding-top: 80px;
 }
 
 html,
@@ -129,6 +130,37 @@ a {
   animation: pulseGlow 6s ease-in-out infinite;
 }
 
+/* Alive / Living Indicator Dot Animations */
+@keyframes dotPing {
+  0% {
+    transform: scale(1);
+    opacity: 0.85;
+  }
+  65%, 100% {
+    transform: scale(2.4);
+    opacity: 0;
+  }
+}
+
+@keyframes dotPulse {
+  0%, 100% {
+    transform: scale(0.9);
+    opacity: 0.85;
+  }
+  50% {
+    transform: scale(1.18);
+    opacity: 1;
+  }
+}
+
+.animate-dot-ping {
+  animation: dotPing 2.2s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
+.animate-dot-core {
+  animation: dotPulse 2.2s ease-in-out infinite;
+}
+
 @keyframes marquee {
   0% {
     transform: translateX(0%);
@@ -141,7 +173,8 @@ a {
 .animate-marquee {
   display: flex;
   width: max-content;
-  animation: marquee 22s linear infinite;
+  animation: marquee var(--marquee-duration, 55s) linear infinite;
+  will-change: transform;
 }
 
 .animate-marquee:hover {
@@ -165,21 +198,30 @@ a {
   will-change: transform;
 }
 
-@keyframes textShimmer {
+/* Subtle Progress Line Pulse for Approach Section */
+@keyframes lineProgress {
   0% {
-    background-position: -200% 0;
+    background-position: 0% 50%;
   }
   100% {
-    background-position: 200% 0;
+    background-position: 200% 50%;
   }
 }
 
-.animate-text-shimmer {
-  background: linear-gradient(90deg, #059669 0%, #10B981 30%, #34D399 50%, #10B981 70%, #059669 100%);
+.animate-line-progress {
+  background: linear-gradient(90deg, #051B64 0%, #0284C7 25%, #10B981 50%, #0284C7 75%, #051B64 100%);
   background-size: 200% auto;
-  color: transparent;
-  -webkit-background-clip: text;
-  background-clip: text;
-  animation: textShimmer 7s linear infinite;
+  animation: lineProgress 6s linear infinite;
+}
+
+/* Accessibility: Respect Reduced Motion Preferences */
+@media (prefers-reduced-motion: reduce) {
+  .animate-float-slow,
+  .animate-float-reverse,
+  .animate-pulse-glow,
+  .animate-ken-burns,
+  .animate-line-progress {
+    animation: none !important;
+  }
 }
 

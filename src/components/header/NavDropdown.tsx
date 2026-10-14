@@ -15,6 +15,7 @@ import {
   CheckCircleIcon,
   VideoIcon,
 } from "../icons"
+import { jumpToElement, setTargetHash } from "@/lib/scrollUtils"
 
 export interface NavItemChild {
   title: string
@@ -46,33 +47,39 @@ export const NAV_ITEMS: NavItem[] = [
   },
   {
     label: "About",
+    href: "/about",
     children: [
       {
-        title: "Our Mission & Vision",
-        description: "Empowering the next generation to become champions.",
-        href: "/about",
-        icon: <TrophyIcon size={18} color="#149191" />,
+        title: "Our Origin Story",
+        description: "The spark, conviction, and journey behind the movement.",
+        href: "/about#story",
+        icon: <BookOpenIcon size={18} color="#149191" />,
       },
       {
-        title: "Leadership & Team",
-        description: "Visionary leaders and mentors committed to youth empowerment.",
-        href: "/about/team",
+        title: "Mission, Vision & Values",
+        description: "Core convictions, guiding principles, and continental vision.",
+        href: "/about#mission-vision",
+        icon: <TrophyIcon size={18} color="#051B64" />,
+      },
+      {
+        title: "The 4-Pillar Approach",
+        description: "Discover, Equip, Mentor, and Launch emerging champions.",
+        href: "/about#approach",
+        icon: <SparklesIcon size={18} color="#149191" />,
+      },
+      {
+        title: "About The Founder",
+        description: "Samuel Joseph — Convener & youth development strategist.",
+        href: "/about#founder",
         icon: <UsersIcon size={18} color="#051B64" />,
-      },
-      {
-        title: "Impact & Transparency",
-        description: "Measurable growth and stories from over 10,000+ lives touched.",
-        href: "/about/impact",
-        icon: <CheckCircleIcon size={18} color="#10B981" />,
-        badge: "Updated",
       },
     ],
     featuredSection: {
-      title: "Our 2026 Vision",
-      description: "Discover how we are scaling our impact across 25+ regional communities.",
-      ctaText: "Read Impact Report",
-      href: "/about/impact",
-      badge: "Annual Report",
+      title: "Raising Champions Everyday",
+      description: "Discover our full journey, convictions, and how we are equipping youth across Africa.",
+      ctaText: "Explore Full Story",
+      href: "/about",
+      badge: "About Us",
     },
   },
   {
@@ -217,6 +224,23 @@ export function NavDropdownItem({ item }: NavDropdownItemProps) {
     }
   }, [])
 
+  const handleChildClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+    setIsOpen(false)
+    if (href.includes("#")) {
+      const [path, hash] = href.split("#")
+      const isAboutPath = path === "/about" || path === ""
+      const isCurrentAbout = typeof window !== "undefined" && window.location.pathname === "/about"
+
+      if (isAboutPath && isCurrentAbout && hash) {
+        e.preventDefault()
+        jumpToElement(hash)
+        window.history.pushState(null, "", href)
+      } else if (isAboutPath && hash) {
+        setTargetHash(hash)
+      }
+    }
+  }
+
   if (!item.children) {
     return (
       <Link href={item.href || "#"}>
@@ -265,7 +289,13 @@ export function NavDropdownItem({ item }: NavDropdownItemProps) {
         cursor="pointer"
         whiteSpace="nowrap"
       >
-        <Text>{item.label}</Text>
+        {item.href ? (
+          <Link href={item.href} onClick={() => setIsOpen(false)}>
+            <Text>{item.label}</Text>
+          </Link>
+        ) : (
+          <Text>{item.label}</Text>
+        )}
         <Box
           transform={isOpen ? "rotate(180deg)" : "rotate(0deg)"}
           transition="transform 0.2s ease"
@@ -281,7 +311,7 @@ export function NavDropdownItem({ item }: NavDropdownItemProps) {
         <Box
           position="absolute"
           top="100%"
-          left={item.featuredSection ? "-120px" : "0"}
+          left={item.label === "About" ? "-40px" : item.featuredSection ? "-120px" : "0"}
           pt="2"
           zIndex={100}
         >
@@ -297,7 +327,11 @@ export function NavDropdownItem({ item }: NavDropdownItemProps) {
               {/* Main Children List */}
               <VStack align="stretch" gap="1" flex="1">
                 {item.children.map((child, idx) => (
-                  <Link key={idx} href={child.href}>
+                  <Link
+                    key={idx}
+                    href={child.href}
+                    onClick={(e) => handleChildClick(e, child.href)}
+                  >
                     <Flex
                       p="2.5"
                       borderRadius="lg"
@@ -390,7 +424,7 @@ export function NavDropdownItem({ item }: NavDropdownItemProps) {
                     </Text>
                   </Box>
 
-                  <Link href={item.featuredSection.href}>
+                  <Link href={item.featuredSection.href} onClick={() => setIsOpen(false)}>
                     <HStack
                       gap="1"
                       color="yellow.300"

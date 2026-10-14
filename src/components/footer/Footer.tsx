@@ -225,9 +225,9 @@ export function Footer() {
               { label: "Home", href: "/" },
               { label: "About Us", href: "/about" },
               { label: "Our Story", href: "/about#story" },
-              { label: "Leadership", href: "/about#leadership" },
+              { label: "The Founder", href: "/about#founder" },
+              { label: "Our Approach", href: "/about#approach" },
               { label: "Values", href: "/about#values" },
-              { label: "Careers", href: "/careers" },
             ].map((link, idx) => (
               <Link key={idx} href={link.href} style={{ textDecoration: "none" }}>
                 <Text

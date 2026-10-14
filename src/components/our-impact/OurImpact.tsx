@@ -20,6 +20,7 @@ import {
   ArrowRightIcon,
   CheckCircleIcon,
 } from "@/components/icons"
+import { LiveDot } from "@/components/LiveDot"
 
 export function OurImpact() {
   const [inView, setInView] = useState(false)
@@ -302,13 +303,7 @@ export function OurImpact() {
                   border="1px solid"
                   borderColor="rgba(20, 145, 145, 0.2)"
                 >
-                  <Box
-                    w="7px"
-                    h="7px"
-                    borderRadius="full"
-                    bg="#149191"
-                    className="animate-pulse-glow"
-                  />
+                  <LiveDot color="#149191" size={7} />
                   <Text
                     fontSize="11px"
                     fontWeight="800"

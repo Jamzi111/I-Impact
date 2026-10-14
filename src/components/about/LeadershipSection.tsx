@@ -21,6 +21,7 @@ import {
   HeartHandshakeIcon,
   CheckCircleIcon,
 } from "@/components/icons"
+import { LiveDot } from "@/components/LiveDot"
 
 interface LeaderProfile {
   name: string
@@ -87,7 +88,7 @@ export function LeadershipSection() {
             borderRadius="full"
             gap="2"
           >
-            <Box w="6px" h="6px" borderRadius="full" bg="#051B64" />
+            <LiveDot color="#051B64" size={6} />
             <Text
               fontSize="11px"
               fontWeight="800"

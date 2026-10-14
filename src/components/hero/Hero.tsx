@@ -15,6 +15,7 @@ import {
 import Link from "next/link"
 import Image from "next/image"
 import { ArrowRightIcon, StarIcon } from "../icons"
+import { LiveDot } from "../LiveDot"
 
 const AVATAR_URLS = [
   "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&h=120&q=80",
@@ -157,24 +158,8 @@ export function Hero() {
                   boxShadow: "0 4px 12px rgba(16, 185, 129, 0.18)",
                 }}
               >
-                {/* Green Pulsing Indicator Dot */}
-                <Box position="relative" display="flex" alignItems="center" justifyContent="center" flexShrink={0}>
-                  <Box
-                    w="8px"
-                    h="8px"
-                    borderRadius="full"
-                    bg="#10B981"
-                  />
-                  <Box
-                    position="absolute"
-                    w="12px"
-                    h="12px"
-                    borderRadius="full"
-                    bg="#10B981"
-                    opacity={0.5}
-                    animation="ping 1.5s cubic-bezier(0, 0, 0.2, 1) infinite"
-                  />
-                </Box>
+                {/* Green Living Pulse Indicator Dot */}
+                <LiveDot color="#10B981" size={8} />
 
                 <Text
                   fontSize={{ base: "8px", sm: "9.5px", md: "10.5px" }}
