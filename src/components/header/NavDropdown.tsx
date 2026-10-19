@@ -201,9 +201,10 @@ export const NAV_ITEMS: NavItem[] = [
 
 interface NavDropdownItemProps {
   item: NavItem
+  isDarkNav?: boolean
 }
 
-export function NavDropdownItem({ item }: NavDropdownItemProps) {
+export function NavDropdownItem({ item, isDarkNav = false }: NavDropdownItemProps) {
   const [isOpen, setIsOpen] = useState(false)
   const timeoutRef = useRef<NodeJS.Timeout | null>(null)
 
@@ -245,15 +246,15 @@ export function NavDropdownItem({ item }: NavDropdownItemProps) {
     return (
       <Link href={item.href || "#"}>
         <Box
-          px="1"
+          px="1.5"
           py="0.5"
           borderRadius="md"
-          fontSize="11px"
+          fontSize="11.5px"
           fontWeight="600"
-          color="gray.700"
+          color={isDarkNav ? "#FFFFFF" : "gray.700"}
           _hover={{
-            color: "#149191",
-            bg: "rgba(20, 145, 145, 0.08)",
+            color: isDarkNav ? "#34D399" : "#149191",
+            bg: isDarkNav ? "rgba(52, 211, 153, 0.14)" : "rgba(20, 145, 145, 0.08)",
           }}
           transition="all 0.2s"
           cursor="pointer"
@@ -274,16 +275,16 @@ export function NavDropdownItem({ item }: NavDropdownItemProps) {
       <Flex
         align="center"
         gap="0.5"
-        px="1"
+        px="1.5"
         py="0.5"
         borderRadius="md"
-        fontSize="11px"
+        fontSize="11.5px"
         fontWeight="600"
-        color={isOpen ? "#149191" : "gray.700"}
-        bg={isOpen ? "rgba(20, 145, 145, 0.08)" : "transparent"}
+        color={isOpen ? "#149191" : isDarkNav ? "#FFFFFF" : "gray.700"}
+        bg={isOpen ? (isDarkNav ? "rgba(20, 145, 145, 0.2)" : "rgba(20, 145, 145, 0.08)") : "transparent"}
         _hover={{
-          color: "#149191",
-          bg: "rgba(20, 145, 145, 0.08)",
+          color: isDarkNav ? "#34D399" : "#149191",
+          bg: isDarkNav ? "rgba(52, 211, 153, 0.14)" : "rgba(20, 145, 145, 0.08)",
         }}
         transition="all 0.2s"
         cursor="pointer"
@@ -301,8 +302,9 @@ export function NavDropdownItem({ item }: NavDropdownItemProps) {
           transition="transform 0.2s ease"
           display="flex"
           alignItems="center"
+          color={isOpen ? "#149191" : isDarkNav ? "rgba(255, 255, 255, 0.85)" : "#9CA3AF"}
         >
-          <ChevronDownIcon size={12} />
+          <ChevronDownIcon size={12} color="currentColor" />
         </Box>
       </Flex>
 

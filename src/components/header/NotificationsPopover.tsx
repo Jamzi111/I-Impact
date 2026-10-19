@@ -17,7 +17,7 @@ import { NotificationItem } from "@/types/notification"
 
 const STORAGE_KEY = "iimpact_read_notifications_v1"
 
-export function NotificationsPopover() {
+export function NotificationsPopover({ isDarkNav = false }: { isDarkNav?: boolean } = {}) {
   const [isOpen, setIsOpen] = useState(false)
   const [notifications, setNotifications] = useState<NotificationItem[]>([])
   const [readIds, setReadIds] = useState<string[]>([])
@@ -145,8 +145,8 @@ export function NotificationsPopover() {
         onClick={() => setIsOpen(!isOpen)}
         p="2"
         borderRadius="lg"
-        color="gray.600"
-        _hover={{ bg: "gray.100", color: "#149191" }}
+        color={isDarkNav ? "#FFFFFF" : "gray.600"}
+        _hover={{ bg: isDarkNav ? "rgba(255, 255, 255, 0.12)" : "gray.100", color: "#149191" }}
         position="relative"
         cursor="pointer"
         display="flex"

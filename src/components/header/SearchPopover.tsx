@@ -81,7 +81,7 @@ const SEARCH_DATA: SearchResultItem[] = [
   },
 ]
 
-export function SearchPopover() {
+export function SearchPopover({ isDarkNav = false }: { isDarkNav?: boolean } = {}) {
   const [isOpen, setIsOpen] = useState(false)
   const [query, setQuery] = useState("")
   const [selectedCategory, setSelectedCategory] = useState<string>("All")
@@ -143,9 +143,9 @@ export function SearchPopover() {
         onClick={() => setIsOpen(!isOpen)}
         p="1.5"
         borderRadius="lg"
-        color={isOpen ? "#149191" : "gray.600"}
-        bg={isOpen ? "rgba(20, 145, 145, 0.08)" : "transparent"}
-        _hover={{ bg: "gray.100", color: "#149191" }}
+        color={isOpen ? "#149191" : isDarkNav ? "#FFFFFF" : "gray.600"}
+        bg={isOpen ? (isDarkNav ? "rgba(20, 145, 145, 0.2)" : "rgba(20, 145, 145, 0.08)") : "transparent"}
+        _hover={{ bg: isDarkNav ? "rgba(255, 255, 255, 0.12)" : "gray.100", color: "#149191" }}
         position="relative"
         cursor="pointer"
         display="flex"

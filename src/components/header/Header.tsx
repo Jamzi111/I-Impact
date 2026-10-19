@@ -14,7 +14,7 @@ import { SearchPopover } from "./SearchPopover"
 import { MobileNavDrawer } from "./MobileNavDrawer"
 import { NotificationsPopover } from "./NotificationsPopover"
 
-export function Header() {
+export function Header({ variant = "default" }: { variant?: "default" | "dark" | "frosted" | "event" } = {}) {
   const [isScrolled, setIsScrolled] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
 
@@ -31,6 +31,33 @@ export function Header() {
     return () => window.removeEventListener("scroll", handleScroll)
   }, [])
 
+  const isEventVariant = variant === "event"
+  const isDarkNav = variant === "dark"
+  const isNavActive = isScrolled || variant === "frosted" || isDarkNav || isEventVariant
+
+  // Background matching the homepage header: #F4F8FE at top, rgba(255, 255, 255, 0.95) when scrolled
+  const headerBg = isEventVariant
+    ? isScrolled
+      ? "rgba(255, 255, 255, 0.95)"
+      : "#F4F8FE"
+    : isDarkNav
+    ? "rgba(6, 11, 25, 0.94)"
+    : isNavActive
+    ? "rgba(255, 255, 255, 0.95)"
+    : "transparent"
+
+  const headerBorder = isEventVariant || isNavActive
+    ? "1px solid rgba(5, 27, 100, 0.08)"
+    : isDarkNav
+    ? "1px solid rgba(255, 255, 255, 0.1)"
+    : "1px solid transparent"
+
+  const headerShadow = isEventVariant || isNavActive
+    ? "0 10px 30px -10px rgba(5, 27, 100, 0.08)"
+    : isDarkNav
+    ? "0 10px 30px -10px rgba(0, 0, 0, 0.5)"
+    : "none"
+
   return (
     <Box
       as="header"
@@ -44,35 +71,31 @@ export function Header() {
     >
       {/* Main Navbar */}
       <Box
-        bg={
-          isScrolled
-            ? "rgba(255, 255, 255, 0.94)"
-            : "transparent"
-        }
-        backdropFilter={isScrolled ? "blur(16px)" : "none"}
-        borderBottom="1px solid"
-        borderColor={isScrolled ? "rgba(5, 27, 100, 0.08)" : "transparent"}
-        boxShadow={
-          isScrolled
-            ? "0 10px 30px -10px rgba(5, 27, 100, 0.08)"
-            : "none"
-        }
+        bg={headerBg}
+        backdropFilter="blur(16px)"
+        borderBottom={headerBorder}
+        boxShadow={headerShadow}
         transition="all 0.3s cubic-bezier(0.16, 1, 0.3, 1)"
       >
         <Container maxW="1440px" px={{ base: "3", md: "4" }} py={{ base: "2", md: "2" }}>
           <Flex align="center" justify="space-between" gap={{ base: "2", md: "2.5" }}>
-            {/* Brand Logo - Sitting directly on the header without background container */}
+            {/* Brand Logo - Exact same as homepage when on event variant */}
             <Link href="/" style={{ flexShrink: 0, display: "flex", alignItems: "center" }}>
               <Box
                 position="relative"
-                h={{ base: "32px", sm: "36px", md: "42px" }}
-                w={{ base: "130px", sm: "155px", md: "180px" }}
+                h={{ base: "32px", sm: "36px", md: "40px" }}
+                w={{ base: "130px", sm: "155px", md: "175px" }}
                 cursor="pointer"
                 userSelect="none"
+                bg={isDarkNav ? "rgba(255, 255, 255, 0.96)" : "transparent"}
+                px={isDarkNav ? "2.5" : "0"}
+                py={isDarkNav ? "1" : "0"}
+                borderRadius={isDarkNav ? "lg" : "none"}
+                boxShadow={isDarkNav ? "0 2px 8px rgba(0, 0, 0, 0.25)" : "none"}
                 transition="transform 0.2s ease, opacity 0.2s ease"
                 _hover={{
                   transform: "scale(1.02)",
-                  opacity: 0.9,
+                  opacity: 0.95,
                 }}
               >
                 <Image
@@ -80,7 +103,7 @@ export function Header() {
                   alt="I-Impact - Raising Champions Everyday"
                   fill
                   sizes="(max-width: 768px) 155px, 180px"
-                  style={{ objectFit: "contain", objectPosition: "left" }}
+                  style={{ objectFit: "contain", objectPosition: isDarkNav ? "center" : "left" }}
                   priority
                 />
               </Box>
@@ -95,17 +118,17 @@ export function Header() {
               flexWrap="nowrap"
             >
               {NAV_ITEMS.map((item, index) => (
-                <NavDropdownItem key={index} item={item} />
+                <NavDropdownItem key={index} item={item} isDarkNav={isDarkNav} />
               ))}
             </HStack>
 
             {/* Right Side Actions */}
             <HStack gap={{ base: "1", sm: "1.5" }} align="center" flexShrink={0}>
               {/* Search Popover (Icon button with attached floating dropdown) */}
-              <SearchPopover />
+              <SearchPopover isDarkNav={isDarkNav} />
 
               {/* Notifications Popover */}
-              <NotificationsPopover />
+              <NotificationsPopover isDarkNav={isDarkNav} />
 
               {/* Desktop CTA Button: I-IMPACT MEET (Positioned right before Donate) */}
               <Box display={{ base: "none", lg: "block" }} flexShrink={0}>
@@ -187,8 +210,8 @@ export function Header() {
                 justifyContent="center"
                 p="1.5"
                 borderRadius="lg"
-                color="gray.700"
-                _hover={{ bg: "gray.100", color: "#149191" }}
+                color={isDarkNav ? "#FFFFFF" : "gray.700"}
+                _hover={{ bg: isDarkNav ? "rgba(255, 255, 255, 0.12)" : "gray.100", color: "#149191" }}
                 cursor="pointer"
                 transition="all 0.2s"
               >

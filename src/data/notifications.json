@@ -1,5 +1,16 @@
 [
   {
+    "id": "notif-as-a-teen-2026",
+    "title": "[NEXT MAJOR GATHERING] AS A TEEN Conference 2026",
+    "type": "event",
+    "category": "Event",
+    "description": "Nov 6–8, 2026 • Landmark Centre, Victoria Island, Lagos & Google Meet. Registration is live.",
+    "href": "/programs",
+    "sourceId": "as-a-teen-2026",
+    "createdAt": "2026-01-01T00:00:00.000Z",
+    "updatedAt": "2026-01-01T00:00:00.000Z"
+  },
+  {
     "id": "notif-evt-teen-2025",
     "title": "[ANNUAL FLAGSHIP YOUTH CONGRESS] AS A TEEN Conference 2025: Unleashing The Extraordinary",
     "type": "event",
