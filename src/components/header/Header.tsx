@@ -83,8 +83,8 @@ export function Header({ variant = "default" }: { variant?: "default" | "dark" |
             <Link href="/" style={{ flexShrink: 0, display: "flex", alignItems: "center" }}>
               <Box
                 position="relative"
-                h={{ base: "32px", sm: "36px", md: "40px" }}
-                w={{ base: "130px", sm: "155px", md: "175px" }}
+                h={{ base: "38px", sm: "38px", md: "40px" }}
+                w={{ base: "150px", sm: "160px", md: "175px" }}
                 cursor="pointer"
                 userSelect="none"
                 bg={isDarkNav ? "rgba(255, 255, 255, 0.96)" : "transparent"}

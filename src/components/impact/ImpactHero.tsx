@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState } from "react"
+import React, { useState, useEffect, useRef } from "react"
 import {
   Box,
   Container,
@@ -8,46 +8,194 @@ import {
   Text,
   Flex,
   HStack,
-  VStack,
   SimpleGrid,
   Button,
 } from "@chakra-ui/react"
 import Image from "next/image"
 import {
-  DownloadIcon,
   TrendingUpIcon,
-  ClipboardCheckIcon,
-  ShieldCheckIcon,
   ShieldIcon,
   LockIcon,
-  RefreshCwIcon,
   BarChartSquareIcon,
+  FileTextIcon,
+  CheckIcon,
 } from "@/components/icons"
 import { LiveDot } from "@/components/LiveDot"
-import { VerifyCapstonesModal } from "./VerifyCapstonesModal"
 import { ReportDownloadModal } from "./ReportDownloadModal"
 
+interface AnimatedMetricProps {
+  target: number
+  suffix: string
+  label: string
+  isTriggered: boolean
+  duration?: number
+}
+
+function AnimatedMetric({
+  target,
+  suffix,
+  label,
+  isTriggered,
+  duration = 1200,
+}: AnimatedMetricProps) {
+  const [count, setCount] = useState(0)
+  const hasAnimatedRef = useRef(false)
+
+  useEffect(() => {
+    if (!isTriggered || hasAnimatedRef.current) return
+
+    // Respect accessibility: immediately display target if prefers-reduced-motion is active
+    if (
+      typeof window !== "undefined" &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches
+    ) {
+      setCount(target)
+      hasAnimatedRef.current = true
+      return
+    }
+
+    hasAnimatedRef.current = true
+    let startTime: number | null = null
+    let animationFrameId: number
+
+    // Ease Out Cubic: smooth start, gentle and natural deceleration
+    const easeOutCubic = (t: number): number => 1 - Math.pow(1 - t, 3)
+
+    const animate = (timestamp: number) => {
+      if (!startTime) startTime = timestamp
+      const elapsed = timestamp - startTime
+      const progress = Math.min(elapsed / duration, 1)
+      const eased = easeOutCubic(progress)
+      const val = Math.floor(eased * target)
+
+      setCount(val)
+
+      if (progress < 1) {
+        animationFrameId = requestAnimationFrame(animate)
+      } else {
+        setCount(target)
+      }
+    }
+
+    animationFrameId = requestAnimationFrame(animate)
+    return () => {
+      if (animationFrameId) cancelAnimationFrame(animationFrameId)
+    }
+  }, [isTriggered, target, duration])
+
+  const formattedValue = isTriggered
+    ? count.toLocaleString() + suffix
+    : "0" + suffix
+
+  return (
+    <Box
+      bg="#F1F5F9"
+      borderRadius="12px"
+      py="3"
+      px="2"
+      textAlign="center"
+      transition="all 0.25s ease"
+      _hover={{
+        bg: "#E2E8F0",
+        transform: "translateY(-2px)",
+      }}
+    >
+      <Text
+        fontSize={{ base: "17px", sm: "19px", md: "21px" }}
+        fontWeight="800"
+        color="#0F172A"
+        lineHeight="1.1"
+      >
+        {formattedValue}
+      </Text>
+      <Text
+        fontSize={{ base: "9px", sm: "10px" }}
+        fontWeight="700"
+        color="#64748B"
+        letterSpacing="0.05em"
+        textTransform="uppercase"
+        mt="1"
+      >
+        {label}
+      </Text>
+    </Box>
+  )
+}
+
 export function ImpactHero() {
-  const [isVerifyOpen, setIsVerifyOpen] = useState(false)
-  const [isDownloadOpen, setIsDownloadOpen] = useState(false)
+  const [isReportOpen, setIsReportOpen] = useState(false)
+  const [inView, setInView] = useState(false)
+  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false)
+  const heroRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    // Check reduced motion preference
+    if (typeof window !== "undefined") {
+      const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)")
+      setPrefersReducedMotion(mediaQuery.matches)
+      const handleChange = () => setPrefersReducedMotion(mediaQuery.matches)
+      mediaQuery.addEventListener("change", handleChange)
+
+      // Observe section entry to trigger entrance animation once
+      const observer = new IntersectionObserver(
+        ([entry]) => {
+          if (entry.isIntersecting) {
+            setInView(true)
+          }
+        },
+        { threshold: 0.08 }
+      )
+
+      if (heroRef.current) {
+        observer.observe(heroRef.current)
+      }
+
+      // Fallback trigger in case observer doesn't fire immediately at top of page
+      const timer = setTimeout(() => setInView(true), 50)
+
+      return () => {
+        mediaQuery.removeEventListener("change", handleChange)
+        observer.disconnect()
+        clearTimeout(timer)
+      }
+    }
+  }, [])
 
   const handleScrollToExplorer = () => {
     const explorerEl = document.getElementById("impact-explorer")
     if (explorerEl) {
       explorerEl.scrollIntoView({ behavior: "smooth" })
-    } else {
-      setIsVerifyOpen(true)
+    }
+  }
+
+  // Helper for subtle, dignified entrance animations
+  const getTransitionStyle = (delayMs: number = 0, durationMs: number = 450) => {
+    if (prefersReducedMotion) {
+      return {
+        opacity: 1,
+        transform: "none",
+        transition: "none",
+      }
+    }
+    return {
+      opacity: inView ? 1 : 0,
+      transform: inView ? "translateY(0)" : "translateY(14px)",
+      transition: `opacity ${durationMs}ms cubic-bezier(0.16, 1, 0.3, 1) ${delayMs}ms, transform ${durationMs}ms cubic-bezier(0.16, 1, 0.3, 1) ${delayMs}ms`,
     }
   }
 
   return (
     <>
       <Box
+        ref={heroRef}
         as="section"
         position="relative"
         overflow="hidden"
+        overflowX="hidden"
+        w="100%"
+        maxW="100%"
         bg="#FBFBFC"
-        pt={{ base: "24", sm: "26", md: "28", lg: "32" }}
+        pt={{ base: "118px", sm: "112px", md: "104px", lg: "112px" }}
         pb={{ base: "14", md: "18", lg: "22" }}
         borderBottom="1px solid"
         borderColor="rgba(15, 23, 42, 0.06)"
@@ -84,23 +232,23 @@ export function ImpactHero() {
         >
           <Flex
             direction={{ base: "column", lg: "row" }}
-            align={{ base: "stretch", lg: "center" }}
+            align={{ base: "stretch", lg: "flex-start" }}
             justify="space-between"
             gap={{ base: "12", lg: "10", xl: "14" }}
           >
             {/* ===================== LEFT COLUMN ===================== */}
             <Box flex={{ base: "1", lg: "1.15" }} maxW={{ lg: "640px", xl: "680px" }}>
-              {/* Eyebrow Pill */}
-              <Box mb={{ base: "4", md: "5" }}>
+              {/* 1. Eyebrow Pill */}
+              <Box mb={{ base: "4", md: "5" }} style={getTransitionStyle(0, 400)}>
                 <Box
                   display="inline-flex"
                   alignItems="center"
                   gap="2.5"
-                  bg="#252736"
+                  bg="#051B64"
                   borderRadius="full"
                   px="3.5"
                   py="1.5"
-                  boxShadow="0 2px 8px rgba(0, 0, 0, 0.08)"
+                  boxShadow="0 2px 8px rgba(5, 27, 100, 0.18)"
                 >
                   <Box color="#34D399" display="flex" alignItems="center">
                     <BarChartSquareIcon size={14} />
@@ -108,82 +256,59 @@ export function ImpactHero() {
                   <Text
                     fontSize="11px"
                     fontWeight="700"
-                    color="#A3AAC2"
+                    color="#E2E8F0"
                     letterSpacing="0.08em"
                     textTransform="uppercase"
                   >
-                    ACCREDITED IMPACT & VERIFIABLE METRICS
+                    OUR IMPACT · MEASURING WHAT MATTERS
                   </Text>
                 </Box>
               </Box>
 
-              {/* Main Heading */}
-              <Heading
-                as="h1"
-                fontSize={{ base: "32px", sm: "40px", md: "48px", lg: "54px", xl: "58px" }}
-                fontWeight="900"
-                lineHeight="1.12"
-                letterSpacing="-0.03em"
-                mb={{ base: "5", md: "6" }}
-              >
-                <Box as="span" display="block" color="#0F172A">
-                  Audited Impact.
-                </Box>
-                <Box as="span" display="block" color="#059669">
-                  Measurable Transformation.
-                </Box>
-                <Box as="span" display="block" color="#0F172A">
-                  Real Champions.
-                </Box>
-              </Heading>
-
-              {/* Subparagraph */}
-              <Text
-                fontSize={{ base: "15px", sm: "16px", md: "17px" }}
-                lineHeight="1.68"
-                color="#475569"
-                maxW="590px"
-                mb={{ base: "7", md: "8" }}
-              >
-                We measure our success not just by attendance numbers, but by tangible shift in agency, academic resilience, technological capability and ethical leadership in every teenager we mentor.
-              </Text>
-
-              {/* Action Buttons */}
-              <Box mb={{ base: "8", md: "9" }}>
-                {/* Row 1: Primary CTAs */}
-                <Flex
-                  wrap="wrap"
-                  align="center"
-                  gap="3.5"
-                  mb="3.5"
+              {/* 2. Main Heading (Gentle fade-in + slight upward movement) */}
+              <Box style={getTransitionStyle(80, 450)}>
+                <Heading
+                  as="h1"
+                  fontSize={{ base: "26px", sm: "32px", md: "38px", lg: "42px", xl: "46px" }}
+                  fontWeight="900"
+                  lineHeight="1.15"
+                  letterSpacing="-0.03em"
+                  mb={{ base: "5", md: "6" }}
                 >
-                  {/* Download Report Button */}
-                  <Button
-                    onClick={() => setIsDownloadOpen(true)}
-                    bg="#0B0F2A"
-                    color="#FFFFFF"
-                    px="5"
-                    py="3.5"
-                    h="auto"
-                    fontSize="14px"
-                    fontWeight="700"
-                    borderRadius="10px"
-                    boxShadow="0 4px 14px rgba(11, 15, 42, 0.25)"
-                    _hover={{
-                      bg: "#181E48",
-                      transform: "translateY(-1px)",
-                      boxShadow: "0 6px 18px rgba(11, 15, 42, 0.32)",
-                    }}
-                    transition="all 0.2s ease"
-                    display="inline-flex"
-                    alignItems="center"
-                    gap="2.5"
-                  >
-                    <DownloadIcon size={17} color="#FFFFFF" />
-                    Download 2024 Report (.PDF)
-                  </Button>
+                  <Box as="span" display="block" color="#0F172A">
+                    Measuring Progress.
+                  </Box>
+                  <Box as="span" display="block" color="#059669">
+                    Creating Opportunities.
+                  </Box>
+                  <Box as="span" display="block" color="#0F172A">
+                    Raising Champions.
+                  </Box>
+                </Heading>
+              </Box>
 
-                  {/* Interactive Explorer Button */}
+              {/* 3. Subparagraph (Fade-in shortly after heading) */}
+              <Box style={getTransitionStyle(160, 450)}>
+                <Text
+                  fontSize={{ base: "15px", sm: "16px", md: "17px" }}
+                  lineHeight="1.68"
+                  color="#475569"
+                  maxW="590px"
+                  mb={{ base: "7", md: "8" }}
+                >
+                  We believe impact goes beyond numbers. It&apos;s about young people gaining confidence, developing practical skills, discovering their potential, and becoming champions who create positive change in their communities.
+                </Text>
+              </Box>
+
+              {/* 4. Action Buttons (Subtle hover lift) */}
+              <Box mb={{ base: "8", md: "9" }} style={getTransitionStyle(240, 450)} w="100%">
+                <Flex
+                  direction={{ base: "column", sm: "row" }}
+                  align={{ base: "stretch", sm: "center" }}
+                  gap="3.5"
+                  w={{ base: "100%", sm: "auto" }}
+                >
+                  {/* Primary CTA: Explore Our Results */}
                   <Button
                     onClick={handleScrollToExplorer}
                     bg="#047857"
@@ -191,97 +316,79 @@ export function ImpactHero() {
                     px="5"
                     py="3.5"
                     h="auto"
+                    w={{ base: "100%", sm: "auto" }}
+                    justifyContent="center"
                     fontSize="14px"
                     fontWeight="700"
                     borderRadius="10px"
                     boxShadow="0 4px 14px rgba(4, 120, 87, 0.25)"
                     _hover={{
                       bg: "#065F46",
-                      transform: "translateY(-1px)",
+                      transform: "translateY(-2px)",
                       boxShadow: "0 6px 18px rgba(4, 120, 87, 0.32)",
                     }}
-                    transition="all 0.2s ease"
+                    _active={{
+                      transform: "translateY(0)",
+                    }}
+                    transition="all 0.2s cubic-bezier(0.16, 1, 0.3, 1)"
                     display="inline-flex"
                     alignItems="center"
                     gap="2.5"
                   >
                     <TrendingUpIcon size={17} color="#FFFFFF" />
-                    Interactive Explorer
+                    Explore Our Results
                   </Button>
-                </Flex>
 
-                {/* Row 2: Secondary Button */}
-                <Box>
+                  {/* Secondary CTA: Explore Our Impact Report */}
                   <Button
-                    onClick={() => setIsVerifyOpen(true)}
-                    bg="#EEF2FF"
-                    color="#1E1B4B"
-                    px="4.5"
-                    py="2.5"
+                    onClick={() => setIsReportOpen(true)}
+                    bg="#0B0F2A"
+                    color="#FFFFFF"
+                    px="5"
+                    py="3.5"
                     h="auto"
-                    fontSize="13px"
+                    w={{ base: "100%", sm: "auto" }}
+                    justifyContent="center"
+                    fontSize="14px"
                     fontWeight="700"
                     borderRadius="10px"
-                    border="1px solid"
-                    borderColor="rgba(99, 102, 241, 0.15)"
+                    boxShadow="0 4px 14px rgba(11, 15, 42, 0.2)"
                     _hover={{
-                      bg: "#E0E7FF",
-                      borderColor: "rgba(99, 102, 241, 0.3)",
-                      transform: "translateY(-1px)",
+                      bg: "#181E48",
+                      transform: "translateY(-2px)",
+                      boxShadow: "0 6px 18px rgba(11, 15, 42, 0.28)",
                     }}
-                    transition="all 0.2s ease"
+                    _active={{
+                      transform: "translateY(0)",
+                    }}
+                    transition="all 0.2s cubic-bezier(0.16, 1, 0.3, 1)"
                     display="inline-flex"
                     alignItems="center"
-                    gap="2"
+                    gap="2.5"
                   >
-                    <ClipboardCheckIcon size={16} color="#4338CA" />
-                    Verify Capstones
+                    <FileTextIcon size={16} color="#FFFFFF" />
+                    Explore Our Impact Report
                   </Button>
-                </Box>
+                </Flex>
               </Box>
 
-              {/* Bottom Trust/Safeguarding Badges Bar */}
+              {/* 5. Trust Badges Bar (Subtle fade-in) */}
               <Box
+                style={getTransitionStyle(320, 500)}
                 bg="#FFFFFF"
                 borderRadius="16px"
                 border="1px solid"
                 borderColor="#E2E8F0"
-                p={{ base: "3.5", sm: "4" }}
+                py="3.5"
+                px={{ base: "3.5", sm: "4.5" }}
                 boxShadow="0 4px 16px -4px rgba(15, 23, 42, 0.05)"
               >
-                <SimpleGrid columns={{ base: 1, sm: 3 }} gap={{ base: "3.5", sm: "4" }}>
-                  {/* Trust Badge 1 */}
-                  <Flex align="center" gap="3">
+                <SimpleGrid columns={{ base: 2, sm: 2 }} gap={{ base: "3", sm: "4" }} alignItems="center">
+                  {/* Trust Badge 1 - Safeguarding */}
+                  <Flex align="center" gap={{ base: "2.5", sm: "3" }}>
                     <Box
-                      w="36px"
-                      h="36px"
-                      borderRadius="full"
-                      bg="#A7F3D0"
-                      color="#047857"
-                      display="flex"
-                      alignItems="center"
-                      justifyContent="center"
-                      flexShrink={0}
-                    >
-                      <Text fontSize="16px" fontWeight="800">
-                        @
-                      </Text>
-                    </Box>
-                    <Box>
-                      <Text fontSize="13px" fontWeight="800" color="#0F172A" lineHeight="1.2">
-                        100% Zero-Leakage
-                      </Text>
-                      <Text fontSize="11px" color="#64748B" fontWeight="500" mt="0.5">
-                        Direct-to-student ledger
-                      </Text>
-                    </Box>
-                  </Flex>
-
-                  {/* Trust Badge 2 */}
-                  <Flex align="center" gap="3">
-                    <Box
-                      w="36px"
-                      h="36px"
+                      w={{ base: "32px", sm: "36px" }}
+                      h={{ base: "32px", sm: "36px" }}
                       borderRadius="full"
                       bg="#EDE9FE"
                       color="#7C3AED"
@@ -290,39 +397,59 @@ export function ImpactHero() {
                       justifyContent="center"
                       flexShrink={0}
                     >
-                      <ShieldIcon size={18} color="#7C3AED" />
+                      <ShieldIcon size={17} color="#7C3AED" />
                     </Box>
-                    <Box>
-                      <Text fontSize="13px" fontWeight="800" color="#0F172A" lineHeight="1.2">
-                        Safeguarding Gold
+                    <Box minW={0}>
+                      <Text
+                        fontSize={{ base: "12px", sm: "13px" }}
+                        fontWeight="800"
+                        color="#0F172A"
+                        lineHeight="1.2"
+                      >
+                        Safeguarding
                       </Text>
-                      <Text fontSize="11px" color="#64748B" fontWeight="500" mt="0.5">
-                        UK & NG vetting verified
+                      <Text
+                        fontSize={{ base: "10px", sm: "11px" }}
+                        color="#64748B"
+                        lineHeight="1.2"
+                        mt="0.5"
+                      >
+                        Our commitment to safety
                       </Text>
                     </Box>
                   </Flex>
 
-                  {/* Trust Badge 3 */}
-                  <Flex align="center" gap="3">
+                  {/* Trust Badge 2 - Transparency */}
+                  <Flex align="center" gap={{ base: "2.5", sm: "3" }}>
                     <Box
-                      w="36px"
-                      h="36px"
+                      w={{ base: "32px", sm: "36px" }}
+                      h={{ base: "32px", sm: "36px" }}
                       borderRadius="full"
-                      bg="#FEF3C7"
-                      color="#D97706"
+                      bg="#ECFDF5"
+                      color="#047857"
                       display="flex"
                       alignItems="center"
                       justifyContent="center"
                       flexShrink={0}
                     >
-                      <LockIcon size={17} color="#D97706" />
+                      <CheckIcon size={17} color="#047857" />
                     </Box>
-                    <Box>
-                      <Text fontSize="13px" fontWeight="800" color="#0F172A" lineHeight="1.2">
-                        NDPR Compliant
+                    <Box minW={0}>
+                      <Text
+                        fontSize={{ base: "12px", sm: "13px" }}
+                        fontWeight="800"
+                        color="#0F172A"
+                        lineHeight="1.2"
+                      >
+                        Transparency
                       </Text>
-                      <Text fontSize="11px" color="#64748B" fontWeight="500" mt="0.5">
-                        Secured privacy protocols
+                      <Text
+                        fontSize={{ base: "10px", sm: "11px" }}
+                        color="#64748B"
+                        lineHeight="1.2"
+                        mt="0.5"
+                      >
+                        Accountability in our work
                       </Text>
                     </Box>
                   </Flex>
@@ -331,7 +458,12 @@ export function ImpactHero() {
             </Box>
 
             {/* ===================== RIGHT COLUMN ===================== */}
-            <Box flex={{ base: "1", lg: "0.95" }} maxW={{ lg: "520px", xl: "540px" }} w="100%">
+            <Box
+              flex={{ base: "1", lg: "0.95" }}
+              maxW={{ lg: "520px", xl: "540px" }}
+              w="100%"
+              style={getTransitionStyle(120, 500)}
+            >
               {/* Outer Card with Top Gradient Border */}
               <Box
                 position="relative"
@@ -342,9 +474,10 @@ export function ImpactHero() {
                 boxShadow="0 20px 45px -12px rgba(15, 23, 42, 0.12), 0 0 1px rgba(15, 23, 42, 0.08)"
                 overflow="hidden"
                 p={{ base: "3", sm: "4" }}
-                transition="all 0.3s ease"
+                transition="box-shadow 0.3s ease, transform 0.3s ease"
                 _hover={{
                   boxShadow: "0 25px 55px -12px rgba(15, 23, 42, 0.16)",
+                  transform: "translateY(-2px)",
                 }}
               >
                 {/* Top Gradient Accent Bar */}
@@ -367,14 +500,14 @@ export function ImpactHero() {
                   bg="#0B132B"
                 >
                   <Image
-                    src="/images/impact-capstone-hub.jpg"
-                    alt="Cohort 2024 Tech & Civic Capstones - Lagos & Abuja Hubs"
+                    src="/Collaborative-Tech-Lab-Learning.png"
+                    alt="Collaborative Tech Lab Learning - Young Innovators Building Tomorrow"
                     fill
                     priority
                     sizes="(max-width: 768px) 100vw, 540px"
                     style={{
                       objectFit: "cover",
-                      objectPosition: "center 25%",
+                      objectPosition: "center 20%",
                     }}
                   />
 
@@ -382,7 +515,7 @@ export function ImpactHero() {
                   <Box
                     position="absolute"
                     inset="0"
-                    bg="linear-gradient(180deg, rgba(15, 23, 42, 0) 35%, rgba(15, 23, 42, 0.85) 75%, rgba(15, 23, 42, 0.96) 100%)"
+                    bg="linear-gradient(180deg, rgba(15, 23, 42, 0) 30%, rgba(15, 23, 42, 0.85) 75%, rgba(15, 23, 42, 0.96) 100%)"
                     pointerEvents="none"
                   />
 
@@ -395,7 +528,7 @@ export function ImpactHero() {
                     p={{ base: "4", sm: "4.5" }}
                     zIndex={2}
                   >
-                    {/* Live Field Sensor Badge */}
+                    {/* Living Work in Action Badge */}
                     <HStack gap="2" mb="1.5">
                       <LiveDot color="#34D399" size={7} />
                       <Text
@@ -405,7 +538,7 @@ export function ImpactHero() {
                         letterSpacing="0.06em"
                         textTransform="uppercase"
                       >
-                        LIVE FIELD SENSOR: LAGOS & ABUJA
+                        OUR WORK IN ACTION
                       </Text>
                     </HStack>
 
@@ -416,143 +549,60 @@ export function ImpactHero() {
                       fontWeight="800"
                       color="#FFFFFF"
                       lineHeight="1.25"
+                      mb="1"
                     >
-                      Cohort 2024 Tech & Civic Capstones
+                      Young Innovators Building Tomorrow
                     </Heading>
+
+                    {/* Subtitle */}
+                    <Text fontSize="12px" color="rgba(255, 255, 255, 0.85)" fontWeight="500">
+                      Real programs. Real experiences. Meaningful progress.
+                    </Text>
                   </Box>
                 </Box>
 
-                {/* Metrics 3-Column Row */}
+                {/* Metrics 3-Column Row (Count-up once on enter) */}
                 <Box mt="3.5">
                   <SimpleGrid columns={3} gap="2">
-                    {/* Metric 1 */}
-                    <Box
-                      bg="#F1F5F9"
-                      borderRadius="12px"
-                      py="3"
-                      px="2"
-                      textAlign="center"
-                      transition="transform 0.2s ease"
-                      _hover={{ bg: "#E2E8F0" }}
-                    >
-                      <Text
-                        fontSize={{ base: "17px", sm: "19px", md: "21px" }}
-                        fontWeight="800"
-                        color="#0F172A"
-                        lineHeight="1.1"
-                      >
-                        120,418+
-                      </Text>
-                      <Text
-                        fontSize={{ base: "9px", sm: "10px" }}
-                        fontWeight="700"
-                        color="#64748B"
-                        letterSpacing="0.05em"
-                        textTransform="uppercase"
-                        mt="1"
-                      >
-                        TEENS IMPACTED
-                      </Text>
-                    </Box>
-
-                    {/* Metric 2 */}
-                    <Box
-                      bg="#F1F5F9"
-                      borderRadius="12px"
-                      py="3"
-                      px="2"
-                      textAlign="center"
-                      transition="transform 0.2s ease"
-                      _hover={{ bg: "#E2E8F0" }}
-                    >
-                      <Text
-                        fontSize={{ base: "17px", sm: "19px", md: "21px" }}
-                        fontWeight="800"
-                        color="#0F172A"
-                        lineHeight="1.1"
-                      >
-                        85,420h
-                      </Text>
-                      <Text
-                        fontSize={{ base: "9px", sm: "10px" }}
-                        fontWeight="700"
-                        color="#64748B"
-                        letterSpacing="0.05em"
-                        textTransform="uppercase"
-                        mt="1"
-                      >
-                        VERIFIED MENTORSHIP
-                      </Text>
-                    </Box>
-
-                    {/* Metric 3 */}
-                    <Box
-                      bg="#F1F5F9"
-                      borderRadius="12px"
-                      py="3"
-                      px="2"
-                      textAlign="center"
-                      transition="transform 0.2s ease"
-                      _hover={{ bg: "#E2E8F0" }}
-                    >
-                      <Text
-                        fontSize={{ base: "17px", sm: "19px", md: "21px" }}
-                        fontWeight="800"
-                        color="#0F172A"
-                        lineHeight="1.1"
-                      >
-                        94.2%
-                      </Text>
-                      <Text
-                        fontSize={{ base: "9px", sm: "10px" }}
-                        fontWeight="700"
-                        color="#64748B"
-                        letterSpacing="0.05em"
-                        textTransform="uppercase"
-                        mt="1"
-                      >
-                        UNI TRANSITION
-                      </Text>
-                    </Box>
+                    <AnimatedMetric
+                      target={10000}
+                      suffix="+"
+                      label="YOUNG PEOPLE REACHED"
+                      isTriggered={inView}
+                    />
+                    <AnimatedMetric
+                      target={1200}
+                      suffix="+h"
+                      label="MENTORSHIP DELIVERED"
+                      isTriggered={inView}
+                    />
+                    <AnimatedMetric
+                      target={100}
+                      suffix="%"
+                      label="DIRECT PRACTICE"
+                      isTriggered={inView}
+                    />
                   </SimpleGrid>
                 </Box>
 
-                {/* Card Footer Bar */}
+                {/* Card Subtle Footer */}
                 <Box
-                  mt="3.5"
-                  pt="3"
+                  mt="3"
+                  pt="2.5"
                   borderTop="1px solid"
                   borderColor="#F1F5F9"
                   bg="#FFFFFF"
                 >
-                  <Flex
-                    justify="space-between"
-                    align="center"
-                    direction={{ base: "column", sm: "row" }}
-                    gap="2"
-                  >
-                    {/* Left: LMS Sync Indicator */}
-                    <HStack gap="1.5" color="#0D9488">
-                      <RefreshCwIcon size={14} color="#0D9488" />
-                      <Text fontSize="12px" color="#64748B" fontWeight="500">
-                        LMS Synchronized: Updated 14m ago
+                  <Flex justify="space-between" align="center" wrap="wrap" gap="2">
+                    <HStack gap="1.5">
+                      <Box w="6px" h="6px" borderRadius="full" bg="#059669" />
+                      <Text fontSize="11px" color="#64748B" fontWeight="600">
+                        Reporting Period: 2025–2026
                       </Text>
                     </HStack>
-
-                    {/* Right: Ledger Monospace ID */}
-                    <Box
-                      bg="#EEF2FF"
-                      color="#4338CA"
-                      px="2"
-                      py="0.5"
-                      borderRadius="6px"
-                      fontSize="11px"
-                      fontWeight="700"
-                      fontFamily="monospace"
-                      letterSpacing="0.02em"
-                    >
-                      Ledger ID #IIM-2024-V9
-                    </Box>
+                    <Text fontSize="11px" color="#059669" fontWeight="700">
+                      Verified Community Outcomes
+                    </Text>
                   </Flex>
                 </Box>
               </Box>
@@ -561,14 +611,10 @@ export function ImpactHero() {
         </Container>
       </Box>
 
-      {/* Interactive Modals */}
-      <VerifyCapstonesModal
-        isOpen={isVerifyOpen}
-        onClose={() => setIsVerifyOpen(false)}
-      />
+      {/* Report Modal */}
       <ReportDownloadModal
-        isOpen={isDownloadOpen}
-        onClose={() => setIsDownloadOpen(false)}
+        isOpen={isReportOpen}
+        onClose={() => setIsReportOpen(false)}
       />
     </>
   )

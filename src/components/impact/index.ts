@@ -1,3 +1,6 @@
 export { ImpactHero } from "./ImpactHero"
+export { ImpactScorecard } from "./ImpactScorecard"
+export { LongitudinalGrowth } from "./LongitudinalGrowth"
+export { AreasOfImpact } from "./AreasOfImpact"
 export { VerifyCapstonesModal } from "./VerifyCapstonesModal"
 export { ReportDownloadModal } from "./ReportDownloadModal"
