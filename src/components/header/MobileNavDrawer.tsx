@@ -226,14 +226,17 @@ export function MobileNavDrawer({
                             onClose()
                             if (child.href.includes("#")) {
                               const [path, hash] = child.href.split("#")
-                              const isAboutPath = path === "/about" || path === ""
-                              const isCurrentAbout = typeof window !== "undefined" && window.location.pathname === "/about"
+                              const currentPath = typeof window !== "undefined" ? window.location.pathname : ""
+                              const isSamePage =
+                                currentPath === path ||
+                                (path === "" && currentPath === "/") ||
+                                (currentPath === "/about/impact" && path === "/impact")
 
-                              if (isAboutPath && isCurrentAbout && hash) {
+                              if (isSamePage && hash) {
                                 e.preventDefault()
                                 jumpToElement(hash)
                                 window.history.pushState(null, "", child.href)
-                              } else if (isAboutPath && hash) {
+                              } else if (hash) {
                                 setTargetHash(hash)
                               }
                             }

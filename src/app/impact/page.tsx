@@ -10,6 +10,7 @@ import {
   ImpactScorecard,
   LongitudinalGrowth,
   AreasOfImpact,
+  TransparencyAccountability,
 } from "@/components/impact"
 
 export default function ImpactPage() {
@@ -31,7 +32,10 @@ export default function ImpactPage() {
         {/* 4. Areas of Impact (3-Card Core Pillars) */}
         <AreasOfImpact />
 
-        {/* 5. PreFooter Call to Action */}
+        {/* 5. Transparency & Accountability (Section 6: Four Accountability Pillars) */}
+        <TransparencyAccountability />
+
+        {/* 6. PreFooter Call to Action */}
         <PreFooterCTA />
       </Box>
 

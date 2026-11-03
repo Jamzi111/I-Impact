@@ -14,7 +14,7 @@ import { SearchPopover } from "./SearchPopover"
 import { MobileNavDrawer } from "./MobileNavDrawer"
 import { NotificationsPopover } from "./NotificationsPopover"
 
-export function Header({ variant = "default" }: { variant?: "default" | "dark" | "frosted" | "event" } = {}) {
+export function Header({ variant = "default" }: { variant?: "default" | "dark" | "frosted" | "event" | "white" } = {}) {
   const [isScrolled, setIsScrolled] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
 
@@ -31,12 +31,15 @@ export function Header({ variant = "default" }: { variant?: "default" | "dark" |
     return () => window.removeEventListener("scroll", handleScroll)
   }, [])
 
+  const isWhiteNav = variant === "white"
   const isEventVariant = variant === "event"
   const isDarkNav = variant === "dark"
-  const isNavActive = isScrolled || variant === "frosted" || isDarkNav || isEventVariant
+  const isNavActive = isScrolled || variant === "frosted" || isDarkNav || isEventVariant || isWhiteNav
 
-  // Background matching the homepage header: #F4F8FE at top, rgba(255, 255, 255, 0.95) when scrolled
-  const headerBg = isEventVariant
+  // Background: crisp solid white for "white" variant, #F4F8FE for event at top, transparent for default, white when scrolled
+  const headerBg = isWhiteNav
+    ? "#FFFFFF"
+    : isEventVariant
     ? isScrolled
       ? "rgba(255, 255, 255, 0.95)"
       : "#F4F8FE"
@@ -46,13 +49,17 @@ export function Header({ variant = "default" }: { variant?: "default" | "dark" |
     ? "rgba(255, 255, 255, 0.95)"
     : "transparent"
 
-  const headerBorder = isEventVariant || isNavActive
+  const headerBorder = isWhiteNav
+    ? "1px solid rgba(5, 27, 100, 0.08)"
+    : isEventVariant || isNavActive
     ? "1px solid rgba(5, 27, 100, 0.08)"
     : isDarkNav
     ? "1px solid rgba(255, 255, 255, 0.1)"
     : "1px solid transparent"
 
-  const headerShadow = isEventVariant || isNavActive
+  const headerShadow = isWhiteNav
+    ? "0 4px 20px -5px rgba(5, 27, 100, 0.08)"
+    : isEventVariant || isNavActive
     ? "0 10px 30px -10px rgba(5, 27, 100, 0.08)"
     : isDarkNav
     ? "0 10px 30px -10px rgba(0, 0, 0, 0.5)"

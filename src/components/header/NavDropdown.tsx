@@ -14,8 +14,10 @@ import {
   ArrowRightIcon,
   CheckCircleIcon,
   VideoIcon,
+  BuildingIcon,
 } from "../icons"
 import { jumpToElement, setTargetHash } from "@/lib/scrollUtils"
+import { IMPACT_NAV_ITEM } from "@/components/impact"
 
 export interface NavItemChild {
   title: string
@@ -120,30 +122,7 @@ export const NAV_ITEMS: NavItem[] = [
       badge: "Financial Aid",
     },
   },
-  {
-    label: "Impact",
-    children: [
-      {
-        title: "2026 Annual Impact Report",
-        description: "Verified outcomes, scholarship distribution, and milestones.",
-        href: "/about/impact",
-        icon: <CheckCircleIcon size={18} color="#10B981" />,
-        badge: "2026",
-      },
-      {
-        title: "Champion Stories & Alumni",
-        description: "Real journeys from graduates excelling across industries.",
-        href: "/stories",
-        icon: <SparklesIcon size={18} color="#149191" />,
-      },
-      {
-        title: "Community Reach & Data",
-        description: "Over 10,000+ students and 25+ partner regional hubs.",
-        href: "/about/impact",
-        icon: <TrophyIcon size={18} color="#051B64" />,
-      },
-    ],
-  },
+  IMPACT_NAV_ITEM,
   {
     label: "Events",
     children: [
@@ -161,6 +140,12 @@ export const NAV_ITEMS: NavItem[] = [
         badge: "Oct 2026",
       },
       {
+        title: "Past Summits & Archives",
+        description: "Browse highlights, keynote recordings, and photo galleries.",
+        href: "/events#past-events",
+        icon: <VideoIcon size={18} color="#10B981" />,
+      },
+      {
         title: "Organizer Console",
         description: "Add or manage upcoming events and upload program soft copies.",
         href: "/admin/events",
@@ -168,6 +153,13 @@ export const NAV_ITEMS: NavItem[] = [
         badge: "Admin",
       },
     ],
+    featuredSection: {
+      title: "AS A TEEN Flagship Congress",
+      description: "Our continental flagship summit empowering high school leaders and youth champions.",
+      ctaText: "Explore Gatherings",
+      href: "/events",
+      badge: "Flagship Event",
+    },
   },
   {
     label: "Get Involved",
@@ -175,14 +167,14 @@ export const NAV_ITEMS: NavItem[] = [
       {
         title: "Volunteer as a Mentor",
         description: "Share your wisdom and guide an aspiring young champion.",
-        href: "/get-involved/volunteer",
+        href: "/contact",
         icon: <HeartHandshakeIcon size={18} color="#149191" />,
-        badge: "Urgent",
+        badge: "Mentors",
       },
       {
         title: "Partner With Us",
         description: "Corporate sponsorship, school alliances, and joint initiatives.",
-        href: "/get-involved/partner",
+        href: "/contact",
         icon: <UsersIcon size={18} color="#051B64" />,
       },
       {
@@ -191,7 +183,21 @@ export const NAV_ITEMS: NavItem[] = [
         href: "/donate",
         icon: <TrophyIcon size={18} color="#10B981" />,
       },
+      {
+        title: "Sponsor a School Cohort",
+        description: "Equip underserved secondary schools and youth innovation clusters.",
+        href: "/contact",
+        icon: <BuildingIcon size={18} color="#D97706" />,
+        badge: "Schools",
+      },
     ],
+    featuredSection: {
+      title: "Become a Champion Ally",
+      description: "Every mentor hour, sponsorship, and volunteer intervention fuels real grassroots change.",
+      ctaText: "Join The Movement",
+      href: "/contact",
+      badge: "Get Involved",
+    },
   },
   {
     label: "Contact",
@@ -229,14 +235,17 @@ export function NavDropdownItem({ item, isDarkNav = false }: NavDropdownItemProp
     setIsOpen(false)
     if (href.includes("#")) {
       const [path, hash] = href.split("#")
-      const isAboutPath = path === "/about" || path === ""
-      const isCurrentAbout = typeof window !== "undefined" && window.location.pathname === "/about"
+      const currentPath = typeof window !== "undefined" ? window.location.pathname : ""
+      const isSamePage =
+        currentPath === path ||
+        (path === "" && currentPath === "/") ||
+        (currentPath === "/about/impact" && path === "/impact")
 
-      if (isAboutPath && isCurrentAbout && hash) {
+      if (isSamePage && hash) {
         e.preventDefault()
         jumpToElement(hash)
         window.history.pushState(null, "", href)
-      } else if (isAboutPath && hash) {
+      } else if (hash) {
         setTargetHash(hash)
       }
     }

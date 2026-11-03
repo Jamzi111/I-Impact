@@ -100,47 +100,114 @@ const PATHWAY_OPTIONS: PathwayOption[] = [
 
 export function PreFooterCTA() {
   const [inView, setInView] = useState(false)
+  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false)
+  const [isHoverCapable, setIsHoverCapable] = useState(false)
   const sectionRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
+    if (typeof window === "undefined") {
+      setInView(true)
+      return
+    }
+
+    // 1. Accessibility: Detect user's reduced motion preferences
+    const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)")
+    setPrefersReducedMotion(mediaQuery.matches)
+    const handleMotionChange = () => setPrefersReducedMotion(mediaQuery.matches)
+    mediaQuery.addEventListener("change", handleMotionChange)
+
+    // 2. Hardware: Detect if device supports genuine hover (desktop vs touch/mobile)
+    const hoverQuery = window.matchMedia("(hover: hover) and (pointer: fine)")
+    setIsHoverCapable(hoverQuery.matches)
+    const handleHoverChange = () => setIsHoverCapable(hoverQuery.matches)
+    hoverQuery.addEventListener("change", handleHoverChange)
+
+    // 3. Safe Fallback: Check if IntersectionObserver is available
+    if (!("IntersectionObserver" in window)) {
+      setInView(true)
+      return () => {
+        mediaQuery.removeEventListener("change", handleMotionChange)
+        hoverQuery.removeEventListener("change", handleHoverChange)
+      }
+    }
+
+    // 4. Fallback Timer: Ensure content reveals even if observer doesn't fire
+    const fallbackTimer = setTimeout(() => {
+      setInView(true)
+    }, 400)
+
+    // 5. Initialize IntersectionObserver
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
           setInView(true)
+          clearTimeout(fallbackTimer)
+          observer.disconnect()
         }
       },
       {
-        threshold: 0.1,
-        rootMargin: "0px 0px -40px 0px",
+        threshold: 0.08,
+        rootMargin: "0px 0px -30px 0px",
       }
     )
 
-    const currentRef = sectionRef.current
-    if (currentRef) {
-      observer.observe(currentRef)
+    if (sectionRef.current) {
+      observer.observe(sectionRef.current)
+    } else {
+      setInView(true)
     }
 
     return () => {
-      if (currentRef) {
-        observer.unobserve(currentRef)
-      }
+      mediaQuery.removeEventListener("change", handleMotionChange)
+      hoverQuery.removeEventListener("change", handleHoverChange)
+      clearTimeout(fallbackTimer)
       observer.disconnect()
     }
   }, [])
+
+  const getTransitionStyle = (delayMs: number = 0) => {
+    if (prefersReducedMotion) {
+      return {
+        opacity: 1,
+        transform: "none",
+        transition: "none",
+      }
+    }
+    return {
+      opacity: inView ? 1 : 0,
+      transform: inView ? "translateY(0)" : "translateY(20px)",
+      transition: `opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1) ${delayMs}ms, transform 0.6s cubic-bezier(0.16, 1, 0.3, 1) ${delayMs}ms`,
+    }
+  }
 
   return (
     <Box
       as="section"
       id="choose-pathway"
       ref={sectionRef}
-      py={{ base: "12", sm: "14", md: "16", lg: "18" }}
+      py={{ base: "12", sm: "14", md: "16", lg: "20" }}
       bg="linear-gradient(180deg, #FBFDFF 0%, #F5F9FE 100%)"
       position="relative"
       overflow="hidden"
       borderTop="1px solid"
       borderBottom="1px solid"
       borderColor="#F1F5F9"
+      aria-label="Choose Your Pathway to Impact"
     >
+      {/* Fallback CSS if JavaScript is disabled */}
+      <noscript>
+        <style
+          dangerouslySetInnerHTML={{
+            __html: `
+              #choose-pathway [data-animate="true"] {
+                opacity: 1 !important;
+                transform: none !important;
+              }
+            `,
+          }}
+        />
+      </noscript>
+
       {/* Ambient background glow */}
       <Box
         position="absolute"
@@ -167,9 +234,8 @@ export function PreFooterCTA() {
           mb={{ base: "8", md: "10" }}
           maxW="680px"
           mx="auto"
-          opacity={inView ? 1 : 0}
-          transform={inView ? "translateY(0)" : "translateY(20px)"}
-          transition="all 0.7s cubic-bezier(0.16, 1, 0.3, 1)"
+          data-animate="true"
+          style={getTransitionStyle(0)}
         >
           <Text
             fontSize={{ base: "11px", sm: "11.5px" }}
@@ -219,43 +285,50 @@ export function PreFooterCTA() {
               justifyContent="space-between"
               position="relative"
               overflow="hidden"
-              cursor="pointer"
-              opacity={inView ? 1 : 0}
-              transform={inView ? "translateY(0)" : "translateY(24px)"}
-              transition={`opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1) ${index * 90}ms, transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease, border-color 0.3s ease`}
+              data-animate="true"
+              style={getTransitionStyle(100 + index * 80)}
+              transition={{
+                base: "none",
+                md: "transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease, border-color 0.3s ease",
+              }}
               _hover={{
-                transform: "translateY(-6px) scale(1.012)",
-                boxShadow: "0 18px 36px -8px rgba(5, 27, 100, 0.13), 0 0 0 1.5px rgba(20, 145, 145, 0.35)",
-                borderColor: item.accentColor,
+                md: {
+                  transform: "translateY(-5px)",
+                  boxShadow: "0 18px 36px -8px rgba(5, 27, 100, 0.13), 0 0 0 1.5px rgba(20, 145, 145, 0.35)",
+                  borderColor: item.accentColor,
+                },
               }}
             >
-              {/* Top accent reveal bar on hover */}
+              {/* Permanent top accent stripe - ensures card looks complete without hover */}
               <Box
                 position="absolute"
                 top="0"
                 left="0"
                 right="0"
-                h="3px"
+                h="3.5px"
                 bg={item.barGradient}
-                opacity="0"
-                transition="opacity 0.3s ease"
-                _groupHover={{ opacity: "1" }}
+                borderTopRadius="18px"
               />
 
               <Box>
                 {/* Icon Badge */}
                 <Flex
-                  w="42px"
-                  h="42px"
+                  w="44px"
+                  h="44px"
                   borderRadius="12px"
                   bg={item.iconBg}
                   align="center"
                   justify="center"
                   mb="3.5"
-                  transition="all 0.3s cubic-bezier(0.16, 1, 0.3, 1)"
+                  transition={{
+                    base: "none",
+                    md: "all 0.3s cubic-bezier(0.16, 1, 0.3, 1)",
+                  }}
                   _groupHover={{
-                    transform: "scale(1.1) rotate(4deg)",
-                    boxShadow: "0 6px 14px -4px rgba(5, 27, 100, 0.12)",
+                    md: {
+                      transform: "scale(1.08) rotate(3deg)",
+                      boxShadow: "0 6px 14px -4px rgba(5, 27, 100, 0.12)",
+                    },
                   }}
                 >
                   {item.icon}
@@ -284,16 +357,17 @@ export function PreFooterCTA() {
                 </Text>
               </Box>
 
-              {/* Action Button */}
-              <Link href={item.href} style={{ width: "100%", display: "block" }}>
+              {/* Action Button - High affordance, minimum 44px tap target */}
+              <Link href={item.href} style={{ width: "100%", display: "block", textDecoration: "none" }}>
                 <Button
                   w="100%"
-                  h="38px"
+                  minH="44px"
+                  h="44px"
                   bg={item.buttonBg}
                   color={item.buttonColor}
                   borderRadius="10px"
                   fontWeight="700"
-                  fontSize="12.5px"
+                  fontSize="13px"
                   letterSpacing="0.01em"
                   transition="all 0.2s cubic-bezier(0.16, 1, 0.3, 1)"
                   boxShadow={
@@ -302,16 +376,25 @@ export function PreFooterCTA() {
                       : "none"
                   }
                   _hover={{
-                    bg: item.buttonHoverBg,
-                    transform: "translateY(-2px)",
-                    boxShadow:
-                      item.buttonBg !== "#EEF2FF"
-                        ? "0 8px 18px rgba(5, 27, 100, 0.22)"
-                        : "0 6px 12px rgba(5, 27, 100, 0.08)",
+                    md: {
+                      bg: item.buttonHoverBg,
+                      transform: "translateY(-2px)",
+                      boxShadow:
+                        item.buttonBg !== "#EEF2FF"
+                          ? "0 8px 18px rgba(5, 27, 100, 0.22)"
+                          : "0 6px 12px rgba(5, 27, 100, 0.08)",
+                    },
                   }}
+                  _active={{
+                    transform: "scale(0.98)",
+                  }}
+                  display="inline-flex"
+                  alignItems="center"
+                  justifyContent="center"
+                  gap="1.5"
                 >
-                  {item.buttonText}
-                  <ArrowRightIcon size={12} style={{ marginLeft: "5px" }} />
+                  <Text as="span">{item.buttonText}</Text>
+                  <ArrowRightIcon size={13} color="currentColor" />
                 </Button>
               </Link>
             </Box>

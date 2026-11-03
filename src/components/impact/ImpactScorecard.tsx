@@ -212,12 +212,14 @@ function ScorecardCard({
       borderLeftColor={item.accentColor}
       p={{ base: "3.5", sm: "4" }}
       boxShadow="0 2px 12px -2px rgba(15, 23, 42, 0.04)"
-      transition="all 0.25s cubic-bezier(0.16, 1, 0.3, 1)"
+      transition={{ base: "none", md: "all 0.25s cubic-bezier(0.16, 1, 0.3, 1)" }}
       _hover={{
-        transform: "translateY(-2px)",
-        boxShadow: "0 10px 24px -6px rgba(15, 23, 42, 0.08)",
-        borderColor: "#CBD5E1",
-        borderLeftColor: item.accentColor,
+        md: {
+          transform: "translateY(-2px)",
+          boxShadow: "0 10px 24px -6px rgba(15, 23, 42, 0.08)",
+          borderColor: "#CBD5E1",
+          borderLeftColor: item.accentColor,
+        },
       }}
       display="flex"
       flexDirection="column"
@@ -402,19 +404,25 @@ export function ImpactScorecard() {
 
           <Button
             onClick={() => setIsMethodologyOpen(true)}
-            variant="ghost"
-            size="xs"
-            color="#059669"
+            bg="#ECFDF5"
+            color="#047857"
+            border="1px solid"
+            borderColor="#A7F3D0"
+            borderRadius="8px"
             fontWeight="700"
-            fontSize="11.5px"
-            p="0"
+            fontSize="12px"
+            px="3.5"
+            py="2"
+            minH="38px"
             h="auto"
-            _hover={{ color: "#047857", textDecoration: "underline" }}
+            _hover={{ bg: "#D1FAE5", borderColor: "#6EE7B7" }}
+            _active={{ transform: "scale(0.98)" }}
             display="inline-flex"
             alignItems="center"
-            gap="1.5"
+            gap="2"
+            cursor="pointer"
           >
-            <FileTextIcon size={13} color="#059669" />
+            <FileTextIcon size={14} color="#059669" />
             View Measurement Methodology & Sources
           </Button>
         </Flex>

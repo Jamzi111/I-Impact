@@ -91,8 +91,8 @@ function AnimatedMetric({
     <Box
       bg="#F1F5F9"
       borderRadius="12px"
-      py="3"
-      px="2"
+      py={{ base: "2.5", sm: "3" }}
+      px={{ base: "1.5", sm: "2" }}
       textAlign="center"
       transition="all 0.25s ease"
       _hover={{
@@ -101,7 +101,7 @@ function AnimatedMetric({
       }}
     >
       <Text
-        fontSize={{ base: "17px", sm: "19px", md: "21px" }}
+        fontSize={{ base: "15px", sm: "18px", md: "21px" }}
         fontWeight="800"
         color="#0F172A"
         lineHeight="1.1"
@@ -109,12 +109,13 @@ function AnimatedMetric({
         {formattedValue}
       </Text>
       <Text
-        fontSize={{ base: "9px", sm: "10px" }}
+        fontSize={{ base: "8.5px", sm: "9.5px", md: "10px" }}
         fontWeight="700"
         color="#64748B"
         letterSpacing="0.05em"
         textTransform="uppercase"
         mt="1"
+        lineHeight="1.2"
       >
         {label}
       </Text>
@@ -315,6 +316,7 @@ export function ImpactHero() {
                     color="#FFFFFF"
                     px="5"
                     py="3.5"
+                    minH="48px"
                     h="auto"
                     w={{ base: "100%", sm: "auto" }}
                     justifyContent="center"
@@ -328,7 +330,7 @@ export function ImpactHero() {
                       boxShadow: "0 6px 18px rgba(4, 120, 87, 0.32)",
                     }}
                     _active={{
-                      transform: "translateY(0)",
+                      transform: "scale(0.98)",
                     }}
                     transition="all 0.2s cubic-bezier(0.16, 1, 0.3, 1)"
                     display="inline-flex"
@@ -346,6 +348,7 @@ export function ImpactHero() {
                     color="#FFFFFF"
                     px="5"
                     py="3.5"
+                    minH="48px"
                     h="auto"
                     w={{ base: "100%", sm: "auto" }}
                     justifyContent="center"
@@ -359,7 +362,7 @@ export function ImpactHero() {
                       boxShadow: "0 6px 18px rgba(11, 15, 42, 0.28)",
                     }}
                     _active={{
-                      transform: "translateY(0)",
+                      transform: "scale(0.98)",
                     }}
                     transition="all 0.2s cubic-bezier(0.16, 1, 0.3, 1)"
                     display="inline-flex"

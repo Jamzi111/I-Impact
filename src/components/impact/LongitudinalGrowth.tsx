@@ -258,7 +258,7 @@ export function LongitudinalGrowth() {
           border="1px solid"
           borderColor="rgba(226, 232, 240, 0.95)"
           boxShadow="0 20px 45px -12px rgba(15, 23, 42, 0.08), 0 0 1px rgba(15, 23, 42, 0.05)"
-          p={{ base: "5", sm: "7", md: "9" }}
+          p={{ base: "4", sm: "6", md: "8" }}
           overflow="hidden"
           transition="box-shadow 0.3s ease"
           _hover={{
@@ -281,16 +281,16 @@ export function LongitudinalGrowth() {
             direction={{ base: "column", md: "row" }}
             justify="space-between"
             align={{ base: "flex-start", md: "center" }}
-            gap={{ base: "4", md: "6" }}
-            mb={{ base: "6", md: "8" }}
-            pb={{ base: "5", md: "6" }}
+            gap={{ base: "3.5", md: "6" }}
+            mb={{ base: "4", sm: "5", md: "7" }}
+            pb={{ base: "4", sm: "5", md: "6" }}
             borderBottom="1px solid"
             borderColor="#F1F5F9"
           >
             {/* Left: Prominent 10,000+ Total Reached */}
             <Box>
               <Text
-                fontSize={{ base: "46px", sm: "56px", md: "64px" }}
+                fontSize={{ base: "38px", sm: "50px", md: "60px" }}
                 fontWeight="900"
                 color="#051B64"
                 lineHeight="1.0"
@@ -305,7 +305,7 @@ export function LongitudinalGrowth() {
                 </Box>
               </Text>
               <Text
-                fontSize={{ base: "14px", sm: "15.5px" }}
+                fontSize={{ base: "13px", sm: "14.5px", md: "15.5px" }}
                 fontWeight="700"
                 color="#475569"
                 mt="1"
@@ -320,14 +320,15 @@ export function LongitudinalGrowth() {
               border="1px dashed"
               borderColor="#CBD5E1"
               borderRadius="12px"
-              p={{ base: "3", sm: "3.5" }}
+              p={{ base: "2.5", sm: "3.5" }}
               maxW={{ base: "100%", md: "460px" }}
+              w={{ base: "100%", md: "auto" }}
             >
               <Flex align="flex-start" gap="2.5">
                 <Box color="#64748B" mt="0.5" flexShrink={0}>
                   <FileTextIcon size={14} />
                 </Box>
-                <Text fontSize="12px" color="#64748B" lineHeight="1.5">
+                <Text fontSize={{ base: "11.5px", sm: "12px" }} color="#64748B" lineHeight="1.5">
                   Illustrative example only. These annual values are not actual I IMPACT INITIATIVE
                   records.
                 </Text>
@@ -336,44 +337,77 @@ export function LongitudinalGrowth() {
           </Flex>
 
           {/* 3-Year Timeline Interactive Pills */}
-          <Box mb="4">
+          <Box mb={{ base: "3", md: "4" }}>
             <Flex
-              wrap="wrap"
-              gap="2.5"
-              justify={{ base: "flex-start", md: "flex-end" }}
-              align="center"
+              direction={{ base: "column", sm: "row" }}
+              justify={{ base: "flex-start", sm: "space-between" }}
+              align={{ base: "stretch", sm: "center" }}
+              gap="2"
             >
-              <Text fontSize="11px" fontWeight="700" color="#94A3B8" textTransform="uppercase" mr="1">
+              <Text
+                fontSize="11px"
+                fontWeight="700"
+                color="#94A3B8"
+                textTransform="uppercase"
+                letterSpacing="0.05em"
+                display={{ base: "none", sm: "block" }}
+              >
                 Inspect Years:
               </Text>
-              {CUMULATIVE_GROWTH_DATA.map((pt, idx) => (
-                <Box
-                  key={pt.id}
-                  as="button"
-                  onClick={() => setActivePointIndex(idx)}
-                  onMouseEnter={() => setActivePointIndex(idx)}
-                  px="3"
-                  py="1.5"
-                  borderRadius="8px"
-                  fontSize="12px"
-                  fontWeight="700"
-                  bg={activePointIndex === idx ? (pt.isMilestone ? "#047857" : "#051B64") : "#F1F5F9"}
-                  color={activePointIndex === idx ? "#FFFFFF" : "#64748B"}
-                  boxShadow={activePointIndex === idx ? "0 2px 6px rgba(0,0,0,0.15)" : "none"}
-                  cursor="pointer"
-                  transition="all 0.2s ease"
-                  _hover={{
-                    transform: "translateY(-1px)",
-                  }}
-                >
-                  {pt.label}
-                  {pt.isMilestone && (
-                    <Box as="span" ml="2" px="1.5" py="0.5" borderRadius="full" bg="#34D399" color="#064E3B" fontSize="9.5px">
-                      10,000+ Verified
-                    </Box>
-                  )}
-                </Box>
-              ))}
+              <Flex gap={{ base: "1.5", sm: "2" }} w={{ base: "100%", sm: "auto" }}>
+                {CUMULATIVE_GROWTH_DATA.map((pt, idx) => (
+                  <Box
+                    key={pt.id}
+                    as="button"
+                    onClick={() => setActivePointIndex(idx)}
+                    onMouseEnter={() => setActivePointIndex(idx)}
+                    flex={{ base: "1", sm: "initial" }}
+                    textAlign="center"
+                    px={{ base: "2", sm: "3.5" }}
+                    py={{ base: "2", sm: "1.5" }}
+                    minH={{ base: "40px", sm: "36px" }}
+                    borderRadius="8px"
+                    fontSize={{ base: "11px", sm: "12px" }}
+                    fontWeight="700"
+                    bg={activePointIndex === idx ? (pt.isMilestone ? "#047857" : "#051B64") : "#F1F5F9"}
+                    color={activePointIndex === idx ? "#FFFFFF" : "#64748B"}
+                    boxShadow={activePointIndex === idx ? "0 2px 6px rgba(0,0,0,0.15)" : "none"}
+                    cursor="pointer"
+                    transition="all 0.2s ease"
+                    _hover={{
+                      transform: "translateY(-1px)",
+                    }}
+                    _active={{
+                      transform: "scale(0.97)",
+                    }}
+                    display="inline-flex"
+                    alignItems="center"
+                    justifyContent="center"
+                  >
+                    {pt.label}
+                    {pt.isMilestone && (
+                      <Box
+                        as="span"
+                        ml={{ base: "1", sm: "2" }}
+                        px="1.5"
+                        py="0.5"
+                        borderRadius="full"
+                        bg="#34D399"
+                        color="#064E3B"
+                        fontSize={{ base: "8.5px", sm: "9.5px" }}
+                        fontWeight="800"
+                      >
+                        <Box as="span" display={{ base: "inline", sm: "none" }}>
+                          10K+
+                        </Box>
+                        <Box as="span" display={{ base: "none", sm: "inline" }}>
+                          10,000+ Verified
+                        </Box>
+                      </Box>
+                    )}
+                  </Box>
+                ))}
+              </Flex>
             </Flex>
           </Box>
 
@@ -381,16 +415,17 @@ export function LongitudinalGrowth() {
           <Box
             position="relative"
             w="100%"
-            minH={{ base: "260px", sm: "300px", md: "330px" }}
-            mt="2"
-            mb="3"
+            aspectRatio="760 / 300"
+            style={{ aspectRatio: "760 / 300" }}
+            mt={{ base: "2", sm: "3" }}
+            mb={{ base: "2", sm: "3" }}
             userSelect="none"
           >
             <svg
               viewBox="0 0 760 300"
               width="100%"
               height="100%"
-              style={{ overflow: "visible" }}
+              style={{ overflow: "visible", display: "block" }}
               aria-label="3-Year Cumulative youth impact growth chart showing progression to 10,000+ reached"
             >
               <defs>
@@ -536,24 +571,24 @@ export function LongitudinalGrowth() {
 
             </svg>
 
-            {/* HTML Floating Tooltip: Ensures all writeup sits completely inside the dark blue background */}
+            {/* HTML Floating Tooltip: Sits precisely over the active point on mobile & desktop */}
             <Box
               position="absolute"
               left={`${(activePoint.x / 760) * 100}%`}
               top={`${(activePoint.y / 300) * 100}%`}
               transform={
                 activePointIndex === 2
-                  ? "translate(-80%, -100%) translateY(-14px)"
+                  ? "translate(-80%, -100%) translateY(-8px)"
                   : activePointIndex === 0
-                  ? "translate(-20%, -100%) translateY(-14px)"
-                  : "translate(-50%, -100%) translateY(-14px)"
+                  ? "translate(-20%, -100%) translateY(-8px)"
+                  : "translate(-50%, -100%) translateY(-8px)"
               }
               bg="#0F172A"
               color="#FFFFFF"
-              borderRadius="12px"
-              px="4"
-              py="2.5"
-              boxShadow="0 14px 30px -4px rgba(15, 23, 42, 0.45), 0 0 1px rgba(255, 255, 255, 0.2)"
+              borderRadius={{ base: "8px", sm: "10px", md: "12px" }}
+              px={{ base: "2.5", sm: "3.5", md: "4" }}
+              py={{ base: "1", sm: "1.5", md: "2.5" }}
+              boxShadow="0 10px 25px -4px rgba(15, 23, 42, 0.4), 0 0 1px rgba(255, 255, 255, 0.2)"
               border="1px solid rgba(255, 255, 255, 0.12)"
               pointerEvents="none"
               whiteSpace="nowrap"
@@ -565,7 +600,7 @@ export function LongitudinalGrowth() {
               {/* Downward triangle pointer */}
               <Box
                 position="absolute"
-                bottom="-6px"
+                bottom={{ base: "-4px", sm: "-5px", md: "-6px" }}
                 left={
                   activePointIndex === 2
                     ? "80%"
@@ -576,36 +611,36 @@ export function LongitudinalGrowth() {
                 transform="translateX(-50%)"
                 w="0"
                 h="0"
-                borderLeft="6px solid transparent"
-                borderRight="6px solid transparent"
-                borderTop="6px solid #0F172A"
+                borderLeft={{ base: "4px solid transparent", sm: "5px solid transparent", md: "6px solid transparent" }}
+                borderRight={{ base: "4px solid transparent", sm: "5px solid transparent", md: "6px solid transparent" }}
+                borderTop={{ base: "4px solid #0F172A", sm: "5px solid #0F172A", md: "6px solid #0F172A" }}
                 transition="left 0.3s cubic-bezier(0.16, 1, 0.3, 1)"
               />
 
               {/* Status Header with Micro Dot */}
-              <HStack gap="1.5" justify="center" mb="1">
+              <HStack gap="1" justify="center" mb={{ base: "0.5", md: "1" }}>
                 <Box
-                  w="5px"
-                  h="5px"
+                  w={{ base: "3.5px", sm: "4.5px", md: "5px" }}
+                  h={{ base: "3.5px", sm: "4.5px", md: "5px" }}
                   borderRadius="full"
                   bg={activePoint.isMilestone ? "#34D399" : "#94A3B8"}
                   flexShrink={0}
                 />
                 <Text
-                  fontSize="10.5px"
+                  fontSize={{ base: "8px", sm: "9px", md: "10.5px" }}
                   fontWeight="800"
                   color={activePoint.isMilestone ? "#34D399" : "#94A3B8"}
                   letterSpacing="0.06em"
                   textTransform="uppercase"
                   lineHeight="1.2"
                 >
-                  {activePoint.label} · {activePoint.isMilestone ? "Verified Milestone" : "Illustrative"}
+                  {activePoint.label} · {activePoint.isMilestone ? "Verified" : "Illustrative"}
                 </Text>
               </HStack>
 
               {/* Metric Value */}
               <Text
-                fontSize="14px"
+                fontSize={{ base: "11px", sm: "12.5px", md: "14px" }}
                 fontWeight="800"
                 color="#FFFFFF"
                 lineHeight="1.2"
@@ -617,12 +652,12 @@ export function LongitudinalGrowth() {
 
           {/* ================= 4. BOTTOM CAPTION / DISCLAIMER ================= */}
           <Box
-            pt="3.5"
+            pt="3"
             borderTop="1px solid"
             borderColor="#F1F5F9"
             textAlign="center"
           >
-            <Text fontSize="12px" color="#94A3B8" fontStyle="italic">
+            <Text fontSize={{ base: "11px", sm: "12px" }} color="#94A3B8" fontStyle="italic">
               Illustrative graph only — actual historical figures must replace these sample values.
             </Text>
           </Box>
