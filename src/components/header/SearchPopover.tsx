@@ -16,7 +16,7 @@ import {
 interface SearchResultItem {
   id: string
   title: string
-  category: "Programs" | "Events" | "Get Involved" | "About"
+  category: "Programs" | "Events" | "Get Involved" | "About" | "Resources" | "Media" | "News"
   href: string
   description: string
   icon: React.ReactNode
@@ -59,8 +59,8 @@ const SEARCH_DATA: SearchResultItem[] = [
     id: "5",
     title: "Volunteer Mentor Application",
     category: "Get Involved",
-    href: "/get-involved/volunteer",
-    description: "Join our network of 250+ active mentors shaping the next generation.",
+    href: "/get-involved?role=mentor",
+    description: "Join our network of 350+ active mentors shaping the next generation.",
     icon: <UsersIcon size={15} color="#8B5CF6" />,
   },
   {
@@ -78,6 +78,30 @@ const SEARCH_DATA: SearchResultItem[] = [
     href: "/about",
     description: "Learn about the mission to raise champions everyday.",
     icon: <SparklesIcon size={15} color="#051B64" />,
+  },
+  {
+    id: "8",
+    title: "Intellectual Resource Centre & E-Books",
+    category: "Resources",
+    href: "/resources",
+    description: "Download guides, e-books, podcasts, devotionals, and youth toolkits.",
+    icon: <TrophyIcon size={15} color="#149191" />,
+  },
+  {
+    id: "9",
+    title: "Visual Archive & Photo Gallery",
+    category: "Media",
+    href: "/media",
+    description: "Browse photo albums, keynotes, summit recaps, and video documentaries.",
+    icon: <SparklesIcon size={15} color="#38BDF8" />,
+  },
+  {
+    id: "10",
+    title: "News, Dispatches & Announcements",
+    category: "News",
+    href: "/blog",
+    description: "Read ongoing activity, program announcements, and youth transformation stories.",
+    icon: <CalendarIcon size={15} color="#059669" />,
   },
 ]
 
@@ -120,7 +144,7 @@ export function SearchPopover({ isDarkNav = false }: { isDarkNav?: boolean } = {
     return () => window.removeEventListener("keydown", handleKeyDown)
   }, [isOpen])
 
-  const categories = ["All", "Programs", "Events", "Get Involved", "About"]
+  const categories = ["All", "Programs", "Events", "Resources", "Media", "News", "Get Involved", "About"]
 
   const filteredResults = SEARCH_DATA.filter((item) => {
     const matchesQuery =

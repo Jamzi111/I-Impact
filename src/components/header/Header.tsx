@@ -84,14 +84,14 @@ export function Header({ variant = "default" }: { variant?: "default" | "dark" |
         boxShadow={headerShadow}
         transition="all 0.3s cubic-bezier(0.16, 1, 0.3, 1)"
       >
-        <Container maxW="1440px" px={{ base: "3", md: "4" }} py={{ base: "2", md: "2" }}>
-          <Flex align="center" justify="space-between" gap={{ base: "2", md: "2.5" }}>
+        <Container maxW="1480px" px={{ base: "2.5", md: "3", xl: "4" }} py={{ base: "2", md: "2" }}>
+          <Flex align="center" justify="space-between" gap={{ base: "1.5", md: "2", xl: "2.5" }}>
             {/* Brand Logo - Exact same as homepage when on event variant */}
             <Link href="/" style={{ flexShrink: 0, display: "flex", alignItems: "center" }}>
               <Box
                 position="relative"
-                h={{ base: "38px", sm: "38px", md: "40px" }}
-                w={{ base: "150px", sm: "160px", md: "175px" }}
+                h={{ base: "36px", sm: "38px", md: "40px" }}
+                w={{ base: "135px", sm: "150px", xl: "170px" }}
                 cursor="pointer"
                 userSelect="none"
                 bg={isDarkNav ? "rgba(255, 255, 255, 0.96)" : "transparent"}
@@ -109,7 +109,7 @@ export function Header({ variant = "default" }: { variant?: "default" | "dark" |
                   src="/iimpact-logo2.png"
                   alt="I-Impact - Raising Champions Everyday"
                   fill
-                  sizes="(max-width: 768px) 155px, 180px"
+                  sizes="(max-width: 768px) 140px, 175px"
                   style={{ objectFit: "contain", objectPosition: isDarkNav ? "center" : "left" }}
                   priority
                 />
@@ -119,7 +119,7 @@ export function Header({ variant = "default" }: { variant?: "default" | "dark" |
             {/* Desktop Navigation Links with Dropdowns */}
             <HStack
               as="nav"
-              gap="0.5"
+              gap={{ base: "0.25", xl: "0.5" }}
               display={{ base: "none", lg: "flex" }}
               align="center"
               flexWrap="nowrap"

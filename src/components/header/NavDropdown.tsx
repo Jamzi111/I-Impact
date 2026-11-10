@@ -15,6 +15,9 @@ import {
   CheckCircleIcon,
   VideoIcon,
   BuildingIcon,
+  HeadphonesIcon,
+  CameraIcon,
+  NewspaperIcon,
 } from "../icons"
 import { jumpToElement, setTargetHash } from "@/lib/scrollUtils"
 import { IMPACT_NAV_ITEM } from "@/components/impact"
@@ -162,40 +165,156 @@ export const NAV_ITEMS: NavItem[] = [
     },
   },
   {
+    label: "Resources",
+    href: "/resources",
+    children: [
+      {
+        title: "Guides & E-Books",
+        description: "Practical manuals on leadership, discipline, and personal growth.",
+        href: "/resources",
+        icon: <BookOpenIcon size={18} color="#149191" />,
+      },
+      {
+        title: "Podcasts & Audio Sessions",
+        description: "Masterclasses, founder interviews, and youth audio stories.",
+        href: "/resources",
+        icon: <HeadphonesIcon size={18} color="#7C3AED" />,
+        badge: "Audio",
+      },
+      {
+        title: "Daily Youth Devotionals",
+        description: "Spiritual and moral anchors for daily reflection and character.",
+        href: "/resources",
+        icon: <SparklesIcon size={18} color="#059669" />,
+      },
+      {
+        title: "Secondary School STEM Toolkits",
+        description: "Low-cost science prototyping blueprints and lab project guides.",
+        href: "/resources",
+        icon: <TrophyIcon size={18} color="#D97706" />,
+      },
+    ],
+    featuredSection: {
+      title: "The Champion's Mindset",
+      description: "Download Samuel Joseph's flagship 72-page youth leadership handbook free.",
+      ctaText: "Access Library",
+      href: "/resources",
+      badge: "Featured Guide",
+    },
+  },
+  {
+    label: "Media",
+    href: "/media",
+    children: [
+      {
+        title: "Photo Albums & Moments",
+        description: "Visual chronicles across our conference halls and maker clusters.",
+        href: "/media",
+        icon: <CameraIcon size={18} color="#149191" />,
+      },
+      {
+        title: "Video Keynotes & Replays",
+        description: "Watch stirring keynote challenges, panels, and speech clinics.",
+        href: "/media",
+        icon: <VideoIcon size={18} color="#051B64" />,
+      },
+      {
+        title: "Conferences & Summits",
+        description: "Photo archives from AS A TEEN Continental Congress editions.",
+        href: "/media",
+        icon: <TrophyIcon size={18} color="#F59E0B" />,
+      },
+      {
+        title: "Delegate Testimonials",
+        description: "Watch and read first-hand transformation stories from scholars.",
+        href: "/media",
+        icon: <UsersIcon size={18} color="#10B981" />,
+      },
+    ],
+    featuredSection: {
+      title: "AS A TEEN 2025 Documentary",
+      description: "Experience 1,500 emerging champions gathered in purpose and celebration.",
+      ctaText: "Watch Highlight Reel",
+      href: "/media",
+      badge: "Video Archive",
+    },
+  },
+  {
+    label: "News",
+    href: "/blog",
+    children: [
+      {
+        title: "Program Announcements",
+        description: "Official releases on new cohorts, summit dates, and venues.",
+        href: "/blog",
+        icon: <NewspaperIcon size={18} color="#149191" />,
+        badge: "Fresh",
+      },
+      {
+        title: "Youth Impact Stories",
+        description: "Inspiring profiles of scholars creating change in local communities.",
+        href: "/blog",
+        icon: <SparklesIcon size={18} color="#3B82F6" />,
+      },
+      {
+        title: "Event & Outreach Recaps",
+        description: "Reports from recent NEEDY NEEDS YOU and summit outreaches.",
+        href: "/blog",
+        icon: <CalendarIcon size={18} color="#059669" />,
+      },
+      {
+        title: "Volunteer & Scholar Calls",
+        description: "Applications for mentor fellowships and student delegations.",
+        href: "/blog",
+        icon: <TrophyIcon size={18} color="#D97706" />,
+      },
+    ],
+    featuredSection: {
+      title: "Stay Connected With I IMPACT",
+      description: "Subscribe to our ongoing dispatches and community updates.",
+      ctaText: "Read All News",
+      href: "/blog",
+      badge: "Dispatches",
+    },
+  },
+  {
     label: "Get Involved",
+    href: "/get-involved",
     children: [
       {
         title: "Volunteer as a Mentor",
-        description: "Share your wisdom and guide an aspiring young champion.",
-        href: "/contact",
+        description: "Invest 1-2 hours weekly to coach and guide an emerging teen champion.",
+        href: "/get-involved?role=mentor",
         icon: <HeartHandshakeIcon size={18} color="#149191" />,
-        badge: "Mentors",
+        badge: "Mentorship",
       },
       {
-        title: "Partner With Us",
-        description: "Corporate sponsorship, school alliances, and joint initiatives.",
-        href: "/contact",
+        title: "Community & Event Volunteer",
+        description: "Join our on-ground logistics, media, and summit operations teams.",
+        href: "/get-involved?role=volunteer",
         icon: <UsersIcon size={18} color="#051B64" />,
+        badge: "Volunteers",
       },
       {
-        title: "Donate & Support",
-        description: "Directly sponsor a youth's journey towards excellence.",
+        title: "Institutional Partner & Sponsor",
+        description: "Corporate CSR alliances, secondary school clubs, and institutional grants.",
+        href: "/get-involved?role=partner",
+        icon: <BuildingIcon size={18} color="#7C3AED" />,
+        badge: "Partners",
+      },
+      {
+        title: "Donate & Student Support",
+        description: "Directly sponsor learning materials, device kits, and event passes.",
         href: "/donate",
         icon: <TrophyIcon size={18} color="#10B981" />,
-      },
-      {
-        title: "Sponsor a School Cohort",
-        description: "Equip underserved secondary schools and youth innovation clusters.",
-        href: "/contact",
-        icon: <BuildingIcon size={18} color="#D97706" />,
-        badge: "Schools",
+        badge: "Giving",
       },
     ],
     featuredSection: {
       title: "Become a Champion Ally",
-      description: "Every mentor hour, sponsorship, and volunteer intervention fuels real grassroots change.",
+      description: "Join 350+ mentors, partners, and volunteers raising leaders across Africa.",
       ctaText: "Join The Movement",
-      href: "/contact",
+      href: "/get-involved",
       badge: "Get Involved",
     },
   },
@@ -255,10 +374,10 @@ export function NavDropdownItem({ item, isDarkNav = false }: NavDropdownItemProp
     return (
       <Link href={item.href || "#"}>
         <Box
-          px="1.5"
+          px={{ base: "1", xl: "1.5" }}
           py="0.5"
           borderRadius="md"
-          fontSize="11.5px"
+          fontSize={{ base: "10.5px", xl: "11.5px" }}
           fontWeight="600"
           color={isDarkNav ? "#FFFFFF" : "gray.700"}
           _hover={{
@@ -284,10 +403,10 @@ export function NavDropdownItem({ item, isDarkNav = false }: NavDropdownItemProp
       <Flex
         align="center"
         gap="0.5"
-        px="1.5"
+        px={{ base: "1", xl: "1.5" }}
         py="0.5"
         borderRadius="md"
-        fontSize="11.5px"
+        fontSize={{ base: "10.5px", xl: "11.5px" }}
         fontWeight="600"
         color={isOpen ? "#149191" : isDarkNav ? "#FFFFFF" : "gray.700"}
         bg={isOpen ? (isDarkNav ? "rgba(20, 145, 145, 0.2)" : "rgba(20, 145, 145, 0.08)") : "transparent"}

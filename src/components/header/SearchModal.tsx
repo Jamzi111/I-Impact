@@ -13,7 +13,7 @@ interface SearchModalProps {
 interface SearchResultItem {
   id: string
   title: string
-  category: "Programs" | "Events" | "Get Involved" | "About"
+  category: "Programs" | "Events" | "Get Involved" | "About" | "Resources" | "Media" | "News"
   href: string
   description: string
   icon: React.ReactNode
@@ -56,8 +56,8 @@ const SEARCH_DATA: SearchResultItem[] = [
     id: "5",
     title: "Volunteer Mentor Application",
     category: "Get Involved",
-    href: "/get-involved/volunteer",
-    description: "Join our network of 250+ active mentors creating meaningful generational shifts.",
+    href: "/get-involved?role=mentor",
+    description: "Join our network of 350+ active mentors creating meaningful generational shifts.",
     icon: <UsersIcon size={16} color="#8B5CF6" />,
   },
   {
@@ -75,6 +75,30 @@ const SEARCH_DATA: SearchResultItem[] = [
     href: "/about",
     description: "Learn about the mission to raise champions everyday across the globe.",
     icon: <SparklesIcon size={16} color="#051B64" />,
+  },
+  {
+    id: "8",
+    title: "Intellectual Resource Centre & E-Books",
+    category: "Resources",
+    href: "/resources",
+    description: "Download guides, e-books, podcasts, devotionals, and youth toolkits.",
+    icon: <TrophyIcon size={16} color="#149191" />,
+  },
+  {
+    id: "9",
+    title: "Visual Archive & Photo Gallery",
+    category: "Media",
+    href: "/media",
+    description: "Browse photo albums, keynotes, summit recaps, and video documentaries.",
+    icon: <SparklesIcon size={16} color="#38BDF8" />,
+  },
+  {
+    id: "10",
+    title: "News, Dispatches & Announcements",
+    category: "News",
+    href: "/blog",
+    description: "Read ongoing activity, program announcements, and youth transformation stories.",
+    icon: <CalendarIcon size={16} color="#059669" />,
   },
 ]
 
@@ -122,7 +146,7 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
     return matchesQuery && matchesCategory
   })
 
-  const categories = ["All", "Programs", "Events", "Get Involved", "About"]
+  const categories = ["All", "Programs", "Events", "Resources", "Media", "News", "Get Involved", "About"]
 
   return (
     <Box
