@@ -54,10 +54,104 @@ const TESTIMONIALS: TestimonialItem[] = [
   },
 ]
 
+function TestimonialCardContent({
+  item,
+  isActive,
+}: {
+  item: TestimonialItem
+  isActive: boolean
+}) {
+  return (
+    <>
+      {/* Top Row: Stars + Animated Quote Icon */}
+      <Box>
+        <Flex justify="space-between" align="center" mb="3">
+          <HStack gap="1">
+            {Array.from({ length: item.rating || 5 }).map((_, i) => (
+              <Box
+                key={i}
+                transition="transform 0.2s"
+                _hover={{ transform: "scale(1.2) rotate(10deg)" }}
+              >
+                <StarIcon size={15} color="#F59E0B" />
+              </Box>
+            ))}
+          </HStack>
+          <Box
+            color={isActive ? "#149191" : "rgba(20, 145, 145, 0.35)"}
+            transition="all 0.35s cubic-bezier(0.16, 1, 0.3, 1)"
+            transform={isActive ? "scale(1.1) rotate(-5deg)" : "scale(1)"}
+          >
+            <QuoteIcon size={20} />
+          </Box>
+        </Flex>
+
+        {/* Headline Quote */}
+        <Text
+          fontSize={{ base: "15px", sm: "15.5px" }}
+          fontWeight="800"
+          color="#051B64"
+          lineHeight="1.3"
+          mb="2"
+        >
+          {item.headline}
+        </Text>
+
+        {/* Quote Text */}
+        <Text
+          fontSize={{ base: "13px", sm: "13.5px" }}
+          color="#4B5563"
+          lineHeight="1.55"
+          fontStyle="italic"
+        >
+          &ldquo;{item.quote}&rdquo;
+        </Text>
+      </Box>
+
+      {/* Bottom Author Row with photo and initials only */}
+      <HStack gap="3" mt="4" pt="3.5" borderTop="1px solid" borderColor="#EDF2F7" align="center">
+        <Box
+          position="relative"
+          w="40px"
+          h="40px"
+          borderRadius="full"
+          overflow="hidden"
+          border="2px solid"
+          borderColor={isActive ? "#149191" : "rgba(20, 145, 145, 0.4)"}
+          boxShadow={isActive ? "0 0 0 3px rgba(20, 145, 145, 0.16)" : "0 2px 6px rgba(5, 27, 100, 0.08)"}
+          transition="all 0.35s ease"
+          flexShrink={0}
+        >
+          <Image
+            src={item.image}
+            alt={item.initials}
+            fill
+            sizes="40px"
+            style={{ objectFit: "cover" }}
+          />
+        </Box>
+
+        <VStack align="flex-start" gap="0">
+          <Text
+            fontSize="14px"
+            fontWeight="800"
+            color="#051B64"
+            lineHeight="1.2"
+          >
+            {item.initials}
+          </Text>
+        </VStack>
+      </HStack>
+    </>
+  )
+}
+
 export function Testimonials() {
   const [inView, setInView] = useState(false)
   const [activeIndex, setActiveIndex] = useState(0)
   const [isPaused, setIsPaused] = useState(false)
+  const [touchStart, setTouchStart] = useState<number | null>(null)
+  const [touchEnd, setTouchEnd] = useState<number | null>(null)
   const sectionRef = useRef<HTMLDivElement>(null)
 
   // Scroll reveal observer
@@ -87,16 +181,16 @@ export function Testimonials() {
     }
   }, [])
 
-  // Auto-cycle spotlight active card every 4.5 seconds
+  // Auto-cycle testimonial every 10 seconds (slides to next testimonial, resets on navigation or pause)
   useEffect(() => {
     if (isPaused || !inView) return
 
-    const interval = setInterval(() => {
+    const timer = setTimeout(() => {
       setActiveIndex((prev) => (prev + 1) % TESTIMONIALS.length)
-    }, 4500)
+    }, 10000)
 
-    return () => clearInterval(interval)
-  }, [isPaused, inView])
+    return () => clearTimeout(timer)
+  }, [activeIndex, isPaused, inView])
 
   const handlePrev = () => {
     setActiveIndex((prev) => (prev === 0 ? TESTIMONIALS.length - 1 : prev - 1))
@@ -104,6 +198,27 @@ export function Testimonials() {
 
   const handleNext = () => {
     setActiveIndex((prev) => (prev + 1) % TESTIMONIALS.length)
+  }
+
+  // Mobile Touch Swipe Handling
+  const handleTouchStart = (e: React.TouchEvent) => {
+    setTouchEnd(null)
+    setTouchStart(e.targetTouches[0].clientX)
+  }
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    setTouchEnd(e.targetTouches[0].clientX)
+  }
+
+  const handleTouchEnd = () => {
+    if (!touchStart || !touchEnd) return
+    const distance = touchStart - touchEnd
+    const minSwipeDistance = 45
+    if (distance > minSwipeDistance) {
+      handleNext()
+    } else if (distance < -minSwipeDistance) {
+      handlePrev()
+    }
   }
 
   return (
@@ -204,8 +319,61 @@ export function Testimonials() {
           </Text>
         </VStack>
 
-        {/* Testimonials Grid with more compact, sleek cards */}
-        <SimpleGrid columns={{ base: 1, md: 3 }} gap={{ base: "5", lg: "6" }}>
+        {/* Mobile View: Smooth horizontal sliding carousel (1 card at a time, sliding in every 10s or via controls/swipe) */}
+        <Box
+          display={{ base: "block", md: "none" }}
+          overflow="hidden"
+          position="relative"
+          w="100%"
+          maxW="480px"
+          mx="auto"
+          onTouchStart={handleTouchStart}
+          onTouchMove={handleTouchMove}
+          onTouchEnd={handleTouchEnd}
+        >
+          <Flex
+            w="100%"
+            style={{
+              transform: `translateX(-${activeIndex * 100}%)`,
+              transition: "transform 0.6s cubic-bezier(0.22, 1, 0.36, 1)",
+            }}
+          >
+            {TESTIMONIALS.map((item, index) => {
+              const isActive = activeIndex === index
+              return (
+                <Box
+                  key={item.id}
+                  flex="0 0 100%"
+                  w="100%"
+                  px="1.5"
+                  boxSizing="border-box"
+                >
+                  <Box
+                    bg="#FFFFFF"
+                    borderRadius="20px"
+                    p={{ base: "5", sm: "6" }}
+                    border="1px solid"
+                    borderColor={isActive ? "rgba(20, 145, 145, 0.55)" : "rgba(20, 145, 145, 0.16)"}
+                    boxShadow="0 18px 36px -8px rgba(5, 27, 100, 0.14), 0 0 0 2px rgba(20, 145, 145, 0.25)"
+                    display="flex"
+                    flexDirection="column"
+                    justifyContent="space-between"
+                    minH="260px"
+                  >
+                    <TestimonialCardContent item={item} isActive={isActive} />
+                  </Box>
+                </Box>
+              )
+            })}
+          </Flex>
+        </Box>
+
+        {/* Desktop View: All 3 cards side by side in 3 columns */}
+        <SimpleGrid
+          display={{ base: "none", md: "grid" }}
+          columns={3}
+          gap={{ md: "5", lg: "6" }}
+        >
           {TESTIMONIALS.map((item, index) => {
             const isActive = activeIndex === index
             return (
@@ -215,7 +383,7 @@ export function Testimonials() {
                 cursor="pointer"
                 bg="#FFFFFF"
                 borderRadius="20px"
-                p={{ base: "5", sm: "5.5", md: "6" }}
+                p={{ md: "5.5", lg: "6" }}
                 border="1px solid"
                 borderColor={isActive ? "rgba(20, 145, 145, 0.55)" : "rgba(20, 145, 145, 0.16)"}
                 boxShadow={
@@ -243,97 +411,19 @@ export function Testimonials() {
                   borderColor: "#149191",
                 }}
               >
-                {/* Top Row: Stars + Animated Quote Icon */}
-                <Box>
-                  <Flex justify="space-between" align="center" mb="3">
-                    <HStack gap="1">
-                      {Array.from({ length: item.rating || 5 }).map((_, i) => (
-                        <Box
-                          key={i}
-                          transition="transform 0.2s"
-                          _hover={{ transform: "scale(1.2) rotate(10deg)" }}
-                        >
-                          <StarIcon size={15} color="#F59E0B" />
-                        </Box>
-                      ))}
-                    </HStack>
-                    <Box
-                      color={isActive ? "#149191" : "rgba(20, 145, 145, 0.35)"}
-                      transition="all 0.35s cubic-bezier(0.16, 1, 0.3, 1)"
-                      transform={isActive ? "scale(1.1) rotate(-5deg)" : "scale(1)"}
-                    >
-                      <QuoteIcon size={20} />
-                    </Box>
-                  </Flex>
-
-                  {/* Headline Quote */}
-                  <Text
-                    fontSize={{ base: "15px", sm: "15.5px" }}
-                    fontWeight="800"
-                    color="#051B64"
-                    lineHeight="1.3"
-                    mb="2"
-                  >
-                    {item.headline}
-                  </Text>
-
-                  {/* Quote Text */}
-                  <Text
-                    fontSize={{ base: "13px", sm: "13.5px" }}
-                    color="#4B5563"
-                    lineHeight="1.55"
-                    fontStyle="italic"
-                  >
-                    &ldquo;{item.quote}&rdquo;
-                  </Text>
-                </Box>
-
-                {/* Bottom Author Row with photo and initials only */}
-                <HStack gap="3" mt="4" pt="3.5" borderTop="1px solid" borderColor="#EDF2F7" align="center">
-                  <Box
-                    position="relative"
-                    w="40px"
-                    h="40px"
-                    borderRadius="full"
-                    overflow="hidden"
-                    border="2px solid"
-                    borderColor={isActive ? "#149191" : "rgba(20, 145, 145, 0.4)"}
-                    boxShadow={isActive ? "0 0 0 3px rgba(20, 145, 145, 0.16)" : "0 2px 6px rgba(5, 27, 100, 0.08)"}
-                    transition="all 0.35s ease"
-                    flexShrink={0}
-                  >
-                    <Image
-                      src={item.image}
-                      alt={item.initials}
-                      fill
-                      sizes="40px"
-                      style={{ objectFit: "cover" }}
-                    />
-                  </Box>
-
-                  <VStack align="flex-start" gap="0">
-                    <Text
-                      fontSize="14px"
-                      fontWeight="800"
-                      color="#051B64"
-                      lineHeight="1.2"
-                    >
-                      {item.initials}
-                    </Text>
-                  </VStack>
-                </HStack>
+                <TestimonialCardContent item={item} isActive={isActive} />
               </Box>
             )
           })}
         </SimpleGrid>
 
         {/* Interactive Controls & Pagination Indicator */}
-        <Flex justify="center" align="center" gap="3.5" mt={{ base: "8", md: "9" }}>
+        <Flex justify="center" align="center" gap="3.5" mt={{ base: "7", sm: "8", md: "9" }}>
           {/* Prev Arrow */}
           <Button
             size="sm"
-            w="34px"
-            h="34px"
+            w={{ base: "38px", md: "34px" }}
+            h={{ base: "38px", md: "34px" }}
             p="0"
             borderRadius="full"
             bg="white"
@@ -362,8 +452,8 @@ export function Testimonials() {
                 as="button"
                 aria-label={`Go to testimonial ${i + 1}`}
                 onClick={() => setActiveIndex(i)}
-                w={activeIndex === i ? "20px" : "7px"}
-                h="7px"
+                w={activeIndex === i ? { base: "22px", md: "20px" } : { base: "8px", md: "7px" }}
+                h={{ base: "8px", md: "7px" }}
                 borderRadius="full"
                 bg={activeIndex === i ? "#149191" : "rgba(20, 145, 145, 0.25)"}
                 transition="all 0.35s cubic-bezier(0.16, 1, 0.3, 1)"
@@ -375,8 +465,8 @@ export function Testimonials() {
           {/* Next Arrow */}
           <Button
             size="sm"
-            w="34px"
-            h="34px"
+            w={{ base: "38px", md: "34px" }}
+            h={{ base: "38px", md: "34px" }}
             p="0"
             borderRadius="full"
             bg="white"

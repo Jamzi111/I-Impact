@@ -11,7 +11,6 @@ import {
   HStack,
   Button,
 } from "@chakra-ui/react"
-import Link from "next/link"
 import {
   HeartHandshakeIcon,
   UsersIcon,
@@ -119,7 +118,6 @@ export const INVOLVEMENT_TRACKS: TrackData[] = [
       "Meaningful alignment with youth development goals",
     ],
     ctaText: "Support a Programme",
-    donateHref: "/donate",
   },
   {
     id: "speaker",
@@ -181,6 +179,7 @@ export function InvolvementTracks({
       borderBottom="1px solid"
       borderColor="#E2E8F0"
     >
+      <span id="pathways" style={{ position: "relative", top: "-80px" }} />
       <Container
         maxW={{ base: "100%", sm: "640px", md: "768px", lg: "1140px", xl: "1240px" }}
         px={{ base: "4", sm: "6", md: "8" }}
@@ -360,61 +359,27 @@ export function InvolvementTracks({
 
                 {/* Bottom Action */}
                 <Box pt="3" borderTop="1px solid" borderColor="#F1F5F9">
-                  {track.donateHref ? (
-                    <Flex gap="2">
-                      <Button
-                        onClick={() => onSelectTrack(track.id)}
-                        w="50%"
-                        size="sm"
-                        h="38px"
-                        fontSize="12px"
-                        fontWeight="700"
-                        bg="#051B64"
-                        color="#FFFFFF"
-                        borderRadius="10px"
-                        _hover={{ bg: "#071647" }}
-                      >
-                        Express Interest
-                      </Button>
-                      <Link href={track.donateHref} style={{ width: "50%" }}>
-                        <Button
-                          w="100%"
-                          size="sm"
-                          h="38px"
-                          fontSize="12px"
-                          fontWeight="700"
-                          bg="#149191"
-                          color="#FFFFFF"
-                          borderRadius="10px"
-                          _hover={{ bg: "#0F766E" }}
-                        >
-                          Donate Page
-                        </Button>
-                      </Link>
-                    </Flex>
-                  ) : (
-                    <Button
-                      onClick={() => onSelectTrack(track.id)}
-                      w="100%"
-                      size="sm"
-                      h="40px"
-                      fontSize="12.5px"
-                      fontWeight="700"
-                      bg={isSelected ? "#149191" : "#051B64"}
-                      color="#FFFFFF"
-                      borderRadius="10px"
-                      transition="all 0.18s ease"
-                      _hover={{
-                        bg: isSelected ? "#0F766E" : "#149191",
-                        transform: "translateY(-1px)",
-                      }}
-                    >
-                      <HStack gap="1.5">
-                        <Text>{isSelected ? "Selected — See Form Below" : track.ctaText}</Text>
-                        <ArrowRightIcon size={13} />
-                      </HStack>
-                    </Button>
-                  )}
+                  <Button
+                    onClick={() => onSelectTrack(track.id)}
+                    w="100%"
+                    size="sm"
+                    h="40px"
+                    fontSize="12.5px"
+                    fontWeight="700"
+                    bg={isSelected ? "#149191" : "#051B64"}
+                    color="#FFFFFF"
+                    borderRadius="10px"
+                    transition="all 0.18s ease"
+                    _hover={{
+                      bg: isSelected ? "#0F766E" : "#149191",
+                      transform: "translateY(-1px)",
+                    }}
+                  >
+                    <HStack gap="1.5">
+                      <Text>{isSelected ? "Selected — Fill Application Below" : track.ctaText}</Text>
+                      <ArrowRightIcon size={13} />
+                    </HStack>
+                  </Button>
                 </Box>
               </Box>
             )

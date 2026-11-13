@@ -11,6 +11,25 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ success: false, error: "No file provided" }, { status: 400 })
     }
 
+    // Validate file size (max 5MB)
+    const MAX_FILE_SIZE = 5 * 1024 * 1024
+    if (file.size > MAX_FILE_SIZE) {
+      return NextResponse.json(
+        { success: false, error: "File exceeds the 5MB size limit. Please upload a smaller file." },
+        { status: 400 }
+      )
+    }
+
+    // Validate file extension
+    const ext = path.extname(file.name).toLowerCase()
+    const allowedExtensions = [".pdf", ".doc", ".docx", ".png", ".jpg", ".jpeg", ".webp"]
+    if (!allowedExtensions.includes(ext)) {
+      return NextResponse.json(
+        { success: false, error: `Invalid file type (${ext}). Supported formats: PDF, DOCX, DOC, JPG, PNG.` },
+        { status: 400 }
+      )
+    }
+
     const bytes = await file.arrayBuffer()
     const buffer = Buffer.from(bytes)
 

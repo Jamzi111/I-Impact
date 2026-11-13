@@ -97,14 +97,14 @@ export function PartnersSection() {
       </Container>
 
       {/* Infinite Scrolling Logo Ticker Container */}
-      <Box position="relative" w="100%" overflow="hidden" py={{ base: "3", md: "5" }}>
+      <Box position="relative" w="100%" overflow="hidden" py={{ base: "5", sm: "6", md: "7", lg: "8" }}>
         {/* Left & Right Smooth Edge Fade Masks */}
         <Box
           position="absolute"
           top="0"
           bottom="0"
           left="0"
-          w={{ base: "50px", sm: "90px", md: "160px" }}
+          w={{ base: "60px", sm: "100px", md: "160px" }}
           bg="linear-gradient(to right, #FFFFFF 0%, rgba(255, 255, 255, 0) 100%)"
           zIndex={2}
           pointerEvents="none"
@@ -114,7 +114,7 @@ export function PartnersSection() {
           top="0"
           bottom="0"
           right="0"
-          w={{ base: "50px", sm: "90px", md: "160px" }}
+          w={{ base: "60px", sm: "100px", md: "160px" }}
           bg="linear-gradient(to left, #FFFFFF 0%, rgba(255, 255, 255, 0) 100%)"
           zIndex={2}
           pointerEvents="none"
@@ -127,16 +127,16 @@ export function PartnersSection() {
               key={`${partner.id}-${index}`}
               align="center"
               justify="center"
-              px={{ base: "7", sm: "9", md: "12", lg: "14" }}
+              px={{ base: "8", sm: "10", md: "14", lg: "16" }}
               flexShrink={0}
             >
               <Box
                 position="relative"
-                w={{ base: "170px", sm: "210px", md: "260px", lg: "290px" }}
-                h={{ base: "70px", sm: "85px", md: "100px", lg: "115px" }}
+                w={{ base: "230px", sm: "270px", md: "310px", lg: "340px" }}
+                h={{ base: "95px", sm: "110px", md: "125px", lg: "135px" }}
                 cursor="pointer"
                 transition="transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease"
-                opacity={0.92}
+                opacity={0.95}
                 _hover={{
                   opacity: 1,
                   transform: "scale(1.08)",
@@ -146,7 +146,7 @@ export function PartnersSection() {
                   src={partner.logo}
                   alt={`${partner.name} - Sponsor`}
                   fill
-                  sizes="(max-width: 768px) 210px, 290px"
+                  sizes="(max-width: 640px) 240px, (max-width: 768px) 290px, 340px"
                   style={{ objectFit: "contain" }}
                 />
               </Box>

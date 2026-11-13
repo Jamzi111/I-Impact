@@ -1,6 +1,7 @@
 "use client"
 
 import React, { useState, useEffect } from "react"
+import Image from "next/image"
 import {
   Box,
   Container,
@@ -79,9 +80,10 @@ export function GetInvolvedHero({ onSelectTrack }: GetInvolvedHeroProps) {
 
   const handleScrollToSection = (id: string) => {
     if (typeof window === "undefined") return
-    const el = document.getElementById(id)
+    const targetId = id === "pathways" ? "involvement-tracks" : id
+    const el = document.getElementById(targetId) || document.getElementById(id)
     if (el) {
-      const headerOffset = 84
+      const headerOffset = 70
       const elementPosition = el.getBoundingClientRect().top
       const offsetPosition = elementPosition + window.pageYOffset - headerOffset
       window.scrollTo({
@@ -97,7 +99,7 @@ export function GetInvolvedHero({ onSelectTrack }: GetInvolvedHeroProps) {
       position="relative"
       bg="linear-gradient(180deg, #051B64 0%, #071647 60%, #0B1A4D 100%)"
       color="#FFFFFF"
-      pt={{ base: "8", sm: "10", md: "12" }}
+      pt={{ base: "100px", sm: "108px", md: "114px", lg: "116px" }}
       pb={{ base: "12", sm: "14", md: "16" }}
       overflow="hidden"
     >
@@ -207,7 +209,7 @@ export function GetInvolvedHero({ onSelectTrack }: GetInvolvedHeroProps) {
               mb={{ base: "8", md: "9" }}
             >
               <Button
-                onClick={() => handleScrollToSection("pathways")}
+                onClick={() => handleScrollToSection("involvement-tracks")}
                 bg="#149191"
                 color="#FFFFFF"
                 size="lg"
@@ -264,7 +266,7 @@ export function GetInvolvedHero({ onSelectTrack }: GetInvolvedHeroProps) {
             </Flex>
 
             {/* 4 Stat Cards */}
-            <SimpleGrid columns={{ base: 2, sm: 4 }} gap="3">
+            <SimpleGrid columns={{ base: 2, sm: 4 }} gap={{ base: "2", md: "2.5" }}>
               {STAT_PILLARS.map((card) => (
                 <Box
                   key={card.id}
@@ -272,8 +274,12 @@ export function GetInvolvedHero({ onSelectTrack }: GetInvolvedHeroProps) {
                   border="1px solid"
                   borderColor="rgba(255, 255, 255, 0.1)"
                   backdropFilter="blur(8px)"
-                  borderRadius="14px"
-                  p={{ base: "3", md: "3.5" }}
+                  borderRadius="10px"
+                  p={{ base: "2", sm: "2", md: "2.5" }}
+                  display="flex"
+                  flexDirection="column"
+                  justifyContent="flex-start"
+                  h="100%"
                   textAlign="left"
                   transition={prefersReducedMotion ? "none" : "all 0.2s ease"}
                   _hover={{
@@ -282,18 +288,18 @@ export function GetInvolvedHero({ onSelectTrack }: GetInvolvedHeroProps) {
                     transform: prefersReducedMotion ? "none" : "translateY(-2px)",
                   }}
                 >
-                  <Box mb="1.5">{card.icon}</Box>
+                  <Box mb="1">{card.icon}</Box>
                   <Text
-                    fontSize={{ base: "15px", sm: "16px", md: "18px" }}
-                    fontWeight="900"
+                    fontSize={{ base: "13px", sm: "12.5px", md: "13.5px" }}
+                    fontWeight="800"
                     color="#FFFFFF"
-                    lineHeight="1.15"
-                    mb="0.5"
+                    lineHeight="1.2"
+                    mb="1"
                   >
                     {card.number}
                   </Text>
                   <Text
-                    fontSize="11px"
+                    fontSize={{ base: "10.5px", sm: "10px", md: "11px" }}
                     fontWeight="700"
                     color="#34D399"
                     lineHeight="1.2"
@@ -302,9 +308,9 @@ export function GetInvolvedHero({ onSelectTrack }: GetInvolvedHeroProps) {
                     {card.label}
                   </Text>
                   <Text
-                    fontSize="10.5px"
+                    fontSize={{ base: "9.5px", sm: "9px", md: "10px" }}
                     color="rgba(226, 232, 240, 0.65)"
-                    lineHeight="1.25"
+                    lineHeight="1.3"
                   >
                     {card.desc}
                   </Text>
@@ -326,20 +332,21 @@ export function GetInvolvedHero({ onSelectTrack }: GetInvolvedHeroProps) {
             >
               {/* Main Image */}
               <Box
+                position="relative"
                 w="100%"
                 h={{ base: "280px", sm: "360px", lg: "420px" }}
                 overflow="hidden"
                 display="block"
               >
-                <img
-                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuA6bjJWPI10HxOw0h3wmGX_YnMNwPjNtJvLU5C4fxvDtgljXzmMsp0XJinG7sBXCCppKuuC-IlZnjAZvecrAfM3Q9lybeX1qND90eAYcX9bpYlv270w80lZ1lFzpDOT9zBt543oq7QFaFriCvvd-gEOZX8Jh_YTIB6WT71dFkWAY75WtfoPcfU7qPour7teIVEwbm_fD2PuqZaZsLpDfMlD1hv9xKH55eUKTR6pZVZnrjcEUKx7upXf"
-                  alt="Young leaders and mentors collaborating in an innovation learning session"
+                <Image
+                  src="/images/get-involved-hero.jpg"
+                  alt="Young leaders and mentors collaborating in an innovation learning session with I-IMPACT"
+                  fill
+                  sizes="(max-width: 1024px) 100vw, 50vw"
                   style={{
-                    width: "100%",
-                    height: "100%",
                     objectFit: "cover",
-                    display: "block",
                   }}
+                  priority
                 />
               </Box>
 

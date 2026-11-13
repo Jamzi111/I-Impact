@@ -1,8 +1,7 @@
 "use client"
 
 import React, { useState, useEffect, Suspense } from "react"
-import { Box, Container, Flex, HStack, Text } from "@chakra-ui/react"
-import Link from "next/link"
+import { Box } from "@chakra-ui/react"
 import { useSearchParams } from "next/navigation"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
@@ -14,7 +13,6 @@ import {
   OnboardingProcess,
   WhyGetInvolved,
   InvolvementForm,
-  InvolvementSuccessModal,
   InvolvementFAQ,
   GetInvolvedCTA,
 } from "@/components/get-involved"
@@ -23,8 +21,6 @@ function GetInvolvedContent() {
   const searchParams = useSearchParams()
   const initialRole = searchParams?.get("role") || "mentor"
   const [selectedTrack, setSelectedTrack] = useState(initialRole)
-  const [isSuccessOpen, setIsSuccessOpen] = useState(false)
-  const [submissionData, setSubmissionData] = useState<any | null>(null)
 
   useEffect(() => {
     const roleParam = searchParams?.get("role")
@@ -59,11 +55,6 @@ function GetInvolvedContent() {
     }
   }
 
-  const handleOpenSuccessModal = (data: any) => {
-    setSubmissionData(data)
-    setIsSuccessOpen(true)
-  }
-
   return (
     <Box
       minH="100vh"
@@ -83,59 +74,7 @@ function GetInvolvedContent() {
         overflowX="hidden"
         w="100%"
         maxW="100%"
-        pt={{ base: "72px", md: "84px" }}
       >
-        {/* Top Utility Context Bar / Breadcrumb Header */}
-        <Box
-          as="section"
-          w="100%"
-          bg="#F8FAFC"
-          borderBottom="1px solid"
-          borderColor="#E2E8F0"
-          py="2.5"
-        >
-          <Container
-            maxW={{ base: "100%", sm: "640px", md: "768px", lg: "1140px", xl: "1280px" }}
-            px={{ base: "4", sm: "6", md: "8" }}
-          >
-            <Flex
-              direction={{ base: "column", sm: "row" }}
-              align={{ base: "flex-start", sm: "center" }}
-              justify="space-between"
-              gap="2"
-            >
-              <HStack gap="2" fontSize="12.5px" color="#64748B">
-                <Link href="/">
-                  <Text
-                    as="span"
-                    color="#64748B"
-                    _hover={{ color: "#059669" }}
-                    transition="color 0.15s ease"
-                  >
-                    Home
-                  </Text>
-                </Link>
-                <Text as="span" color="#CBD5E1">
-                  /
-                </Text>
-                <Text as="span" color="#051B64" fontWeight="700">
-                  Get Involved & Partner With Us
-                </Text>
-              </HStack>
-
-              <Text
-                fontSize={{ base: "10.5px", md: "11px" }}
-                fontWeight="800"
-                letterSpacing="0.08em"
-                textTransform="uppercase"
-                color="#059669"
-              >
-                Pan-African Youth Empowerment • Pathways to Impact
-              </Text>
-            </Flex>
-          </Container>
-        </Box>
-
         {/* 1. Get Involved Hero (Clean invitation, verified 10,000+ stat, 2 CTAs) */}
         <GetInvolvedHero onSelectTrack={handleTrackSelect} />
 
@@ -158,7 +97,6 @@ function GetInvolvedContent() {
         <InvolvementForm
           selectedTrack={selectedTrack}
           onTrackChange={setSelectedTrack}
-          onOpenSuccessModal={handleOpenSuccessModal}
         />
 
         {/* 7. Frequently Asked Questions (Realistic, grounded answers) */}
@@ -173,13 +111,6 @@ function GetInvolvedContent() {
 
       {/* Universal Footer */}
       <Footer />
-
-      {/* Celebration / Success Confirmation Modal */}
-      <InvolvementSuccessModal
-        isOpen={isSuccessOpen}
-        onClose={() => setIsSuccessOpen(false)}
-        submission={submissionData}
-      />
     </Box>
   )
 }

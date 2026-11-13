@@ -84,14 +84,14 @@ export function Header({ variant = "default" }: { variant?: "default" | "dark" |
         boxShadow={headerShadow}
         transition="all 0.3s cubic-bezier(0.16, 1, 0.3, 1)"
       >
-        <Container maxW="1480px" px={{ base: "2.5", md: "3", xl: "4" }} py={{ base: "2", md: "2" }}>
-          <Flex align="center" justify="space-between" gap={{ base: "1.5", md: "2", xl: "2.5" }}>
+        <Container maxW="1480px" px={{ base: "4", sm: "6", md: "8", xl: "10" }} py={{ base: "3", sm: "3.5", md: "4", lg: "3" }}>
+          <Flex align="center" justify="space-between" gap={{ base: "2", md: "3", xl: "4" }}>
             {/* Brand Logo - Exact same as homepage when on event variant */}
             <Link href="/" style={{ flexShrink: 0, display: "flex", alignItems: "center" }}>
               <Box
                 position="relative"
-                h={{ base: "36px", sm: "38px", md: "40px" }}
-                w={{ base: "135px", sm: "150px", xl: "170px" }}
+                h={{ base: "44px", sm: "48px", md: "52px", lg: "46px", xl: "50px" }}
+                w={{ base: "155px", sm: "170px", md: "190px", lg: "175px", xl: "195px" }}
                 cursor="pointer"
                 userSelect="none"
                 bg={isDarkNav ? "rgba(255, 255, 255, 0.96)" : "transparent"}
@@ -109,7 +109,7 @@ export function Header({ variant = "default" }: { variant?: "default" | "dark" |
                   src="/iimpact-logo2.png"
                   alt="I-Impact - Raising Champions Everyday"
                   fill
-                  sizes="(max-width: 768px) 140px, 175px"
+                  sizes="(max-width: 768px) 170px, 200px"
                   style={{ objectFit: "contain", objectPosition: isDarkNav ? "center" : "left" }}
                   priority
                 />
@@ -215,14 +215,14 @@ export function Header({ variant = "default" }: { variant?: "default" | "dark" |
                 display={{ base: "flex", lg: "none" }}
                 alignItems="center"
                 justifyContent="center"
-                p="1.5"
+                p="2"
                 borderRadius="lg"
                 color={isDarkNav ? "#FFFFFF" : "gray.700"}
                 _hover={{ bg: isDarkNav ? "rgba(255, 255, 255, 0.12)" : "gray.100", color: "#149191" }}
                 cursor="pointer"
                 transition="all 0.2s"
               >
-                <MenuIcon size={20} />
+                <MenuIcon size={24} />
               </Box>
             </HStack>
           </Flex>

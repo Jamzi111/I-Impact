@@ -10,6 +10,7 @@ import {
   SearchIcon,
   ArrowRightIcon,
   VideoIcon,
+  SparklesIcon,
 } from "../icons"
 import { NAV_ITEMS, NavItem } from "./NavDropdown"
 import { jumpToElement, setTargetHash } from "@/lib/scrollUtils"
@@ -189,10 +190,8 @@ export function MobileNavDrawer({
               }
 
               return (
-                <Box key={idx}>
+                <Box key={idx} borderRadius="lg" bg={isExpanded ? "rgba(20, 145, 145, 0.04)" : "transparent"}>
                   <Flex
-                    as="button"
-                    onClick={() => toggleAccordion(item.label)}
                     w="100%"
                     px="3"
                     py="2.5"
@@ -201,23 +200,79 @@ export function MobileNavDrawer({
                     justify="space-between"
                     fontSize="sm"
                     fontWeight="600"
-                    color={isExpanded ? "#149191" : "gray.800"}
-                    bg={isExpanded ? "rgba(20, 145, 145, 0.06)" : "transparent"}
-                    _hover={{ bg: "rgba(20, 145, 145, 0.08)", color: "#149191" }}
-                    cursor="pointer"
+                    color={isExpanded ? "#051B64" : "gray.800"}
                   >
-                    <Text>{item.label}</Text>
+                    {item.href ? (
+                      <Link
+                        href={item.href}
+                        onClick={onClose}
+                        style={{ flex: 1, display: "flex", alignItems: "center" }}
+                      >
+                        <Text
+                          _hover={{ color: "#149191" }}
+                          transition="color 0.15s ease"
+                        >
+                          {item.label}
+                        </Text>
+                      </Link>
+                    ) : (
+                      <Text
+                        flex="1"
+                        onClick={() => toggleAccordion(item.label)}
+                        cursor="pointer"
+                      >
+                        {item.label}
+                      </Text>
+                    )}
+
                     <Box
-                      transform={isExpanded ? "rotate(180deg)" : "rotate(0deg)"}
-                      transition="transform 0.2s ease"
+                      as="button"
+                      aria-label={`Toggle ${item.label} sub-menu`}
+                      onClick={() => toggleAccordion(item.label)}
+                      p="1.5"
+                      borderRadius="md"
+                      color="gray.500"
+                      _hover={{ bg: "gray.100", color: "#149191" }}
+                      cursor="pointer"
                     >
-                      <ChevronDownIcon size={16} />
+                      <Box
+                        transform={isExpanded ? "rotate(180deg)" : "rotate(0deg)"}
+                        transition="transform 0.2s ease"
+                      >
+                        <ChevronDownIcon size={16} />
+                      </Box>
                     </Box>
                   </Flex>
 
                   {/* Sub-menu items */}
                   {isExpanded && item.children && (
-                    <VStack align="stretch" gap="1" pl="3" pr="1" py="2">
+                    <VStack align="stretch" gap="1" pl="3" pr="1" pb="2">
+                      {/* Top "Explore full page" item as requested by user */}
+                      {item.href && (
+                        <Link href={item.href} onClick={onClose}>
+                          <Flex
+                            p="2"
+                            borderRadius="md"
+                            gap="2"
+                            align="center"
+                            bg="rgba(20, 145, 145, 0.08)"
+                            color="#0F766E"
+                            _hover={{ bg: "rgba(20, 145, 145, 0.14)" }}
+                            cursor="pointer"
+                            mb="1"
+                          >
+                            <SparklesIcon size={14} color="#149191" />
+                            <Text fontSize="12px" fontWeight="700">
+                              {item.label === "About"
+                                ? "Explore Full Story (About Overview) →"
+                                : item.label === "Impact"
+                                ? "Explore Full Impact Report & Scorecard →"
+                                : `Explore Full ${item.label} Page →`}
+                            </Text>
+                          </Flex>
+                        </Link>
+                      )}
+
                       {item.children.map((child, cIdx) => (
                         <Link
                           key={cIdx}
