@@ -8,6 +8,9 @@ import {
 } from "@/config/pathways"
 import { PathwayId } from "@/types/application"
 
+export const dynamic = "force-dynamic"
+export const revalidate = 0
+
 // Helper to sanitize strings (trim, remove control chars / script injection tags)
 function sanitizeString(val: any): string {
   if (typeof val !== "string") return ""

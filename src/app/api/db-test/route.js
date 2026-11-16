@@ -27,6 +27,9 @@ import mongoose from "mongoose";
 import { randomUUID } from "crypto";
 import connectDB from "@/lib/mongodb";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 const getTestCollection = () => {
   const db = mongoose.connection.db;
 

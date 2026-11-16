@@ -97,7 +97,7 @@ export function Hero() {
         base: "linear-gradient(180deg, #F4F8FE 0%, #F8FBFF 58%, #FFFFFF 88%)",
         md: "linear-gradient(180deg, #F4F8FE 0%, #F8FBFF 50%, #FFFFFF 100%)",
       }}
-      pt={{ base: "20", sm: "22", md: "24", lg: "26", xl: "28" }}
+      pt={{ base: "100px", sm: "110px", md: "120px", lg: "124px", xl: "132px" }}
       pb={{ base: "12", md: "16", lg: "18" }}
     >
       {/* Subtle background ambient gradients */}
@@ -147,28 +147,32 @@ export function Hero() {
               <HStack
                 bg="#E6F7F0"
                 border="1px solid rgba(16, 185, 129, 0.3)"
-                px="3.5"
-                py="1.5"
-                borderRadius="full"
+                px={{ base: "3", sm: "3.5" }}
+                py={{ base: "2", sm: "1.5" }}
+                borderRadius={{ base: "14px", sm: "full" }}
                 gap="2"
                 boxShadow="0 2px 8px rgba(16, 185, 129, 0.1)"
                 transition="all 0.2s ease"
+                maxW="100%"
+                align="center"
                 _hover={{
                   transform: "translateY(-1px)",
                   boxShadow: "0 4px 12px rgba(16, 185, 129, 0.18)",
                 }}
               >
                 {/* Green Living Pulse Indicator Dot */}
-                <LiveDot color="#10B981" size={8} />
+                <Box flexShrink={0} display="flex" alignItems="center">
+                  <LiveDot color="#10B981" size={8} />
+                </Box>
 
                 <Text
-                  fontSize={{ base: "8px", sm: "9.5px", md: "10.5px" }}
+                  fontSize={{ base: "9.5px", sm: "9.5px", md: "10.5px" }}
                   fontWeight="800"
                   color="#059669"
                   letterSpacing={{ base: "0.02em", sm: "0.04em" }}
                   textTransform="uppercase"
-                  whiteSpace="nowrap"
-                  lineHeight="1"
+                  whiteSpace={{ base: "normal", md: "nowrap" }}
+                  lineHeight={{ base: "1.35", md: "1" }}
                 >
                   EMPOWERMENT, TRANSFORMATION, DEVELOPMENT & LEADERSHIP ECOSYSTEM
                 </Text>

@@ -374,10 +374,10 @@ export function NavDropdownItem({ item, isDarkNav = false }: NavDropdownItemProp
     return (
       <Link href={item.href || "#"}>
         <Box
-          px={{ base: "1", xl: "1.5" }}
+          px={{ base: "1", lg: "0.75", xl: "1.25", "2xl": "1.75" }}
           py="0.5"
           borderRadius="md"
-          fontSize={{ base: "10.5px", xl: "11.5px" }}
+          fontSize={{ base: "10.5px", lg: "10px", xl: "11px", "2xl": "12px" }}
           fontWeight="600"
           color={isDarkNav ? "#FFFFFF" : "gray.700"}
           _hover={{
@@ -402,11 +402,11 @@ export function NavDropdownItem({ item, isDarkNav = false }: NavDropdownItemProp
     >
       <Flex
         align="center"
-        gap="0.5"
-        px={{ base: "1", xl: "1.5" }}
+        gap={{ base: "0.5", lg: "0.25", xl: "0.5" }}
+        px={{ base: "1", lg: "0.75", xl: "1.25", "2xl": "1.75" }}
         py="0.5"
         borderRadius="md"
-        fontSize={{ base: "10.5px", xl: "11.5px" }}
+        fontSize={{ base: "10.5px", lg: "10px", xl: "11px", "2xl": "12px" }}
         fontWeight="600"
         color={isOpen ? "#149191" : isDarkNav ? "#FFFFFF" : "gray.700"}
         bg={isOpen ? (isDarkNav ? "rgba(20, 145, 145, 0.2)" : "rgba(20, 145, 145, 0.08)") : "transparent"}
@@ -432,7 +432,7 @@ export function NavDropdownItem({ item, isDarkNav = false }: NavDropdownItemProp
           alignItems="center"
           color={isOpen ? "#149191" : isDarkNav ? "rgba(255, 255, 255, 0.85)" : "#9CA3AF"}
         >
-          <ChevronDownIcon size={12} color="currentColor" />
+          <ChevronDownIcon size={11} color="currentColor" />
         </Box>
       </Flex>
 

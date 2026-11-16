@@ -28,12 +28,39 @@ import {
 export function Footer() {
   const [email, setEmail] = useState("")
   const [isSubscribed, setIsSubscribed] = useState(false)
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [statusMessage, setStatusMessage] = useState("")
+  const [errorMessage, setErrorMessage] = useState<string | null>(null)
 
-  const handleSubscribe = (e: React.FormEvent) => {
+  const handleSubscribe = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (email.trim()) {
-      setIsSubscribed(true)
-      setEmail("")
+    if (!email.trim() || isSubmitting) return
+
+    setIsSubmitting(true)
+    setErrorMessage(null)
+
+    try {
+      const res = await fetch("/api/newsletter", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email: email.trim(), source: "footer_newsletter" }),
+      })
+
+      const data = await res.json()
+
+      if (res.ok && data.success) {
+        setIsSubscribed(true)
+        setStatusMessage(data.message || "Thank you for subscribing to I-IMPACT updates!")
+        setEmail("")
+      } else {
+        setErrorMessage(data.error || "Unable to process subscription. Please try again.")
+      }
+    } catch (err: any) {
+      setErrorMessage("Network connection error. Please check your connection and try again.")
+    } finally {
+      setIsSubmitting(false)
     }
   }
 
@@ -83,26 +110,87 @@ export function Footer() {
             </VStack>
 
             {/* Right Newsletter Form */}
-            <Box w={{ base: "100%", lg: "400px" }} flexShrink={0}>
+            <Box w={{ base: "100%", lg: "440px" }} flexShrink={0}>
               {isSubscribed ? (
-                <HStack
+                <VStack
+                  align="flex-start"
                   bg="#FFFFFF"
-                  p="3"
-                  borderRadius="10px"
-                  border="1px solid"
+                  p="4"
+                  borderRadius="14px"
+                  border="1.5px solid"
                   borderColor="#10B981"
+                  boxShadow="0 4px 14px rgba(16, 185, 129, 0.12)"
                   gap="2"
+                  w="100%"
                 >
-                  <CheckCircleIcon size={18} color="#10B981" />
-                  <Text fontSize="13px" fontWeight="700" color="#047857">
-                    Thank you for subscribing to I-IMPACT!
+                  <HStack gap="2">
+                    <CheckCircleIcon size={20} color="#10B981" />
+                    <Text fontSize="13.5px" fontWeight="800" color="#047857">
+                      Subscription Confirmed!
+                    </Text>
+                  </HStack>
+                  <Text fontSize="12.5px" color="#4B5563" lineHeight="1.4">
+                    {statusMessage || "Your email has been stored in our database. You will receive executive briefings, conference invitations, and community impact dispatches."}
                   </Text>
-                </HStack>
+                  <Button
+                    size="xs"
+                    variant="ghost"
+                    color="#149191"
+                    p="0"
+                    h="auto"
+                    fontSize="11.5px"
+                    fontWeight="700"
+                    _hover={{ color: "#051B64", textDecoration: "underline" }}
+                    onClick={() => {
+                      setIsSubscribed(false)
+                      setStatusMessage("")
+                    }}
+                  >
+                    Subscribe another email →
+                  </Button>
+                </VStack>
               ) : (
-                <form onSubmit={handleSubscribe}>
+                <form onSubmit={handleSubscribe} style={{ width: "100%" }}>
+                  <style>{`
+                    .footer-newsletter-input {
+                      width: 100%;
+                      flex: 1;
+                      height: 56px;
+                      padding: 0 18px;
+                      border-radius: 14px;
+                      background-color: #FFFFFF;
+                      border: 1.5px solid #CBD5E1;
+                      font-size: 15.5px;
+                      color: #051B64;
+                      outline: none;
+                      box-shadow: 0 2px 8px rgba(5, 27, 100, 0.04);
+                      transition: all 0.2s ease;
+                      box-sizing: border-box;
+                    }
+                    .footer-newsletter-input:focus {
+                      border-color: #10B981;
+                      box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2);
+                    }
+                    .footer-newsletter-input::placeholder {
+                      color: #94A3B8;
+                      font-size: 14.5px;
+                    }
+                    @media (min-width: 640px) {
+                      .footer-newsletter-input {
+                        height: 48px;
+                        font-size: 14px;
+                        padding: 0 16px;
+                        border-radius: 12px;
+                      }
+                      .footer-newsletter-input::placeholder {
+                        font-size: 13.5px;
+                      }
+                    }
+                  `}</style>
                   <Flex
                     direction={{ base: "column", sm: "row" }}
-                    gap="2"
+                    align={{ base: "flex-start", sm: "center" }}
+                    gap={{ base: "2.5", sm: "2" }}
                     w="100%"
                   >
                     <input
@@ -110,50 +198,61 @@ export function Footer() {
                       required
                       placeholder="Enter your active email address"
                       value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      style={{
-                        flex: 1,
-                        height: "42px",
-                        padding: "0 14px",
-                        borderRadius: "10px",
-                        backgroundColor: "#FFFFFF",
-                        border: "1px solid #CBD5E1",
-                        fontSize: "13px",
-                        color: "#051B64",
-                        outline: "none",
-                        boxShadow: "0 1px 4px rgba(5, 27, 100, 0.03)",
+                      onChange={(e) => {
+                        setEmail(e.target.value)
+                        if (errorMessage) setErrorMessage(null)
                       }}
+                      className="footer-newsletter-input"
+                      disabled={isSubmitting}
                     />
                     <Button
                       type="submit"
-                      h="42px"
-                      px="5"
+                      size="sm"
+                      h={{ base: "34px", sm: "40px" }}
+                      px={{ base: "4", sm: "4.5" }}
+                      w={{ base: "auto", sm: "auto" }}
                       bg="#047857"
                       color="#FFFFFF"
-                      borderRadius="10px"
+                      borderRadius="8px"
                       fontWeight="700"
-                      fontSize="13px"
+                      fontSize={{ base: "11.5px", sm: "12.5px" }}
                       flexShrink={0}
                       transition="all 0.2s ease"
+                      disabled={isSubmitting}
                       _hover={{
                         bg: "#065F46",
-                        transform: "translateY(-1.5px)",
-                        boxShadow: "0 4px 12px rgba(4, 120, 87, 0.25)",
+                        transform: "translateY(-1px)",
+                        boxShadow: "0 3px 10px rgba(4, 120, 87, 0.25)",
                       }}
                     >
-                      Subscribe
+                      {isSubmitting ? "Subscribing..." : "Subscribe"}
                     </Button>
                   </Flex>
+                  {errorMessage && (
+                    <Text fontSize="12px" color="#DC2626" mt="2" fontWeight="600">
+                      {errorMessage}
+                    </Text>
+                  )}
                 </form>
               )}
             </Box>
           </Flex>
         </Box>
 
-        {/* Main 5-Column Navigation Grid */}
-        <SimpleGrid columns={{ base: 1, sm: 2, md: 3, lg: 5 }} gap={{ base: "5", lg: "4.5" }} mb="6">
-          {/* Column 1: Brand Info */}
-          <VStack align="flex-start" gap="2.5" gridColumn={{ base: "span 1", sm: "span 2", md: "span 3", lg: "span 1" }}>
+        {/* Main 5-Column Navigation Grid: On mobile, Brand Info spans top, and other columns sit 2x2 side-by-side */}
+        <SimpleGrid
+          columns={{ base: 2, sm: 2, md: 3, lg: 5 }}
+          columnGap={{ base: "4", sm: "5", lg: "4.5" }}
+          rowGap={{ base: "6", lg: "4.5" }}
+          mb="6"
+        >
+          {/* Column 1: Brand Info (Full width at top on mobile) */}
+          <VStack
+            align="flex-start"
+            gap="2.5"
+            gridColumn={{ base: "span 2", sm: "span 2", md: "span 3", lg: "span 1" }}
+            pb={{ base: "2", lg: "0" }}
+          >
             <Link href="/" style={{ display: "inline-block" }}>
               <Box position="relative" w="135px" h="34px">
                 <Image
@@ -321,6 +420,7 @@ export function Footer() {
                   fontSize="12px"
                   color="#64748B"
                   lineHeight="1.4"
+                  wordBreak="break-word"
                   _hover={{ color: "#149191" }}
                 >
                   contact@iimpactinitiative.org
