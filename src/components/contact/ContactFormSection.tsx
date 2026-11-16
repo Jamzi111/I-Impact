@@ -43,21 +43,48 @@ export function ContactFormSection() {
   const [honeypot, setHoneypot] = useState("")
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isSubmitted, setIsSubmitted] = useState(false)
+  const [submitError, setSubmitError] = useState<string | null>(null)
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     if (honeypot) return // Bot trap
 
     setIsSubmitting(true)
-    // Simulate submission
-    setTimeout(() => {
-      setIsSubmitting(false)
+    setSubmitError(null)
+
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          fullName,
+          email,
+          phone,
+          organization,
+          category: selectedCategory,
+          message,
+          honeypot,
+        }),
+      })
+
+      const data = await res.json()
+
+      if (!res.ok || !data.success) {
+        throw new Error(data.error || "Failed to submit message. Please try again.")
+      }
+
       setIsSubmitted(true)
-    }, 900)
+    } catch (err: any) {
+      console.error("Contact form submission error:", err)
+      setSubmitError(err.message || "Failed to send message. Please check your connection.")
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   const handleReset = () => {
     setIsSubmitted(false)
+    setSubmitError(null)
     setFullName("")
     setEmail("")
     setPhone("")
@@ -383,6 +410,21 @@ export function ContactFormSection() {
                       }}
                     />
                   </Box>
+
+                  {/* Error Notice */}
+                  {submitError && (
+                    <Box
+                      p="3"
+                      mb="4"
+                      borderRadius="10px"
+                      bg="#FEF2F2"
+                      border="1px solid #FECACA"
+                      color="#991B1B"
+                      fontSize="13px"
+                    >
+                      {submitError}
+                    </Box>
+                  )}
 
                   {/* Submit Button */}
                   <Button
