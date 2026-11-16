@@ -1,7 +1,8 @@
 "use client"
 
 import React, { useState } from "react"
-import { Box, Flex } from "@chakra-ui/react"
+import { Box } from "@chakra-ui/react"
+import { usePathname } from "next/navigation"
 import { AdminSidebar } from "@/components/admin/AdminSidebar"
 import { AdminHeader } from "@/components/admin/AdminHeader"
 
@@ -10,7 +11,13 @@ export default function AdminLayout({
 }: {
   children: React.ReactNode
 }) {
+  const pathname = usePathname()
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false)
+
+  // Login page has its own standalone full-screen layout
+  if (pathname === "/admin/login") {
+    return <>{children}</>
+  }
 
   return (
     <Box minH="100vh" bg="#F8FAFC" position="relative">
@@ -77,4 +84,3 @@ export default function AdminLayout({
     </Box>
   )
 }
-

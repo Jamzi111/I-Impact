@@ -1,7 +1,7 @@
 "use client"
 
-import React from "react"
-import { Box, Flex, Text, VStack, HStack, Badge } from "@chakra-ui/react"
+import React, { useState, useEffect } from "react"
+import { Box, Flex, Text, VStack, HStack, Badge, Button } from "@chakra-ui/react"
 import Link from "next/link"
 import Image from "next/image"
 import { usePathname } from "next/navigation"
@@ -18,6 +18,7 @@ import {
   ExternalLinkIcon,
   CloseIcon,
   ShieldCheckIcon,
+  LogOutIcon,
 } from "@/components/icons"
 
 export interface NavItem {
@@ -87,6 +88,30 @@ interface AdminSidebarProps {
 
 export function AdminSidebar({ onCloseMobile }: AdminSidebarProps) {
   const pathname = usePathname()
+  const [adminUser, setAdminUser] = useState<{ name: string; email: string; role: string } | null>(null)
+  const [isLoggingOut, setIsLoggingOut] = useState(false)
+
+  useEffect(() => {
+    fetch("/api/admin/auth/me")
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.authenticated && data.admin) {
+          setAdminUser(data.admin)
+        }
+      })
+      .catch((e) => console.error("Session check error:", e))
+  }, [])
+
+  const handleLogout = async () => {
+    try {
+      setIsLoggingOut(true)
+      await fetch("/api/admin/auth/logout", { method: "POST" })
+    } catch (e) {
+      console.error("Logout error:", e)
+    } finally {
+      window.location.href = "/admin/login"
+    }
+  }
 
   const isActiveRoute = (href: string) => {
     if (href === "/admin") {
@@ -251,7 +276,7 @@ export function AdminSidebar({ onCloseMobile }: AdminSidebarProps) {
         {renderNavGroup("Insights & Management", INSIGHTS_MANAGEMENT)}
       </Box>
 
-      {/* Bottom Footer: Admin Profile & Public Site Link */}
+      {/* Bottom Footer: Admin Profile, Sign Out, & Public Site Link */}
       <Box p="4" borderTop="1px solid rgba(255, 255, 255, 0.08)" bg="rgba(0, 0, 0, 0.2)">
         {/* Administrator Info Pill */}
         <Flex align="center" justify="space-between" mb="3">
@@ -265,18 +290,25 @@ export function AdminSidebar({ onCloseMobile }: AdminSidebarProps) {
               alignItems="center"
               justifyContent="center"
               fontWeight="800"
-              fontSize="13px"
+              fontSize="12px"
               color="#FFFFFF"
               boxShadow="0 2px 6px rgba(16, 185, 129, 0.3)"
             >
-              SJ
+              {adminUser?.name
+                ? adminUser.name
+                    .split(" ")
+                    .map((n) => n[0])
+                    .join("")
+                    .slice(0, 2)
+                    .toUpperCase()
+                : "AD"}
             </Box>
             <VStack align="flex-start" gap="0">
               <Text fontSize="12.5px" fontWeight="700" color="#FFFFFF" lineHeight="1.2">
-                Samuel Joseph
+                {adminUser?.name || "Administrator"}
               </Text>
-              <Text fontSize="10.5px" color="#94A3B8">
-                Executive Admin
+              <Text fontSize="10.5px" color="#94A3B8" textTransform="capitalize">
+                {adminUser?.role || "System Admin"}
               </Text>
             </VStack>
           </HStack>
@@ -284,6 +316,29 @@ export function AdminSidebar({ onCloseMobile }: AdminSidebarProps) {
             <ShieldCheckIcon size={16} />
           </Box>
         </Flex>
+
+        {/* Sign Out Button */}
+        <Button
+          w="full"
+          size="sm"
+          variant="ghost"
+          h="34px"
+          borderRadius="8px"
+          color="#F87171"
+          bg="rgba(239, 68, 68, 0.08)"
+          border="1px solid rgba(239, 68, 68, 0.2)"
+          _hover={{ bg: "rgba(239, 68, 68, 0.18)", color: "#FECACA" }}
+          onClick={handleLogout}
+          disabled={isLoggingOut}
+          mb="2.5"
+        >
+          <HStack gap="2">
+            <LogOutIcon size={14} color="#F87171" />
+            <Text fontSize="12px" fontWeight="700">
+              {isLoggingOut ? "Signing Out..." : "Sign Out"}
+            </Text>
+          </HStack>
+        </Button>
 
         {/* Public Website Shortcut */}
         <Link href="/" target="_blank" style={{ textDecoration: "none" }}>
