@@ -77,9 +77,6 @@ export function AdminHeader({ onOpenMobile }: AdminHeaderProps) {
       h="70px"
       boxSizing="border-box"
       boxShadow="0 1px 3px rgba(0, 0, 0, 0.02)"
-      position="sticky"
-      top="0"
-      zIndex={100}
       display="flex"
       alignItems="center"
     >

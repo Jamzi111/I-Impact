@@ -73,11 +73,19 @@ export default function AdminLayout({
         display="flex"
         flexDirection="column"
       >
-        {/* Top Header */}
-        <AdminHeader onOpenMobile={() => setIsMobileSidebarOpen(true)} />
+        {/* Top Header - Fixed at top of viewport */}
+        <Box
+          position="fixed"
+          top="0"
+          right="0"
+          left={{ base: "0", lg: "264px" }}
+          zIndex={100}
+        >
+          <AdminHeader onOpenMobile={() => setIsMobileSidebarOpen(true)} />
+        </Box>
 
-        {/* Dynamic Page Content */}
-        <Box as="main" flex="1" p={{ base: "4", sm: "6", lg: "8" }}>
+        {/* Dynamic Page Content with top margin to clear fixed 70px header */}
+        <Box as="main" flex="1" p={{ base: "4", sm: "6", lg: "8" }} mt="70px">
           {children}
         </Box>
       </Box>
