@@ -348,6 +348,8 @@ export default function AdminApplicationsPage() {
             _hover={{ bg: "#F8FAFC", borderColor: "#CBD5E1" }}
             onClick={fetchApplications}
             disabled={loading}
+            px="4"
+            h="36px"
           >
             {loading ? "Refreshing..." : "Refresh"}
           </Button>
@@ -358,6 +360,8 @@ export default function AdminApplicationsPage() {
             _hover={{ bg: "#0A2580" }}
             onClick={handleExportCSV}
             disabled={applications.length === 0}
+            px="4"
+            h="36px"
           >
             <HStack gap="1.5">
               <DownloadIcon size={14} color="white" />

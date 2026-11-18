@@ -293,6 +293,8 @@ export default function AdminMessagesPage() {
             _hover={{ bg: "#F8FAFC", borderColor: "#CBD5E1" }}
             onClick={fetchMessages}
             disabled={loading}
+            px="4"
+            h="36px"
           >
             {loading ? "Refreshing..." : "Refresh Inbox"}
           </Button>

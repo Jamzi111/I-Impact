@@ -317,6 +317,8 @@ export default function AdminReportsPage() {
                 borderRadius="lg"
                 onClick={fetchData}
                 disabled={loading}
+                px="4"
+                h="36px"
               >
                 <HStack gap="1.5">
                   <RefreshCwIcon size={14} color="white" />
@@ -333,6 +335,8 @@ export default function AdminReportsPage() {
                 borderRadius="lg"
                 onClick={handleExportCSV}
                 disabled={!data || exporting}
+                px="4"
+                h="36px"
               >
                 <HStack gap="1.5">
                   <DownloadIcon size={14} color="white" />
