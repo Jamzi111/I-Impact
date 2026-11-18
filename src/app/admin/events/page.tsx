@@ -109,18 +109,18 @@ export default function AdminEventsPage() {
     setFormData({
       title: "",
       subtitle: "",
-      badge: "ANNUAL FLAGSHIP YOUTH CONGRESS",
+      badge: "",
       startDate: new Date().toISOString().split("T")[0],
       endDate: "",
       dateDisplay: "",
-      timeDisplay: "9:00 AM – 4:00 PM WAT",
+      timeDisplay: "",
       countdownTarget: new Date(Date.now() + 30 * 86400000).toISOString().slice(0, 16),
-      venue: "Landmark Centre, Lagos & Virtual Worldwide",
-      attendeeBadge: "2,500+ Registered Teens",
+      venue: "",
+      attendeeBadge: "",
       description: "",
-      registrationUrl: "/programs",
-      registrationBtnText: "Register Free Now",
-      agendaBtnText: "View Conference Agenda",
+      registrationUrl: "",
+      registrationBtnText: "",
+      agendaBtnText: "",
       programDocumentUrl: "",
       programDocumentName: "",
       bannerImageUrl: "",
@@ -701,7 +701,7 @@ export default function AdminEventsPage() {
           h="100vh"
           bg="rgba(5, 27, 100, 0.65)"
           backdropFilter="blur(6px)"
-          zIndex={100}
+          zIndex={9999}
           display="flex"
           alignItems="center"
           justifyContent="center"
@@ -746,6 +746,7 @@ export default function AdminEventsPage() {
                     placeholder="e.g. AS A TEEN Conference 2025: Unleashing The Extraordinary"
                     fontSize="sm"
                     bg="gray.50"
+                    pl="3"
                   />
                 </Box>
 
@@ -760,6 +761,7 @@ export default function AdminEventsPage() {
                     placeholder="e.g. Raising Generational Champions & World Leaders"
                     fontSize="sm"
                     bg="gray.50"
+                    pl="3"
                   />
                 </Box>
 
@@ -775,6 +777,7 @@ export default function AdminEventsPage() {
                       placeholder="e.g. ANNUAL FLAGSHIP YOUTH CONGRESS"
                       fontSize="sm"
                       bg="gray.50"
+                      pl="3"
                     />
                   </Box>
 
@@ -789,6 +792,7 @@ export default function AdminEventsPage() {
                       placeholder="e.g. 2,500+ Registered Teens"
                       fontSize="sm"
                       bg="gray.50"
+                      pl="3"
                     />
                   </Box>
                 </SimpleGrid>
@@ -806,6 +810,7 @@ export default function AdminEventsPage() {
                       placeholder="e.g. November 15–17, 2025"
                       fontSize="sm"
                       bg="gray.50"
+                      pl="3"
                     />
                   </Box>
 
@@ -820,6 +825,7 @@ export default function AdminEventsPage() {
                       placeholder="e.g. 9:00 AM – 4:00 PM WAT"
                       fontSize="sm"
                       bg="gray.50"
+                      pl="3"
                     />
                   </Box>
                 </SimpleGrid>
@@ -836,6 +842,7 @@ export default function AdminEventsPage() {
                       onChange={(e) => setFormData({ ...formData, countdownTarget: e.target.value })}
                       fontSize="sm"
                       bg="gray.50"
+                      pl="3"
                     />
                   </Box>
 
@@ -851,6 +858,7 @@ export default function AdminEventsPage() {
                       placeholder="e.g. Landmark Centre, Lagos & Virtual Worldwide"
                       fontSize="sm"
                       bg="gray.50"
+                      pl="3"
                     />
                   </Box>
                 </SimpleGrid>
@@ -927,6 +935,7 @@ export default function AdminEventsPage() {
                       placeholder="e.g. /uploads/program_schedule.pdf or external Google Drive link"
                       fontSize="xs"
                       bg="white"
+                      pl="3"
                     />
                   </Box>
                 </Box>
@@ -943,6 +952,7 @@ export default function AdminEventsPage() {
                       placeholder="e.g. Register Free Now"
                       fontSize="sm"
                       bg="gray.50"
+                      pl="3"
                     />
                   </Box>
 
@@ -956,6 +966,7 @@ export default function AdminEventsPage() {
                       placeholder="e.g. /programs or https://eventbrite.com/..."
                       fontSize="sm"
                       bg="gray.50"
+                      pl="3"
                     />
                   </Box>
                 </SimpleGrid>
@@ -972,6 +983,7 @@ export default function AdminEventsPage() {
                       placeholder="e.g. Download Program Soft Copy"
                       fontSize="sm"
                       bg="gray.50"
+                      pl="3"
                     />
                   </Box>
 
@@ -1003,6 +1015,7 @@ export default function AdminEventsPage() {
                     placeholder="Brief description of the event..."
                     fontSize="sm"
                     bg="gray.50"
+                    pl="3"
                   />
                 </Box>
 
