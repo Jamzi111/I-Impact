@@ -45,7 +45,7 @@ export default function AdminLayout({
           <Box
             position="absolute"
             inset="0"
-            bg="rgba(5, 27, 100, 0.6)"
+            bg="rgba(0, 0, 0, 0.3)"
             backdropFilter="blur(4px)"
             onClick={() => setIsMobileSidebarOpen(false)}
           />
