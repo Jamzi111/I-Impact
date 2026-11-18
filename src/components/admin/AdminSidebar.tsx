@@ -15,7 +15,6 @@ import {
   BarChartSquareIcon,
   BanknoteIcon,
   SettingsIcon,
-  ExternalLinkIcon,
   CloseIcon,
   ShieldCheckIcon,
   LogOutIcon,
@@ -207,7 +206,7 @@ export function AdminSidebar({ onCloseMobile }: AdminSidebarProps) {
       position="relative"
     >
       {/* Top Header: Logo & Branding */}
-      <Box p="5" pb="4" borderBottom="1px solid rgba(255, 255, 255, 0.08)">
+      <Box p="5" pb="4" borderBottom="1px solid rgba(255, 255, 255, 0.08)" bg="white">
         <Flex justify="space-between" align="center">
           <Link href="/admin" style={{ display: "inline-block" }}>
             <HStack gap="2.5" align="center">
@@ -215,7 +214,6 @@ export function AdminSidebar({ onCloseMobile }: AdminSidebarProps) {
                 position="relative"
                 w="125px"
                 h="32px"
-                bg="rgba(255, 255, 255, 0.95)"
                 p="1.5"
                 borderRadius="8px"
               >
@@ -229,8 +227,8 @@ export function AdminSidebar({ onCloseMobile }: AdminSidebarProps) {
                 />
               </Box>
               <Badge
-                bg="rgba(20, 145, 145, 0.25)"
-                color="#2DD4BF"
+                bg="rgba(20, 145, 145, 0.15)"
+                color="#149191"
                 fontSize="9.5px"
                 fontWeight="800"
                 px="1.5"
@@ -251,8 +249,8 @@ export function AdminSidebar({ onCloseMobile }: AdminSidebarProps) {
               display={{ base: "flex", lg: "none" }}
               p="1.5"
               borderRadius="md"
-              color="#94A3B8"
-              _hover={{ bg: "rgba(255, 255, 255, 0.1)", color: "#FFFFFF" }}
+              color="#64748B"
+              _hover={{ bg: "rgba(5, 27, 100, 0.08)", color: "#051B64" }}
               aria-label="Close admin menu"
             >
               <CloseIcon size={18} />
@@ -330,7 +328,6 @@ export function AdminSidebar({ onCloseMobile }: AdminSidebarProps) {
           _hover={{ bg: "rgba(239, 68, 68, 0.18)", color: "#FECACA" }}
           onClick={handleLogout}
           disabled={isLoggingOut}
-          mb="2.5"
         >
           <HStack gap="2">
             <LogOutIcon size={14} color="#F87171" />
@@ -339,30 +336,6 @@ export function AdminSidebar({ onCloseMobile }: AdminSidebarProps) {
             </Text>
           </HStack>
         </Button>
-
-        {/* Public Website Shortcut */}
-        <Link href="/" target="_blank" style={{ textDecoration: "none" }}>
-          <Flex
-            align="center"
-            justify="center"
-            gap="2"
-            w="100%"
-            py="2"
-            borderRadius="8px"
-            bg="rgba(255, 255, 255, 0.06)"
-            color="#CBD5E1"
-            fontSize="12px"
-            fontWeight="600"
-            transition="all 0.15s ease"
-            _hover={{
-              bg: "rgba(20, 145, 145, 0.2)",
-              color: "#2DD4BF",
-            }}
-          >
-            <Text>View Public Website</Text>
-            <ExternalLinkIcon size={13} />
-          </Flex>
-        </Link>
       </Box>
     </Box>
   )

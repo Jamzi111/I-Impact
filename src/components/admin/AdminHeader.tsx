@@ -1,10 +1,9 @@
 "use client"
 
 import React from "react"
-import { Box, Flex, HStack, Text, Button, Badge } from "@chakra-ui/react"
-import Link from "next/link"
+import { Box, Flex, HStack, Text } from "@chakra-ui/react"
 import { usePathname } from "next/navigation"
-import { MenuIcon, ExternalLinkIcon, ShieldCheckIcon } from "@/components/icons"
+import { MenuIcon } from "@/components/icons"
 import { LiveDot } from "@/components/LiveDot"
 
 interface AdminHeaderProps {
@@ -116,6 +115,7 @@ export function AdminHeader({ onOpenMobile }: AdminHeaderProps) {
               color="#051B64"
               lineHeight="1.2"
               mt="0.5"
+              display={{ base: "none", lg: "block" }}
             >
               {currentRouteInfo.title}
             </Text>
@@ -154,27 +154,6 @@ export function AdminHeader({ onOpenMobile }: AdminHeaderProps) {
           >
             {currentDate}
           </Box>
-
-          {/* Quick link to live public site */}
-          <Link href="/" target="_blank" style={{ textDecoration: "none" }}>
-            <Button
-              size="xs"
-              h="30px"
-              px="3"
-              variant="outline"
-              borderColor="#CBD5E1"
-              color="#051B64"
-              fontSize="11px"
-              fontWeight="700"
-              borderRadius="8px"
-              _hover={{ bg: "#F1F5F9", borderColor: "#94A3B8" }}
-            >
-              <HStack gap="1.5">
-                <Text>Public Site</Text>
-                <ExternalLinkIcon size={12} />
-              </HStack>
-            </Button>
-          </Link>
         </HStack>
       </Flex>
     </Box>
