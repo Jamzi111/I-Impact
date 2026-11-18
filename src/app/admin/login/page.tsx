@@ -252,19 +252,6 @@ function LoginForm() {
           </VStack>
         </form>
 
-        {/* Initial login helper note */}
-        <Box mt="6" p="3.5" bg="#F8FAFC" borderRadius="10px" border="1px solid #E2E8F0" fontSize="12px" color="#64748B">
-          <Text fontWeight="700" color="#0F172A" mb="0.5">
-            Default Administrator Credentials:
-          </Text>
-          <Text>
-            Email: <Text as="span" fontWeight="700" color="#051B64">admin@i-impact.org</Text> (or username <Text as="span" fontWeight="700" color="#051B64">admin</Text>)
-          </Text>
-          <Text>
-            Password: <Text as="span" fontWeight="700" color="#051B64">ImpactAdmin2026!</Text>
-          </Text>
-        </Box>
-
         {/* Back to public website */}
         <Box textAlign="center" mt="5">
           <Link href="/" style={{ fontSize: "12.5px", color: "#64748B", textDecoration: "none" }}>
