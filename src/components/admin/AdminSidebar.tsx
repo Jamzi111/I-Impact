@@ -206,8 +206,16 @@ export function AdminSidebar({ onCloseMobile }: AdminSidebarProps) {
       position="relative"
     >
       {/* Top Header: Logo & Branding */}
-      <Box p="5" pb="4" borderBottom="1px solid rgba(255, 255, 255, 0.08)" bg="white">
-        <Flex justify="space-between" align="center">
+      <Box
+        h="70px"
+        px="5"
+        borderBottom="1px solid #E2E8F0"
+        bg="white"
+        display="flex"
+        alignItems="center"
+        boxSizing="border-box"
+      >
+        <Flex justify="space-between" align="center" w="100%">
           <Link href="/admin" style={{ display: "inline-block" }}>
             <HStack gap="2.5" align="center">
               <Box

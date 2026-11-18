@@ -74,13 +74,16 @@ export function AdminHeader({ onOpenMobile }: AdminHeaderProps) {
       bg="#FFFFFF"
       borderBottom="1px solid #E2E8F0"
       px={{ base: "4", sm: "6", lg: "8" }}
-      py="3.5"
+      h="70px"
+      boxSizing="border-box"
       boxShadow="0 1px 3px rgba(0, 0, 0, 0.02)"
       position="sticky"
       top="0"
       zIndex={100}
+      display="flex"
+      alignItems="center"
     >
-      <Flex align="center" justify="space-between" gap="4">
+      <Flex align="center" justify="space-between" gap="4" w="100%">
         {/* Left: Mobile Toggle & Page Title */}
         <HStack gap="3" align="center">
           <Box
