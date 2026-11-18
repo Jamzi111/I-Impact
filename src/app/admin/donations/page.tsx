@@ -135,6 +135,8 @@ export default function AdminDonationsPage() {
                 fontWeight="700"
                 borderRadius="lg"
                 _hover={{ bg: "#04144a" }}
+                px="5"
+                h="38px"
               >
                 <HStack gap="1.5">
                   <BarChartSquareIcon size={14} color="white" />
@@ -151,6 +153,8 @@ export default function AdminDonationsPage() {
                 fontWeight="700"
                 borderRadius="lg"
                 _hover={{ bg: "gray.200" }}
+                px="5"
+                h="38px"
               >
                 <HStack gap="1.5">
                   <ExternalLinkIcon size={14} color="#051B64" />

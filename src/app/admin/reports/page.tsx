@@ -657,6 +657,8 @@ export default function AdminReportsPage() {
                     fontWeight="700"
                     onClick={handleExportCSV}
                     disabled={exporting}
+                    px="4"
+                    h="32px"
                   >
                     <HStack gap="1">
                       <DownloadIcon size={12} color="white" />

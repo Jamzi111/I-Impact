@@ -332,6 +332,8 @@ export default function AdminEventsPage() {
                   color="white"
                   borderRadius="lg"
                   fontSize="xs"
+                  px="4"
+                  h="32px"
                 >
                   <HStack gap="1.5">
                     <CalendarIcon size={12} />
@@ -348,6 +350,8 @@ export default function AdminEventsPage() {
                   _hover={{ bg: "rgba(255, 255, 255, 0.2)" }}
                   borderRadius="lg"
                   fontSize="xs"
+                  px="4"
+                  h="32px"
                 >
                   <HStack gap="1.5">
                     <Text>Assignments</Text>
@@ -364,6 +368,8 @@ export default function AdminEventsPage() {
                   _hover={{ bg: "rgba(255, 255, 255, 0.2)" }}
                   borderRadius="lg"
                   fontSize="xs"
+                  px="4"
+                  h="32px"
                 >
                   <HStack gap="1.5">
                     <EyeIcon size={12} color="white" />
@@ -381,6 +387,8 @@ export default function AdminEventsPage() {
                 onClick={handleOpenCreate}
                 borderRadius="lg"
                 fontSize="xs"
+                px="4"
+                h="32px"
               >
                 <HStack gap="1.5">
                   <PlusIcon size={13} color="white" />
@@ -479,7 +487,7 @@ export default function AdminEventsPage() {
                 Live Banner Preview (What Visitors See on Homepage)
               </Heading>
             </HStack>
-            <Button size="xs" variant="ghost" color="#10B981" onClick={fetchEvents}>
+            <Button size="xs" variant="ghost" color="#10B981" onClick={fetchEvents} px="3" h="30px">
               <HStack gap="1">
                 <RefreshCwIcon size={12} color="#10B981" />
                 <Text>Refresh Preview</Text>
@@ -511,6 +519,8 @@ export default function AdminEventsPage() {
               fontWeight="700"
               _hover={{ bg: "#04144a" }}
               onClick={handleOpenCreate}
+              px="4"
+              h="36px"
             >
               <HStack gap="1.5">
                 <PlusIcon size={14} color="white" />
@@ -631,6 +641,8 @@ export default function AdminEventsPage() {
                           fontWeight="700"
                           _hover={{ bg: "#059669" }}
                           onClick={() => handleSetActive(evt.id, evt.title)}
+                          px="4"
+                          h="36px"
                         >
                           <HStack gap="1">
                             <CheckIcon size={14} color="white" />
@@ -646,6 +658,8 @@ export default function AdminEventsPage() {
                         fontWeight="600"
                         _hover={{ bg: "gray.200" }}
                         onClick={() => handleOpenEdit(evt)}
+                        px="4"
+                        h="36px"
                       >
                         <HStack gap="1">
                           <EditIcon size={14} color="#051B64" />
@@ -660,6 +674,8 @@ export default function AdminEventsPage() {
                         fontWeight="600"
                         _hover={{ bg: "#FECACA" }}
                         onClick={() => handleDelete(evt.id, evt.title)}
+                        px="4"
+                        h="36px"
                       >
                         <HStack gap="1">
                           <TrashIcon size={14} color="#DC2626" />
@@ -866,6 +882,8 @@ export default function AdminEventsPage() {
                       _hover={{ bg: "#059669" }}
                       onClick={() => fileInputRef.current?.click()}
                       disabled={uploading}
+                      px="5"
+                      h="38px"
                     >
                       <HStack gap="1.5">
                         <UploadIcon size={14} color="white" />
@@ -990,7 +1008,14 @@ export default function AdminEventsPage() {
 
                 {/* Submit & Cancel Buttons */}
                 <HStack justify="flex-end" gap="3" pt="4">
-                  <Button type="button" variant="outline" onClick={() => setIsFormOpen(false)}>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => setIsFormOpen(false)}
+                    px="5"
+                    h="40px"
+                    fontWeight="600"
+                  >
                     Cancel
                   </Button>
                   <Button
@@ -1000,6 +1025,8 @@ export default function AdminEventsPage() {
                     fontWeight="700"
                     _hover={{ bg: "#04144a" }}
                     disabled={saving}
+                    px="6"
+                    h="40px"
                   >
                     {saving ? "Saving..." : editingId ? "Save Changes" : "Create Event"}
                   </Button>
