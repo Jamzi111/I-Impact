@@ -1,92 +1,96 @@
-import fs from "fs/promises"
-import path from "path"
+import connectDB from "@/lib/mongodb"
+import EventModel, { IEvent } from "@/models/Event"
 import { EventItem, CreateEventInput, UpdateEventInput } from "@/types/event"
 
-const DATA_FILE = path.join(process.cwd(), "src", "data", "events.json")
-
-const DEFAULT_EVENTS: EventItem[] = [
-  {
-    id: "as-a-teen-2026",
-    title: "AS A TEEN Conference 2026",
-    subtitle: "Convening the Next Generation of African Champions",
-    badge: "NEXT MAJOR GATHERING",
-    startDate: "2026-11-06",
-    endDate: "2026-11-08",
-    dateDisplay: "Nov 6–8, 2026",
-    timeDisplay: "4:30 PM WAT (Hybrid Broadcast) & 9:00 AM Daily",
-    countdownTarget: "2026-11-06T09:00:00Z",
-    venue: "Landmark Centre, Victoria Island, Lagos & Google Meet",
-    attendeeBadge: "3,500+ Expected Delegates",
-    description: "The premier gathering ground for young African pioneers. Three transformative days of keynote addresses, high-octane leadership labs, code challenges, and peer networking.",
-    registrationUrl: "/programs",
-    registrationBtnText: "Register as Delegate",
-    agendaBtnText: "View Conference Agenda",
-    programDocumentUrl: "",
-    programDocumentName: "AS_A_TEEN_2026_Delegates_Prospectus.pdf",
-    bannerImageUrl: "/images/events-hero-clean.jpg",
-    isActive: true,
-    isArchived: false,
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-  },
-]
+function formatEventDoc(doc: any): EventItem {
+  return {
+    id: doc._id.toString(),
+    title: doc.title,
+    subtitle: doc.subtitle || "",
+    badge: doc.badge || "UPCOMING EVENT",
+    startDate: doc.startDate || "",
+    endDate: doc.endDate || "",
+    dateDisplay: doc.dateDisplay,
+    timeDisplay: doc.timeDisplay || "",
+    countdownTarget: doc.countdownTarget,
+    venue: doc.venue,
+    attendeeBadge: doc.attendeeBadge || "",
+    description: doc.description || "",
+    registrationUrl: doc.registrationUrl || "/programs",
+    registrationBtnText: doc.registrationBtnText || "Register Free Now",
+    agendaBtnText: doc.agendaBtnText || "View Conference Agenda",
+    programDocumentUrl: doc.programDocumentUrl || "",
+    programDocumentName: doc.programDocumentName || "",
+    bannerImageUrl: doc.bannerImageUrl || "",
+    isActive: doc.isActive ?? false,
+    isArchived: doc.isArchived ?? false,
+    createdAt: doc.createdAt ? doc.createdAt.toISOString() : new Date().toISOString(),
+    updatedAt: doc.updatedAt ? doc.updatedAt.toISOString() : new Date().toISOString(),
+  }
+}
 
 export async function getEvents(): Promise<EventItem[]> {
   try {
-    const data = await fs.readFile(DATA_FILE, "utf-8")
-    const parsed = JSON.parse(data)
-    if (Array.isArray(parsed) && parsed.length > 0) {
-      return parsed
-    }
+    await connectDB()
+    const docs = await EventModel.find({ isArchived: false }).sort({ createdAt: -1 }).lean()
+    return docs.map(formatEventDoc)
   } catch (err) {
-    // If file doesn't exist, create it with default events
-    await saveEvents(DEFAULT_EVENTS)
-    return DEFAULT_EVENTS
-  }
-  return DEFAULT_EVENTS
-}
-
-export async function saveEvents(events: EventItem[]): Promise<void> {
-  const dir = path.dirname(DATA_FILE)
-  try {
-    await fs.mkdir(dir, { recursive: true })
-    await fs.writeFile(DATA_FILE, JSON.stringify(events, null, 2), "utf-8")
-  } catch (err) {
-    console.error("Failed to save events to JSON:", err)
+    console.error("Error loading events from MongoDB:", err)
+    return []
   }
 }
 
 export async function getActiveEvent(): Promise<EventItem | null> {
-  const events = await getEvents()
-  const active = events.find((e) => e.isActive && !e.isArchived)
-  return active || events[0] || null
+  try {
+    await connectDB()
+    // Look for explicitly active event first
+    let doc = await EventModel.findOne({ isActive: true, isArchived: false }).lean()
+    
+    // If none marked active, get the newest event
+    if (!doc) {
+      doc = await EventModel.findOne({ isArchived: false }).sort({ createdAt: -1 }).lean()
+    }
+    
+    return doc ? formatEventDoc(doc) : null
+  } catch (err) {
+    console.error("Error loading active event from MongoDB:", err)
+    return null
+  }
 }
 
 export async function getEventById(id: string): Promise<EventItem | null> {
-  const events = await getEvents()
-  return events.find((e) => e.id === id) || null
+  try {
+    await connectDB()
+    const doc = await EventModel.findById(id).lean()
+    return doc ? formatEventDoc(doc) : null
+  } catch (err) {
+    console.error(`Error loading event ${id} from MongoDB:`, err)
+    return null
+  }
 }
 
 export async function createEvent(input: CreateEventInput): Promise<EventItem> {
-  const events = await getEvents()
-  const newEvent: EventItem = {
+  await connectDB()
+
+  // If this new event is marked active, deactivate any currently active events
+  if (input.isActive) {
+    await EventModel.updateMany({ isActive: true }, { $set: { isActive: false } })
+  }
+
+  const doc = await EventModel.create({
     ...input,
-    id: `evt-${Date.now()}-${Math.random().toString(36).substr(2, 6)}`,
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-  }
+    badge: input.badge || "UPCOMING EVENT",
+    countdownTarget: input.countdownTarget || `${input.startDate || new Date().toISOString().split("T")[0]}T09:00:00Z`,
+    registrationUrl: input.registrationUrl || "/programs",
+    registrationBtnText: input.registrationBtnText || "Register Free Now",
+    agendaBtnText: input.agendaBtnText || "View Conference Agenda",
+    isActive: input.isActive ?? false,
+    isArchived: false,
+  })
 
-  // If this new event is marked active, deactivate other events
-  if (newEvent.isActive) {
-    events.forEach((e) => {
-      e.isActive = false
-    })
-  }
+  const newEvent = formatEventDoc(doc)
 
-  const updatedList = [newEvent, ...events]
-  await saveEvents(updatedList)
-
-  // Sync notification
+  // Sync notification if applicable
   try {
     const { addNotificationForEvent } = await import("./notifications")
     await addNotificationForEvent(newEvent)
@@ -98,29 +102,22 @@ export async function createEvent(input: CreateEventInput): Promise<EventItem> {
 }
 
 export async function updateEvent(id: string, input: UpdateEventInput): Promise<EventItem | null> {
-  const events = await getEvents()
-  const index = events.findIndex((e) => e.id === id)
-  if (index === -1) return null
+  await connectDB()
 
-  // If setting to active, unset others
+  // If setting to active, unset all others
   if (input.isActive) {
-    events.forEach((e) => {
-      if (e.id !== id) {
-        e.isActive = false
-      }
-    })
+    await EventModel.updateMany({ _id: { $ne: id }, isActive: true }, { $set: { isActive: false } })
   }
 
-  const updated: EventItem = {
-    ...events[index],
-    ...input,
-    updatedAt: new Date().toISOString(),
-  }
+  const doc = await EventModel.findByIdAndUpdate(
+    id,
+    { ...input, updatedAt: new Date() },
+    { new: true }
+  ).lean()
 
-  events[index] = updated
-  await saveEvents(events)
+  if (!doc) return null
+  const updated = formatEventDoc(doc)
 
-  // Sync notification
   try {
     const { addNotificationForEvent } = await import("./notifications")
     await addNotificationForEvent(updated)
@@ -132,22 +129,21 @@ export async function updateEvent(id: string, input: UpdateEventInput): Promise<
 }
 
 export async function deleteEvent(id: string): Promise<boolean> {
-  const events = await getEvents()
-  const index = events.findIndex((e) => e.id === id)
-  if (index === -1) return false
+  await connectDB()
+  const doc = await EventModel.findById(id)
+  if (!doc) return false
 
-  const deletedIsActive = events[index].isActive
-  const updatedList = events.filter((e) => e.id !== id)
+  const wasActive = doc.isActive
+  await EventModel.findByIdAndDelete(id)
 
-  // If deleted event was active, set the first available non-archived event as active
-  if (deletedIsActive && updatedList.length > 0) {
-    const nextActive = updatedList.find((e) => !e.isArchived)
-    if (nextActive) {
-      nextActive.isActive = true
+  // If deleted event was active, set the most recent event as active
+  if (wasActive) {
+    const nextEvent = await EventModel.findOne({ isArchived: false }).sort({ createdAt: -1 })
+    if (nextEvent) {
+      nextEvent.isActive = true
+      await nextEvent.save()
     }
   }
-
-  await saveEvents(updatedList)
 
   // Remove notification
   try {
@@ -161,23 +157,17 @@ export async function deleteEvent(id: string): Promise<boolean> {
 }
 
 export async function setActiveEvent(id: string): Promise<EventItem | null> {
-  const events = await getEvents()
-  let activated: EventItem | null = null
+  await connectDB()
 
-  events.forEach((e) => {
-    if (e.id === id) {
-      e.isActive = true
-      e.isArchived = false
-      e.updatedAt = new Date().toISOString()
-      activated = e
-    } else {
-      e.isActive = false
-    }
-  })
+  // Deactivate all
+  await EventModel.updateMany({}, { $set: { isActive: false } })
 
-  if (activated) {
-    await saveEvents(events)
-  }
+  // Activate specified event
+  const doc = await EventModel.findByIdAndUpdate(
+    id,
+    { $set: { isActive: true, isArchived: false } },
+    { new: true }
+  ).lean()
 
-  return activated
+  return doc ? formatEventDoc(doc) : null
 }
