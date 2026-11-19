@@ -51,6 +51,10 @@ const ROUTE_TITLES: Record<string, { title: string; subtitle: string }> = {
     title: "Assignment Portal Console",
     subtitle: "Manage cohort homework and student submissions",
   },
+  "/admin/notifications": {
+    title: "Notifications & Broadcasts",
+    subtitle: "Publish on-site notifications and email blasts to newsletter subscribers",
+  },
 }
 
 export function AdminHeader({ onOpenMobile }: AdminHeaderProps) {

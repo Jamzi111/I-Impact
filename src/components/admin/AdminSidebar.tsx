@@ -18,6 +18,7 @@ import {
   CloseIcon,
   ShieldCheckIcon,
   LogOutIcon,
+  BellIcon,
 } from "@/components/icons"
 
 export interface NavItem {
@@ -50,6 +51,11 @@ const MAIN_MENU: NavItem[] = [
     label: "Programs & Events",
     href: "/admin/events",
     icon: <CalendarIcon size={18} />,
+  },
+  {
+    label: "Notifications & Broadcasts",
+    href: "/admin/notifications",
+    icon: <BellIcon size={18} />,
   },
   {
     label: "Contact Messages",
