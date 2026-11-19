@@ -2,6 +2,9 @@ import { NextRequest, NextResponse } from "next/server"
 import { getEvents, getActiveEvent, createEvent } from "@/lib/events"
 import { CreateEventInput } from "@/types/event"
 
+export const dynamic = "force-dynamic"
+export const revalidate = 0
+
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url)
@@ -20,10 +23,10 @@ export async function GET(request: NextRequest) {
       events,
       activeEvent,
     })
-  } catch (error) {
+  } catch (error: any) {
     console.error("Error fetching events:", error)
     return NextResponse.json(
-      { success: false, error: "Failed to fetch events" },
+      { success: false, error: error.message || "Failed to fetch events" },
       { status: 500 }
     )
   }
@@ -52,10 +55,10 @@ export async function POST(request: NextRequest) {
     })
 
     return NextResponse.json({ success: true, event: newEvent }, { status: 201 })
-  } catch (error) {
+  } catch (error: any) {
     console.error("Error creating event:", error)
     return NextResponse.json(
-      { success: false, error: "Failed to create event" },
+      { success: false, error: error.message || "Failed to create event" },
       { status: 500 }
     )
   }

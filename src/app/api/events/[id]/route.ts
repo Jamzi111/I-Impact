@@ -2,6 +2,9 @@ import { NextRequest, NextResponse } from "next/server"
 import { getEventById, updateEvent, deleteEvent, setActiveEvent } from "@/lib/events"
 import { UpdateEventInput } from "@/types/event"
 
+export const dynamic = "force-dynamic"
+export const revalidate = 0
+
 export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
@@ -13,9 +16,9 @@ export async function GET(
       return NextResponse.json({ success: false, error: "Event not found" }, { status: 404 })
     }
     return NextResponse.json({ success: true, event })
-  } catch (error) {
+  } catch (error: any) {
     console.error("Error fetching single event:", error)
-    return NextResponse.json({ success: false, error: "Internal Server Error" }, { status: 500 })
+    return NextResponse.json({ success: false, error: error.message || "Internal Server Error" }, { status: 500 })
   }
 }
 
@@ -41,9 +44,9 @@ export async function PUT(
     }
 
     return NextResponse.json({ success: true, event: updated })
-  } catch (error) {
+  } catch (error: any) {
     console.error("Error updating event:", error)
-    return NextResponse.json({ success: false, error: "Internal Server Error" }, { status: 500 })
+    return NextResponse.json({ success: false, error: error.message || "Internal Server Error" }, { status: 500 })
   }
 }
 
@@ -58,8 +61,8 @@ export async function DELETE(
       return NextResponse.json({ success: false, error: "Event not found" }, { status: 404 })
     }
     return NextResponse.json({ success: true, message: "Event deleted successfully" })
-  } catch (error) {
+  } catch (error: any) {
     console.error("Error deleting event:", error)
-    return NextResponse.json({ success: false, error: "Internal Server Error" }, { status: 500 })
+    return NextResponse.json({ success: false, error: error.message || "Internal Server Error" }, { status: 500 })
   }
 }
