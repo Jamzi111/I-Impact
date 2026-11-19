@@ -43,14 +43,8 @@ export async function getEvents(): Promise<EventItem[]> {
 export async function getActiveEvent(): Promise<EventItem | null> {
   try {
     await connectDB()
-    // Look for explicitly active event first
-    let doc = await EventModel.findOne({ isActive: true, isArchived: false }).lean()
-    
-    // If none marked active, get the newest event
-    if (!doc) {
-      doc = await EventModel.findOne({ isArchived: false }).sort({ createdAt: -1 }).lean()
-    }
-    
+    // ONLY return an event if it is explicitly marked active
+    const doc = await EventModel.findOne({ isActive: true, isArchived: false }).lean()
     return doc ? formatEventDoc(doc) : null
   } catch (err) {
     console.error("Error loading active event from MongoDB:", err)
@@ -133,17 +127,7 @@ export async function deleteEvent(id: string): Promise<boolean> {
   const doc = await EventModel.findById(id)
   if (!doc) return false
 
-  const wasActive = doc.isActive
   await EventModel.findByIdAndDelete(id)
-
-  // If deleted event was active, set the most recent event as active
-  if (wasActive) {
-    const nextEvent = await EventModel.findOne({ isArchived: false }).sort({ createdAt: -1 })
-    if (nextEvent) {
-      nextEvent.isActive = true
-      await nextEvent.save()
-    }
-  }
 
   // Remove notification
   try {

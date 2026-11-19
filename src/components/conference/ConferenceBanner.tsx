@@ -25,7 +25,7 @@ import { EventItem } from "@/types/event"
 
 export function ConferenceBanner({ initialEvent }: { initialEvent?: EventItem | null }) {
   const [event, setEvent] = useState<EventItem | null>(initialEvent || null)
-  const [loaded, setLoaded] = useState(false)
+  const [loaded, setLoaded] = useState(initialEvent !== undefined)
   const [isExpired, setIsExpired] = useState(false)
   const [timeLeft, setTimeLeft] = useState({
     days: 0,
@@ -34,8 +34,18 @@ export function ConferenceBanner({ initialEvent }: { initialEvent?: EventItem | 
     seconds: 0,
   })
 
-  // Fetch active event from API on mount
+  // Synchronize when initialEvent changes (e.g. In admin preview after deleting/switching)
   useEffect(() => {
+    if (initialEvent !== undefined) {
+      setEvent(initialEvent)
+      setLoaded(true)
+    }
+  }, [initialEvent])
+
+  // Fetch active event from API on mount if not explicitly passed
+  useEffect(() => {
+    if (initialEvent !== undefined) return
+
     async function fetchActiveEvent() {
       try {
         const res = await fetch("/api/events?active=true")
@@ -54,7 +64,7 @@ export function ConferenceBanner({ initialEvent }: { initialEvent?: EventItem | 
       }
     }
     fetchActiveEvent()
-  }, [])
+  }, [initialEvent])
 
   // Dynamic countdown timer based on active event countdownTarget
   useEffect(() => {

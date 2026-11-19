@@ -16,7 +16,7 @@ export async function GET(request: NextRequest) {
     }
 
     const events = await getEvents()
-    const activeEvent = events.find((e) => e.isActive) || events[0] || null
+    const activeEvent = events.find((e) => e.isActive) || null
 
     return NextResponse.json({
       success: true,

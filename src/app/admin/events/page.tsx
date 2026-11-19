@@ -44,6 +44,7 @@ export default function AdminEventsPage() {
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [uploading, setUploading] = useState(false)
+  const [activatingId, setActivatingId] = useState<string | null>(null)
   const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null)
 
   // Modal / Form state
@@ -230,6 +231,7 @@ export default function AdminEventsPage() {
 
   // Handle Set Active
   const handleSetActive = async (id: string, title: string) => {
+    setActivatingId(id)
     try {
       const res = await fetch(`/api/events/${id}`, {
         method: "PUT",
@@ -239,13 +241,15 @@ export default function AdminEventsPage() {
       const data = await res.json()
       if (data.success) {
         showMessage("success", `"${title}" is now the ACTIVE event on the homepage!`)
-        fetchEvents()
+        await fetchEvents()
       } else {
         showMessage("error", data.error || "Failed to activate event")
       }
     } catch (err) {
       console.error("Error setting active event:", err)
       showMessage("error", "Failed to activate event.")
+    } finally {
+      setActivatingId(null)
     }
   }
 
@@ -496,7 +500,24 @@ export default function AdminEventsPage() {
           </Flex>
 
           <Box borderRadius="24px" overflow="hidden">
-            <ConferenceBanner initialEvent={activeEvent || undefined} />
+            {activeEvent ? (
+              <ConferenceBanner initialEvent={activeEvent} />
+            ) : (
+              <Box
+                p={{ base: "8", md: "12" }}
+                textAlign="center"
+                bg="linear-gradient(135deg, #030826 0%, #051347 100%)"
+                borderRadius="24px"
+                border="1px dashed rgba(255, 255, 255, 0.2)"
+              >
+                <Text color="gray.300" fontSize="sm" fontWeight="600">
+                  No event is currently active. The banner section on the homepage is hidden.
+                </Text>
+                <Text color="gray.400" fontSize="xs" mt="1">
+                  Click &quot;Set as Active&quot; on any event below to display it live on the homepage.
+                </Text>
+              </Box>
+            )}
           </Box>
         </Box>
 
@@ -641,12 +662,13 @@ export default function AdminEventsPage() {
                           fontWeight="700"
                           _hover={{ bg: "#059669" }}
                           onClick={() => handleSetActive(evt.id, evt.title)}
+                          disabled={activatingId === evt.id}
                           px="4"
                           h="36px"
                         >
                           <HStack gap="1">
                             <CheckIcon size={14} color="white" />
-                            <Text>Set as Active</Text>
+                            <Text>{activatingId === evt.id ? "Activating..." : "Set as Active"}</Text>
                           </HStack>
                         </Button>
                       )}
