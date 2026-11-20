@@ -2,12 +2,12 @@ export interface NotificationItem {
   id: string
   title: string
   time?: string // relative time calculated dynamically ("2m ago", "1h ago", etc.)
-  type: "event" | "assignment" | "cohort" | "announcement"
-  category: "Event" | "Assignment" | "Cohort" | "Announcement"
+  type: "event" | "cohort" | "announcement" | "group_call"
+  category: "Event" | "Cohort" | "Announcement" | "Group Call"
   description: string
   href: string
   unread?: boolean
-  sourceId?: string // event id or assignment id
+  sourceId?: string // event id
   dueDate?: string
   createdAt: string
   updatedAt?: string

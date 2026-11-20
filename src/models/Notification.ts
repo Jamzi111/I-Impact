@@ -3,8 +3,8 @@ import mongoose, { Schema, Model, Document } from "mongoose"
 export interface INotification extends Document {
   title: string
   description: string
-  category: "Group Call" | "Announcement" | "Event" | "Assignment" | "Cohort"
-  type: "group_call" | "announcement" | "event" | "assignment" | "cohort"
+  category: "Group Call" | "Announcement" | "Event" | "Cohort"
+  type: "group_call" | "announcement" | "event" | "cohort"
   href?: string
   actionLabel?: string
   emailBroadcastSent: boolean
@@ -28,13 +28,13 @@ const NotificationSchema = new Schema<INotification>(
     },
     category: {
       type: String,
-      enum: ["Group Call", "Announcement", "Event", "Assignment", "Cohort"],
+      enum: ["Group Call", "Announcement", "Event", "Cohort"],
       default: "Announcement",
       index: true,
     },
     type: {
       type: String,
-      enum: ["group_call", "announcement", "event", "assignment", "cohort"],
+      enum: ["group_call", "announcement", "event", "cohort"],
       default: "announcement",
       index: true,
     },

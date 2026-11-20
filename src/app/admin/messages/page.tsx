@@ -88,6 +88,12 @@ export default function AdminMessagesPage() {
   const [isUpdating, setIsUpdating] = useState(false)
   const [statusFeedback, setStatusFeedback] = useState<{ type: "success" | "error"; text: string } | null>(null)
 
+  // Reply composer state
+  const [replySubject, setReplySubject] = useState("")
+  const [replyText, setReplyText] = useState("")
+  const [isReplying, setIsReplying] = useState(false)
+  const [showDirectReply, setShowDirectReply] = useState(true)
+
   const fetchMessages = useCallback(async () => {
     try {
       setLoading(true)
@@ -134,6 +140,9 @@ export default function AdminMessagesPage() {
   const openMessage = async (msg: MessageItem) => {
     setActiveMessage(msg)
     setNotesInput(msg.internalNotes || "")
+    setReplySubject(`Re: I-IMPACT Initiative Inquiry (${msg.categoryLabel || "Response"})`)
+    setReplyText("")
+    setIsReplying(false)
     setStatusFeedback(null)
 
     // Automatically mark as read if it was unread
@@ -156,6 +165,66 @@ export default function AdminMessagesPage() {
       } catch (e) {
         console.error("Auto mark read error:", e)
       }
+    }
+  }
+
+  const handleSendDirectReply = async (e?: React.FormEvent) => {
+    if (e) e.preventDefault()
+    if (!activeMessage) return
+    if (!replySubject.trim() || !replyText.trim()) {
+      setStatusFeedback({
+        type: "error",
+        text: "Please provide both an email subject and a reply message.",
+      })
+      return
+    }
+
+    try {
+      setIsReplying(true)
+      setStatusFeedback(null)
+
+      const res = await fetch(`/api/admin/messages/${activeMessage._id}/reply`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          subject: replySubject.trim(),
+          replyText: replyText.trim(),
+          repliedBy: "I-IMPACT Admin",
+        }),
+      })
+
+      const data = await res.json()
+      if (!res.ok || !data.success) {
+        throw new Error(data.error || "Failed to dispatch email reply.")
+      }
+
+      setStatusFeedback({
+        type: "success",
+        text: `Reply successfully sent to ${activeMessage.email} and status updated to Replied.`,
+      })
+
+      setActiveMessage((prev) =>
+        prev
+          ? {
+              ...prev,
+              status: "replied",
+              internalNotes: data.updated?.internalNotes || prev.internalNotes,
+              repliedAt: new Date().toISOString(),
+              repliedBy: "I-IMPACT Admin",
+            }
+          : null
+      )
+      setNotesInput(data.updated?.internalNotes || notesInput)
+      setReplyText("")
+      fetchMessages()
+    } catch (err: any) {
+      console.error("Direct reply error:", err)
+      setStatusFeedback({
+        type: "error",
+        text: err.message || "Failed to send email reply.",
+      })
+    } finally {
+      setIsReplying(false)
     }
   }
 
@@ -606,6 +675,11 @@ export default function AdminMessagesPage() {
                 disabled={page <= 1}
                 onClick={() => setPage((p) => Math.max(1, p - 1))}
                 fontSize="12.5px"
+                fontWeight="600"
+                px="3.5"
+                py="1.5"
+                h="36px"
+                borderRadius="md"
               >
                 <HStack gap="1">
                   <ChevronLeftIcon size={14} />
@@ -622,6 +696,11 @@ export default function AdminMessagesPage() {
                 disabled={page >= totalPages}
                 onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
                 fontSize="12.5px"
+                fontWeight="600"
+                px="3.5"
+                py="1.5"
+                h="36px"
+                borderRadius="md"
               >
                 <HStack gap="1">
                   <Text>Next</Text>
@@ -759,28 +838,140 @@ export default function AdminMessagesPage() {
                 </Box>
               </Box>
 
-              {/* Quick Reply Button */}
-              <Box>
-                <a
-                  href={`mailto:${activeMessage.email}?subject=Re:%20I-IMPACT%20Initiative%20Inquiry%20(${activeMessage.categoryLabel || "Response"})`}
-                  style={{ textDecoration: "none" }}
-                >
+              {/* Direct Reply & Mail Section */}
+              <Box bg="#F8FAFC" p="4" borderRadius="12px" border="1px solid #E2E8F0">
+                <Flex justify="space-between" align="center" mb="3">
+                  <HStack gap="2">
+                    <MailIcon size={16} />
+                    <Text fontSize="13px" fontWeight="800" textTransform="uppercase" letterSpacing="0.05em" color="#051B64">
+                      Reply to Sender ({activeMessage.fullName})
+                    </Text>
+                  </HStack>
                   <Button
-                    w="full"
-                    h="44px"
-                    bg="#051B64"
-                    color="white"
-                    _hover={{ bg: "#0A2580" }}
-                    borderRadius="10px"
-                    fontSize="14px"
-                    fontWeight="700"
+                    size="xs"
+                    variant="ghost"
+                    color="#475569"
+                    _hover={{ bg: "#E2E8F0" }}
+                    px="2.5"
+                    py="1"
+                    h="26px"
+                    borderRadius="md"
+                    onClick={() => setShowDirectReply(!showDirectReply)}
                   >
-                    <HStack gap="2">
-                      <MailIcon size={16} />
-                      <Text>Reply via Email Client</Text>
-                    </HStack>
+                    {showDirectReply ? "Hide Composer" : "Show Composer"}
                   </Button>
-                </a>
+                </Flex>
+
+                {showDirectReply ? (
+                  <VStack gap="3" align="stretch">
+                    <Box>
+                      <Text fontSize="11px" fontWeight="700" color="#64748B" mb="1" textTransform="uppercase">
+                        Email Subject
+                      </Text>
+                      <Input
+                        value={replySubject}
+                        onChange={(e) => setReplySubject(e.target.value)}
+                        placeholder="Subject..."
+                        h="40px"
+                        px="3.5"
+                        pl="3.5"
+                        bg="white"
+                        borderColor="#CBD5E1"
+                        borderRadius="8px"
+                        fontSize="13.5px"
+                        _focus={{ borderColor: "#051B64", boxShadow: "0 0 0 1px #051B64" }}
+                      />
+                    </Box>
+
+                    <Box>
+                      <Text fontSize="11px" fontWeight="700" color="#64748B" mb="1" textTransform="uppercase">
+                        Reply Message Body
+                      </Text>
+                      <Textarea
+                        value={replyText}
+                        onChange={(e) => setReplyText(e.target.value)}
+                        placeholder={`Write your reply to ${activeMessage.fullName} (${activeMessage.email})...`}
+                        p="3.5"
+                        pl="3.5"
+                        bg="white"
+                        borderColor="#CBD5E1"
+                        borderRadius="8px"
+                        fontSize="13.5px"
+                        rows={4}
+                        _focus={{ borderColor: "#051B64", boxShadow: "0 0 0 1px #051B64" }}
+                      />
+                    </Box>
+
+                    <Flex wrap="wrap" gap="2.5" pt="1">
+                      <Button
+                        bg="#051B64"
+                        color="white"
+                        _hover={{ bg: "#0A2580" }}
+                        px="5"
+                        py="2.5"
+                        h="40px"
+                        borderRadius="8px"
+                        fontSize="13.5px"
+                        fontWeight="700"
+                        onClick={handleSendDirectReply}
+                        disabled={isReplying || !replyText.trim()}
+                      >
+                        <HStack gap="2">
+                          {isReplying ? <Spinner size="xs" color="white" /> : <MailIcon size={15} />}
+                          <Text>{isReplying ? "Sending Reply..." : "Send Email Reply"}</Text>
+                        </HStack>
+                      </Button>
+
+                      <a
+                        href={`mailto:${activeMessage.email}?subject=${encodeURIComponent(
+                          replySubject
+                        )}&body=${encodeURIComponent(replyText || "")}`}
+                        style={{ textDecoration: "none" }}
+                      >
+                        <Button
+                          variant="outline"
+                          borderColor="#CBD5E1"
+                          color="#334155"
+                          _hover={{ bg: "#FFFFFF", borderColor: "#94A3B8" }}
+                          px="4"
+                          py="2"
+                          h="40px"
+                          borderRadius="8px"
+                          fontSize="13px"
+                          fontWeight="600"
+                        >
+                          <HStack gap="1.5">
+                            <Text>Open in Mail App</Text>
+                            <ArrowRightIcon size={13} />
+                          </HStack>
+                        </Button>
+                      </a>
+                    </Flex>
+                  </VStack>
+                ) : (
+                  <a
+                    href={`mailto:${activeMessage.email}?subject=${encodeURIComponent(replySubject)}`}
+                    style={{ textDecoration: "none" }}
+                  >
+                    <Button
+                      w="full"
+                      h="42px"
+                      px="4"
+                      py="2"
+                      bg="#051B64"
+                      color="white"
+                      _hover={{ bg: "#0A2580" }}
+                      borderRadius="8px"
+                      fontSize="13.5px"
+                      fontWeight="700"
+                    >
+                      <HStack gap="2">
+                        <MailIcon size={16} />
+                        <Text>Reply via Email App</Text>
+                      </HStack>
+                    </Button>
+                  </a>
+                )}
               </Box>
 
               {/* Internal Notes */}
@@ -794,18 +985,28 @@ export default function AdminMessagesPage() {
                   placeholder="Record internal team notes (e.g. 'Replied via WhatsApp', 'Referred to partnerships team')..."
                   fontSize="13.5px"
                   rows={3}
+                  p="3.5"
+                  pl="3.5"
+                  bg="#F8FAFC"
+                  borderRadius="8px"
                   borderColor="#CBD5E1"
-                  _focus={{ borderColor: "#051B64" }}
-                  mb="2"
+                  _focus={{ borderColor: "#051B64", bg: "#FFFFFF" }}
+                  mb="2.5"
                 />
                 <Button
-                  size="xs"
+                  size="sm"
                   bg="#F1F5F9"
                   color="#051B64"
                   border="1px solid #CBD5E1"
                   _hover={{ bg: "#E2E8F0" }}
                   onClick={() => handleUpdateMessage(undefined, true)}
                   disabled={isUpdating}
+                  px="4"
+                  py="2"
+                  h="34px"
+                  borderRadius="6px"
+                  fontWeight="600"
+                  fontSize="12.5px"
                 >
                   {isUpdating ? "Saving..." : "Save Notes"}
                 </Button>
@@ -816,7 +1017,7 @@ export default function AdminMessagesPage() {
                 <Text fontSize="12px" fontWeight="800" textTransform="uppercase" letterSpacing="0.05em" color="#64748B" mb="3">
                   Update Status
                 </Text>
-                <Flex wrap="wrap" gap="2">
+                <Flex wrap="wrap" gap="2.5">
                   <Button
                     size="sm"
                     bg="#10B981"
@@ -824,8 +1025,17 @@ export default function AdminMessagesPage() {
                     _hover={{ bg: "#059669" }}
                     onClick={() => handleUpdateMessage("replied")}
                     disabled={isUpdating || activeMessage.status === "replied"}
+                    px="4"
+                    py="2"
+                    h="38px"
+                    borderRadius="8px"
+                    fontWeight="600"
+                    fontSize="13px"
                   >
-                    Mark as Replied
+                    <HStack gap="1.5">
+                      <CheckIcon size={14} />
+                      <Text>Mark as Replied</Text>
+                    </HStack>
                   </Button>
                   <Button
                     size="sm"
@@ -834,6 +1044,12 @@ export default function AdminMessagesPage() {
                     _hover={{ bg: "#334155" }}
                     onClick={() => handleUpdateMessage("archived")}
                     disabled={isUpdating || activeMessage.status === "archived"}
+                    px="4"
+                    py="2"
+                    h="38px"
+                    borderRadius="8px"
+                    fontWeight="600"
+                    fontSize="13px"
                   >
                     Archive Message
                   </Button>
@@ -845,6 +1061,12 @@ export default function AdminMessagesPage() {
                     _hover={{ bg: "#F8FAFC" }}
                     onClick={() => handleUpdateMessage("unread")}
                     disabled={isUpdating || activeMessage.status === "unread"}
+                    px="4"
+                    py="2"
+                    h="38px"
+                    borderRadius="8px"
+                    fontWeight="600"
+                    fontSize="13px"
                   >
                     Mark as Unread
                   </Button>

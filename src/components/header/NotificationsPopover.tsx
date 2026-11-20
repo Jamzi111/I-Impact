@@ -318,13 +318,7 @@ export function NotificationsPopover({ isDarkNav = false }: { isDarkNav?: boolea
 
           {/* Footer Actions */}
           <Box mt="2.5" pt="2" borderTop="1px solid" borderColor="gray.100">
-            <Flex justify="space-between" align="center" px="1">
-              <Link href="/assignments" onClick={() => setIsOpen(false)}>
-                <HStack gap="1" fontSize="11px" fontWeight="700" color="#149191" _hover={{ textDecoration: "underline" }}>
-                  <GraduationCapIcon size={12} color="#149191" />
-                  <Text>Assignments</Text>
-                </HStack>
-              </Link>
+            <Flex justify="flex-end" align="center" px="1">
               <Link href="/notifications" onClick={() => setIsOpen(false)}>
                 <HStack
                   gap="1"

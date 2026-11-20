@@ -29,7 +29,7 @@ import { NotificationItem } from "@/types/notification"
 
 const NOTIF_STORAGE_KEY = "iimpact_read_notifications_v1"
 
-const FILTER_TABS = ["All Notifications", "Events", "Assignments", "Cohorts"]
+const FILTER_TABS = ["All Notifications", "Group Calls", "Announcements", "Events", "Cohorts"]
 
 export default function NotificationsPage() {
   const [notifications, setNotifications] = useState<NotificationItem[]>([])
@@ -84,8 +84,9 @@ export default function NotificationsPage() {
 
   const filteredItems = notifications.filter((item) => {
     if (activeTab === "All Notifications") return true
+    if (activeTab === "Group Calls") return item.type === "group_call" || item.category === "Group Call"
+    if (activeTab === "Announcements") return item.type === "announcement" || item.category === "Announcement"
     if (activeTab === "Events") return item.type === "event" || item.category === "Event"
-    if (activeTab === "Assignments") return item.type === "assignment" || item.category === "Assignment"
     if (activeTab === "Cohorts") return item.type === "cohort" || item.category === "Cohort"
     return true
   })
@@ -96,8 +97,8 @@ export default function NotificationsPage() {
     if (type === "event" || category?.toLowerCase().includes("event")) {
       return <CalendarIcon size={18} color="#D97706" />
     }
-    if (type === "assignment" || category?.toLowerCase().includes("assignment")) {
-      return <GraduationCapIcon size={18} color="#149191" />
+    if (category?.toLowerCase().includes("call")) {
+      return <MegaphoneIcon size={18} color="#149191" />
     }
     if (category?.toLowerCase().includes("cohort") || category?.toLowerCase().includes("mentorship")) {
       return <SparklesIcon size={18} color="#7C3AED" />
@@ -273,7 +274,7 @@ export default function NotificationsPage() {
                           bg={
                             item.type === "event"
                               ? "rgba(245, 158, 11, 0.1)"
-                              : item.type === "assignment"
+                              : item.type === "group_call"
                               ? "rgba(20, 145, 145, 0.1)"
                               : "rgba(5, 27, 100, 0.07)"
                           }
@@ -290,14 +291,14 @@ export default function NotificationsPage() {
                                 bg={
                                   item.type === "event"
                                     ? "rgba(245, 158, 11, 0.12)"
-                                    : item.type === "assignment"
+                                    : item.type === "group_call"
                                     ? "rgba(20, 145, 145, 0.12)"
                                     : "rgba(5, 27, 100, 0.08)"
                                 }
                                 color={
                                   item.type === "event"
                                     ? "#B45309"
-                                    : item.type === "assignment"
+                                    : item.type === "group_call"
                                     ? "#149191"
                                     : "#051B64"
                                 }

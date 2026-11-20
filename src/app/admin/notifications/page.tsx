@@ -32,7 +32,7 @@ interface AdminNotificationItem {
   _id: string
   title: string
   description: string
-  category: "Group Call" | "Announcement" | "Event" | "Assignment" | "Cohort"
+  category: "Group Call" | "Announcement" | "Event" | "Cohort"
   type: string
   href?: string
   actionLabel?: string
@@ -54,7 +54,7 @@ export default function AdminNotificationsPage() {
   const [formData, setFormData] = useState({
     title: "",
     description: "",
-    category: "Group Call" as "Group Call" | "Announcement" | "Event" | "Assignment" | "Cohort",
+    category: "Group Call" as "Group Call" | "Announcement" | "Event" | "Cohort",
     href: "",
     actionLabel: "Join Call / View Details",
     broadcastEmail: true,
@@ -166,8 +166,6 @@ export default function AdminNotificationsPage() {
         return { bg: "#F0FDF4", color: "#047857", border: "#A7F3D0" }
       case "Event":
         return { bg: "#FEF3C7", color: "#B45309", border: "#FDE68A" }
-      case "Assignment":
-        return { bg: "#F3E8FF", color: "#7E22CE", border: "#E9D5FF" }
       case "Cohort":
         return { bg: "#FFF1F2", color: "#BE123C", border: "#FECDD3" }
       default:
@@ -558,7 +556,6 @@ export default function AdminNotificationsPage() {
                     <option value="Announcement">Announcement (General Community Update)</option>
                     <option value="Event">Event (Conference / Summit Notice)</option>
                     <option value="Cohort">Cohort Briefing (Cohort Schedule / Notice)</option>
-                    <option value="Assignment">Assignment Deadline Notice</option>
                   </select>
                 </Box>
 

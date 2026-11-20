@@ -48,11 +48,10 @@ export async function POST(request: NextRequest) {
     }
 
     // Determine type from category
-    const categoryTypeMap: Record<string, "group_call" | "announcement" | "event" | "assignment" | "cohort"> = {
+    const categoryTypeMap: Record<string, "group_call" | "announcement" | "event" | "cohort"> = {
       "Group Call": "group_call",
       "Announcement": "announcement",
       "Event": "event",
-      "Assignment": "assignment",
       "Cohort": "cohort",
     }
 

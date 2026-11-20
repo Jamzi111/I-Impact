@@ -47,10 +47,6 @@ const ROUTE_TITLES: Record<string, { title: string; subtitle: string }> = {
     title: "Settings & Audit Logs",
     subtitle: "Administrative access controls, system logs, and security parameters",
   },
-  "/admin/assignments": {
-    title: "Assignment Portal Console",
-    subtitle: "Manage cohort homework and student submissions",
-  },
   "/admin/notifications": {
     title: "Notifications & Broadcasts",
     subtitle: "Publish on-site notifications and email blasts to newsletter subscribers",
