@@ -137,7 +137,7 @@ export async function POST(request: NextRequest) {
     }
     const roleLabel = roleLabels[role] || "Administrator"
 
-    await sendEmailBroadcast({
+    const emailResult = await sendEmailBroadcast({
       to: [email],
       subject: `I-IMPACT: Invitation to Join Administrative Team (${roleLabel})`,
       title: "Administrator Portal Invitation",
@@ -147,9 +147,14 @@ export async function POST(request: NextRequest) {
       category: "Invitation",
     })
 
+    const message = emailResult.success
+      ? `Invitation sent to ${email}`
+      : `Invitation created! Note: ${emailResult.note || "Check email delivery logs"}`
+
     return NextResponse.json({
       success: true,
-      message: `Invitation sent to ${email}`,
+      message,
+      emailDelivered: emailResult.success,
       invite: {
         _id: invite._id.toString(),
         name: invite.name,

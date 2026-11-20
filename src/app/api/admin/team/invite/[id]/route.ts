@@ -72,7 +72,7 @@ export async function POST(request: NextRequest, context: RouteContext) {
     }
     const roleLabel = roleLabels[invite.role] || "Administrator"
 
-    await sendEmailBroadcast({
+    const emailResult = await sendEmailBroadcast({
       to: [invite.email],
       subject: `I-IMPACT: Reminder - Invitation to Join Administrative Team (${roleLabel})`,
       title: "Administrator Portal Invitation",
@@ -82,9 +82,14 @@ export async function POST(request: NextRequest, context: RouteContext) {
       category: "Invitation",
     })
 
+    const message = emailResult.success
+      ? `Invitation resent to ${invite.email}`
+      : `Invitation refreshed! Note: ${emailResult.note || "Check email delivery logs"}`
+
     return NextResponse.json({
       success: true,
-      message: `Invitation resent to ${invite.email}`,
+      message,
+      emailDelivered: emailResult.success,
       invite: {
         _id: invite._id.toString(),
         name: invite.name,
