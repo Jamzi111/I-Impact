@@ -155,34 +155,50 @@ export async function sendEmailBroadcast(payload: BroadcastEmailPayload): Promis
         }
       }
 
-      // Batch dispatch (newsletter broadcasts, team-wide notifications)
-      const batchPayload = to.map((recipient) => ({
-        from: fromEmail,
-        to: recipient,
-        subject,
-        html: htmlTemplate,
-      }))
+      // Batch dispatch (chunked in batches of 100 to adhere to Resend API limits)
+      const CHUNK_SIZE = 100
+      let totalDelivered = 0
+      let lastErrorMessage = ""
 
-      const { data, error } = await resend.batch.send(batchPayload)
+      for (let i = 0; i < to.length; i += CHUNK_SIZE) {
+        const chunk = to.slice(i, i + CHUNK_SIZE)
+        const batchPayload = chunk.map((recipient) => ({
+          from: fromEmail,
+          to: recipient,
+          subject,
+          html: htmlTemplate,
+        }))
 
-      if (error) {
-        console.error("[RESEND BATCH ERROR]", error)
+        const { data, error } = await resend.batch.send(batchPayload)
+
+        if (error) {
+          console.error(`[RESEND BATCH ERROR at offset ${i}]`, error)
+          lastErrorMessage = error.message
+        } else {
+          totalDelivered += chunk.length
+          console.log(`[RESEND BATCH SUCCESS at offset ${i}]:`, data)
+        }
+      }
+
+      if (totalDelivered === 0 && lastErrorMessage) {
         return {
           success: false,
           deliveredCount: 0,
           failedCount: to.length,
           simulated: false,
-          note: error.message,
+          note: lastErrorMessage,
         }
       }
 
-      console.log(`[RESEND BATCH SUCCESS] Dispatched to ${to.length} recipients:`, data)
       return {
-        success: true,
-        deliveredCount: to.length,
-        failedCount: 0,
+        success: totalDelivered > 0,
+        deliveredCount: totalDelivered,
+        failedCount: to.length - totalDelivered,
         simulated: false,
-        note: `Batch dispatched via Resend to ${to.length} recipients.`,
+        note:
+          totalDelivered === to.length
+            ? `Dispatched via Resend to all ${totalDelivered} subscribers.`
+            : `Delivered to ${totalDelivered} of ${to.length} subscribers. (${lastErrorMessage})`,
       }
     } catch (err: any) {
       console.error("[RESEND SDK EXCEPTION]:", err)

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server"
 import connectDB from "@/lib/mongodb"
 import Subscriber from "@/models/Subscriber"
+import { sendEmailBroadcast } from "@/lib/email"
 
 export const dynamic = "force-dynamic"
 export const revalidate = 0
@@ -90,6 +91,18 @@ export async function POST(request: NextRequest) {
       ipAddress,
       userAgent,
     })
+
+    // Dispatch welcome confirmation email
+    const siteUrl = process.env.NEXT_PUBLIC_APP_URL || "https://i-impact.org"
+    sendEmailBroadcast({
+      to: [rawEmail],
+      subject: "Welcome to I-IMPACT: Subscription Confirmed",
+      title: "Welcome to the I-IMPACT Community!",
+      message: `Thank you for subscribing to I-IMPACT updates.\n\nYou are now on our official notification list. You will receive direct announcements about our upcoming cohort openings, mentorship programs, community events, and transformative youth initiatives.\n\nTogether, we are raising champions everyday and inspiring generational transformation.`,
+      actionUrl: siteUrl,
+      actionLabel: "Visit I-IMPACT Website",
+      category: "Welcome",
+    }).catch((err) => console.error("[Newsletter Welcome Email Error]:", err))
 
     return NextResponse.json(
       {

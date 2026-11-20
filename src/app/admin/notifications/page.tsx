@@ -117,10 +117,11 @@ export default function AdminNotificationsPage() {
 
       const data = await res.json()
       if (res.ok && data.success) {
+        const noteDetail = data.broadcastNote ? ` (${data.broadcastNote})` : ""
         showMessage(
           "success",
           formData.broadcastEmail
-            ? `Notification published to site & email broadcast queued for ${subscriberCount} subscribers!`
+            ? `Notification published & broadcast dispatched!${noteDetail}`
             : "Notification published to website successfully!"
         )
         setIsFormOpen(false)
