@@ -14,8 +14,14 @@ export default function AdminLayout({
   const pathname = usePathname()
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false)
 
-  // Login page has its own standalone full-screen layout
-  if (pathname === "/admin/login") {
+  // Public auth pages have their own standalone full-screen layout
+  const isPublicAuthPage =
+    pathname === "/admin/login" ||
+    pathname === "/admin/forgot-password" ||
+    pathname === "/admin/reset-password" ||
+    pathname === "/admin/accept-invite"
+
+  if (isPublicAuthPage) {
     return <>{children}</>
   }
 

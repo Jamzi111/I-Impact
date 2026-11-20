@@ -5,9 +5,11 @@ export interface IAdmin extends Document {
   email: string
   passwordHash: string
   salt: string
-  role: "superadmin" | "admin" | "coordinator"
+  role: "superadmin" | "admin" | "reviewer" | "content_manager" | "coordinator"
   isActive: boolean
   lastLogin?: Date
+  resetPasswordToken?: string
+  resetPasswordExpires?: Date
 }
 
 const AdminSchema = new Schema<IAdmin>(
@@ -16,9 +18,15 @@ const AdminSchema = new Schema<IAdmin>(
     email: { type: String, required: true, unique: true, lowercase: true, trim: true },
     passwordHash: { type: String, required: true },
     salt: { type: String, required: true },
-    role: { type: String, enum: ["superadmin", "admin", "coordinator"], default: "superadmin" },
+    role: {
+      type: String,
+      enum: ["superadmin", "admin", "reviewer", "content_manager", "coordinator"],
+      default: "admin",
+    },
     isActive: { type: Boolean, default: true },
     lastLogin: { type: Date },
+    resetPasswordToken: { type: String },
+    resetPasswordExpires: { type: Date },
   },
   {
     collection: "admins",

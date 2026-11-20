@@ -6,18 +6,23 @@ export async function middleware(request: NextRequest) {
 
   // Only apply to /admin routes
   if (pathname.startsWith("/admin")) {
-    const isLoginPage = pathname === "/admin/login"
+    const isPublicAuthPage =
+      pathname === "/admin/login" ||
+      pathname === "/admin/forgot-password" ||
+      pathname === "/admin/reset-password" ||
+      pathname === "/admin/accept-invite"
+
     const token = request.cookies.get(ADMIN_COOKIE_NAME)?.value
     const session = token ? await verifySessionToken(token) : null
     const isAuthenticated = !!session
 
     // If already authenticated and trying to access login page, redirect to /admin
-    if (isLoginPage && isAuthenticated) {
+    if (pathname === "/admin/login" && isAuthenticated) {
       return NextResponse.redirect(new URL("/admin", request.url))
     }
 
     // If NOT authenticated and trying to access protected admin page, redirect to login
-    if (!isLoginPage && !isAuthenticated) {
+    if (!isPublicAuthPage && !isAuthenticated) {
       const loginUrl = new URL("/admin/login", request.url)
       loginUrl.searchParams.set("from", pathname)
       return NextResponse.redirect(loginUrl)
