@@ -1,10 +1,11 @@
+import { Resend } from "resend"
+
 /**
  * Email Dispatcher for I-IMPACT
  *
  * Supports:
- * 1. Resend API (RESEND_API_KEY)
- * 2. Gmail / Custom SMTP via standard fetch or nodemailer-like configuration
- * 3. Graceful fallback with full preview/simulation logging if credentials are not yet added.
+ * 1. Official Resend SDK (RESEND_API_KEY)
+ * 2. Graceful fallback with preview/simulation logging if credentials are not yet added.
  */
 
 export interface BroadcastEmailPayload {
@@ -115,36 +116,83 @@ export async function sendEmailBroadcast(payload: BroadcastEmailPayload): Promis
 </html>
 `
 
-  // Option 1: Resend API
+  // Option 1: Official Resend SDK
   if (resendApiKey) {
     try {
-      const response = await fetch("https://api.resend.com/emails/batch", {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${resendApiKey}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(
-          to.map((recipient) => ({
-            from: "I-IMPACT <notifications@i-impact.org>",
-            to: recipient,
-            subject,
-            html: htmlTemplate,
-          }))
-        ),
-      })
+      const resend = new Resend(resendApiKey)
+      const fromEmail =
+        process.env.RESEND_FROM_EMAIL ||
+        process.env.EMAIL_FROM ||
+        "I-IMPACT <onboarding@resend.dev>"
 
-      if (response.ok) {
+      // Single recipient dispatch (invitations, password resets, individual alerts)
+      if (to.length === 1) {
+        const { data, error } = await resend.emails.send({
+          from: fromEmail,
+          to: to[0],
+          subject,
+          html: htmlTemplate,
+        })
+
+        if (error) {
+          console.error("[RESEND SDK ERROR]", error)
+          return {
+            success: false,
+            deliveredCount: 0,
+            failedCount: 1,
+            simulated: false,
+            note: error.message,
+          }
+        }
+
+        console.log(`[RESEND SDK SUCCESS] Email dispatched to ${to[0]}: id=${data?.id}`)
         return {
           success: true,
-          deliveredCount: to.length,
+          deliveredCount: 1,
           failedCount: 0,
           simulated: false,
-          note: `Sent via Resend to ${to.length} subscribers.`,
+          note: `Email delivered to ${to[0]} via Resend.`,
         }
       }
-    } catch (err) {
-      console.error("Resend API error:", err)
+
+      // Batch dispatch (newsletter broadcasts, team-wide notifications)
+      const batchPayload = to.map((recipient) => ({
+        from: fromEmail,
+        to: recipient,
+        subject,
+        html: htmlTemplate,
+      }))
+
+      const { data, error } = await resend.batch.send(batchPayload)
+
+      if (error) {
+        console.error("[RESEND BATCH ERROR]", error)
+        return {
+          success: false,
+          deliveredCount: 0,
+          failedCount: to.length,
+          simulated: false,
+          note: error.message,
+        }
+      }
+
+      console.log(`[RESEND BATCH SUCCESS] Dispatched to ${to.length} recipients:`, data)
+      return {
+        success: true,
+        deliveredCount: to.length,
+        failedCount: 0,
+        simulated: false,
+        note: `Batch dispatched via Resend to ${to.length} recipients.`,
+      }
+    } catch (err: any) {
+      console.error("[RESEND SDK EXCEPTION]:", err)
+      return {
+        success: false,
+        deliveredCount: 0,
+        failedCount: to.length,
+        simulated: false,
+        note: err.message || "Failed to reach Resend API",
+      }
     }
   }
 
